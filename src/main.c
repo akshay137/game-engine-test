@@ -1,24 +1,56 @@
 #include <SDL2/SDL.h>
+#include "core/config.h"
+#include "core/logger.h"
+#include "core/window.h"
+#include "gfx/gfx.h"
+#include "gfx/pso.h"
+#include "res/file.h"
+
+#include <glad/glad.h>
 
 int main(int argc, char** args)
 {
-	SDL_Log("%s | argc: %d\n", args[0], argc);
+	DUMPI(argc);
+	DUMPCSTR(args[0]);
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	result_t res = uhero_init();
+	if (UH_SUCCESS != res)
 	{
-		SDL_Log("SDL_Init: %s\n", SDL_GetError());
+		ERROR("uhero_init\n");
 		return 0;
 	}
 
-	int pos = SDL_WINDOWPOS_UNDEFINED_DISPLAY(0);
-	SDL_Window* window = SDL_CreateWindow("uhero::pong", pos, pos, 1280, 720, 0);
-	if (NULL == window)
+	config_t config = config_read(UHERO_CONFIG_FILE);
+	DUMPVER(config.app_version);
+	DUMPSTR(config.app_name);
+
+	window_t window = {};
+	res = window_new(&window, &config);
+	if (UH_SUCCESS != res)
 	{
-		SDL_Log("SDL_CreateWindow: %s\n", SDL_GetError());
-		SDL_Quit();
+		ERROR("window_new\n");
+		uhero_shutdown();
 		return 0;
 	}
 
+	gfx_t gfx = {};
+	res = gfx_init(&gfx, &config, &window);
+
+	char vs[1024] = { 0 };
+	char fs[1024] = { 0 };
+	uh_readFileFull("assets/quad.vert", vs);
+	uh_readFileFull("assets/quad.frag", fs);
+
+	pso_t quad;
+	res = pso_create(&quad,
+		(str_t[]) { str(vs), str(fs), str_empty() },
+		(vattrib_t[]) { VEC3, VEC3, VEC3 }, // vertex attribs
+		TRIANGLES, FILL, CULL_BACK // states
+	);
+
+	INFO("Setup complete\n");
+	LOG("------------------------------------------------------------------------------\n");
+	
 	int running = 1;
 	while (running)
 	{
@@ -38,11 +70,28 @@ int main(int argc, char** args)
 					break;
 				}
 			}
-		}
+		} // while (SDL_PollEvent)
+
+		float color[] = { 0.2, 0.2, 0.2, 0 };
+		glClearBufferfv(GL_COLOR, 0, color);
+
+		pso_makeCurrent(&quad);
+
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		window_swapBuffers(&window);
 	}
 
-	SDL_DestroyWindow(window);
+	LOG("------------------------------------------------------------------------------\n");
+	INFO("Exiting\n");
 
-	SDL_Quit();
+	pso_delete(&quad);
+
+	gfx_shutdown(&gfx);
+	window_del(&window);
+
+	// before exiting, write config to file
+	config_write(&config, UHERO_CONFIG_FILE);
+	uhero_shutdown();
 	return 0;
 }
