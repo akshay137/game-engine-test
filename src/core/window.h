@@ -13,7 +13,7 @@ struct window_s
 };
 
 API result_t window_new(window_t* out_window, const config_t* config);
-API void window_del(window_t* window);
+API void window_delete(window_t* window);
 
 API void window_swapBuffers(window_t* window);
 

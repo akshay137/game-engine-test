@@ -9,7 +9,9 @@ result_t window_new(window_t* out_window, const config_t* config)
 	assert(config);
 
 	// set opengl flags
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+		SDL_GL_CONTEXT_PROFILE_CORE
+	);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 
@@ -34,7 +36,7 @@ result_t window_new(window_t* out_window, const config_t* config)
 	return UH_SUCCESS;
 }
 
-void window_del(window_t* window)
+void window_delete(window_t* window)
 {
 	assert(window);
 	assert(window->_window);

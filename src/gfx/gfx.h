@@ -12,7 +12,9 @@ struct gfx_s
 	str_t gpu_name;
 };
 
-API result_t gfx_init(gfx_t* out_gfx, const config_t* conf, const window_t* window);
+API result_t gfx_init(gfx_t* out_gfx,
+	const config_t* conf, const window_t* window
+);
 API void gfx_shutdown(gfx_t* gfx);
 
 

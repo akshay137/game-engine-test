@@ -22,6 +22,7 @@ enum result_e
 typedef enum result_e result_t;
 
 #define UH_TDEF_STRUCT(s) typedef struct s##_s s##_t
+#define UH_TDEF_UNION(u) typedef union u##_u u##_t
 
 // common structs, can be used all over the code base
 UH_TDEF_STRUCT(version);
@@ -30,6 +31,11 @@ UH_TDEF_STRUCT(window);
 
 UH_TDEF_STRUCT(gfx);
 UH_TDEF_STRUCT(pso);
+UH_TDEF_STRUCT(buffer);
+UH_TDEF_STRUCT(texture);
+
+UH_TDEF_STRUCT(vertex2d);
+UH_TDEF_STRUCT(vertex3d);
 
 UH_TDEF_STRUCT(file);
 

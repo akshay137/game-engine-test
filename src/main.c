@@ -4,7 +4,12 @@
 #include "core/window.h"
 #include "gfx/gfx.h"
 #include "gfx/pso.h"
+#include "gfx/buffer.h"
+#include "gfx/vertex.h"
+#include "gfx/texture.h"
 #include "res/file.h"
+#include "res/texture.h"
+#include "math/types.h"
 
 #include <glad/glad.h>
 
@@ -44,9 +49,32 @@ int main(int argc, char** args)
 	pso_t quad;
 	res = pso_create(&quad,
 		(str_t[]) { str(vs), str(fs), str_empty() },
-		(vattrib_t[]) { VEC3, VEC3, VEC3 }, // vertex attribs
-		TRIANGLES, FILL, CULL_BACK // states
+		(vattrib_t[]) {
+			UHVATTRIB_VEC2, UHVATTRIB_VEC2, UHVATTRIB_VEC3, UHVATTRIB_NONE
+		},
+		UHGEOM_TRIANGLES, UHFILLMODE_FILL, UHCULLMODE_CULL_BACK,
+		UHFRAMEBUFFER_DEFAULT, window.width, window.height
 	);
+
+	vertex2d_t vertices[] = {
+		vertex2d(vec2(0.5, 0.5), vec2(1, 0), vec3(1, 0, 0)),
+		vertex2d(vec2(0.5, -0.5), vec2(1, 1), vec3(0, 1, 0)),
+		vertex2d(vec2(-0.5, -0.5), vec2(0, 1), vec3(0, 0, 1)),
+
+		vertex2d(vec2(-0.5, 0.5), vec2(0, 0), vec3(0, 1, 1)),
+		vertex2d(vec2(0.5, 0.5), vec2(1, 0), vec3(1, 0, 0)),
+		vertex2d(vec2(-0.5, -0.5), vec2(0, 1), vec3(0, 0, 1)),
+	};
+	buffer_t vbuffer = buffer_new(UHBUFFER_STATIC, sizeof(vertices), vertices);
+
+	uint8_t pixels[] = {
+		255, 0,
+		0, 0, // row padding
+		0, 255
+	};
+	texture_t diffuse;
+	res = texture_loadFromFile(&diffuse, "assets/logo.png");
+	texture_setFiltering(&diffuse, UH_FILTER_NEAREST);
 
 	INFO("Setup complete\n");
 	LOG("------------------------------------------------------------------------------\n");
@@ -76,8 +104,9 @@ int main(int argc, char** args)
 		glClearBufferfv(GL_COLOR, 0, color);
 
 		pso_makeCurrent(&quad);
-
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		pso_setVertexBuffer(&quad, 0, &vbuffer, 0, sizeof(vertex2d_t));
+		texture_bindSlost(&diffuse, 0);
+		pso_drawArrays(&quad, 0, 6);
 
 		window_swapBuffers(&window);
 	}
@@ -85,10 +114,12 @@ int main(int argc, char** args)
 	LOG("------------------------------------------------------------------------------\n");
 	INFO("Exiting\n");
 
+	texture_delete(&diffuse);
+	buffer_delete(&vbuffer);
 	pso_delete(&quad);
 
 	gfx_shutdown(&gfx);
-	window_del(&window);
+	window_delete(&window);
 
 	// before exiting, write config to file
 	config_write(&config, UHERO_CONFIG_FILE);
