@@ -67,11 +67,6 @@ int main(int argc, char** args)
 	};
 	buffer_t vbuffer = buffer_new(UHBUFFER_STATIC, sizeof(vertices), vertices);
 
-	uint8_t pixels[] = {
-		255, 0,
-		0, 0, // row padding
-		0, 255
-	};
 	texture_t diffuse;
 	res = texture_loadFromFile(&diffuse, "assets/logo.png");
 	texture_setFiltering(&diffuse, UH_FILTER_NEAREST);
