@@ -9,7 +9,7 @@ buffer_t buffer_new(buffertype_t type, uint32_t size, const void* data)
 	glCreateBuffers(1, &buffer_id);
 
 	uint32_t flags = 0;
-	if (UHBUFFER_DYNAMIC & flags) flags |= GL_DYNAMIC_STORAGE_BIT;
+	if (UHBUFFER_DYNAMIC & type) flags |= GL_DYNAMIC_STORAGE_BIT;
 	glNamedBufferStorage(buffer_id, size, data, flags);
 
 	buffer_t buffer = {
@@ -30,6 +30,15 @@ void buffer_delete(buffer_t* buffer)
 	VERB("Deleting OpenGL bufer: %u\n", buffer->gl_id);
 	glDeleteBuffers(1, &(buffer->gl_id));
 	buffer->gl_id = 0;
+}
+
+void buffer_updateRange(buffer_t* buffer, const void* data,
+	uint32_t offset, uint32_t length
+)
+{
+	assert(buffer);
+	
+	glNamedBufferSubData(buffer->gl_id, offset, length, data);
 }
 
 void buffer_bindBase(buffer_t* buffer, bufferbase_t base, uint32_t index)

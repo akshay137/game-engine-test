@@ -12,6 +12,8 @@ struct config_s
 	int32_t width;
 	int32_t height;
 	int32_t display_index;
+
+	size_t max_sprites;
 };
 
 // read config from the `filename`

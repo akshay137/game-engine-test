@@ -9,7 +9,8 @@ config_t config_read(const char* filename)
 		.app_name = str("pong"),
 		.width = 1280,
 		.height = 720,
-		.display_index = 0
+		.display_index = 0,
+		.max_sprites = 1024
 	};
 
 	// TODO: read config file and update values which exists in file

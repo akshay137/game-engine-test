@@ -28,20 +28,24 @@ typedef enum result_e result_t;
 UH_TDEF_STRUCT(version);
 UH_TDEF_STRUCT(config);
 UH_TDEF_STRUCT(window);
+UH_TDEF_STRUCT(uhero);
 
 UH_TDEF_STRUCT(gfx);
+UH_TDEF_STRUCT(renderstate);
 UH_TDEF_STRUCT(pso);
 UH_TDEF_STRUCT(buffer);
 UH_TDEF_STRUCT(texture);
 
 UH_TDEF_STRUCT(vertex2d);
 UH_TDEF_STRUCT(vertex3d);
+UH_TDEF_STRUCT(sprite);
+UH_TDEF_STRUCT(render2d);
 
 UH_TDEF_STRUCT(file);
 
 UH_TDEF_STRUCT(str);
 
-API result_t uhero_init(void);
-API void uhero_shutdown(void);
+API result_t uhero_initDeps(void);
+API void uhero_clearDeps(void);
 
 #endif

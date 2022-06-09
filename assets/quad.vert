@@ -4,16 +4,26 @@ layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 uv;
 layout (location = 2) in vec3 color;
 
+layout (std140, binding = 0) uniform rstate
+{
+	layout (offset = 0) mat4 orthographic;
+	layout (offset = 64) vec4 viewport;
+};
+
 out VS_OUT
 {
+	vec3 wpos;
 	vec2 uv;
 	vec3 color;
 } vs;
 
 void main()
 {
-	gl_Position = vec4(position, 0.0f, 1.0f);
+	const vec4 pos4 = vec4(position, 0.0f, 1.0f);
+	vec4 pos = orthographic * pos4;
+	gl_Position = pos;
 
+	vs.wpos = pos4.xyz;
 	vs.uv = uv;
 	vs.color = color;
 

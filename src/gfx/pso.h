@@ -43,14 +43,12 @@ pipeline state object
 contains:
 	vertex array object
 	shader program
-	framebuffer
 	other states [geometry mode | blend | depth | ... ]
 */		
 struct pso_s
 {
 	uint32_t vao;
 	uint32_t program;
-	uint32_t framebuffer;
 
 	geom_t _geometry;
 	fillmode_t _fill;
@@ -60,8 +58,7 @@ struct pso_s
 API result_t pso_create(pso_t* out_pso,
 	str_t* shaders,
 	vattrib_t* vertex_attribs,
-	geom_t geom_type, fillmode_t fillmode, cullmode_t cullmode,
-	fbtype_t framebuffer_type, int32_t width, int32_t height
+	geom_t geom_type, fillmode_t fillmode, cullmode_t cullmode
 );
 
 API result_t pso_new(pso_t* out_pso);

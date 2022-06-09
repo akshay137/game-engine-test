@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-result_t uhero_init(void)
+result_t uhero_initDeps(void)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -11,7 +11,7 @@ result_t uhero_init(void)
 	return UH_SUCCESS;
 }
 
-void uhero_shutdown(void)
+void uhero_clearDeps(void)
 {
 	SDL_Quit();
 }

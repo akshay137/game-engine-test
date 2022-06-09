@@ -2,6 +2,7 @@
 
 in VS_OUT
 {
+	vec3 wpos;
 	vec2 uv;
 	vec3 color;
 } vs;
