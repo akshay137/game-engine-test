@@ -2,6 +2,7 @@
 #include "core/logger.h"
 #include "math/transforms.h"
 
+#include <string.h>
 #include <glad/glad.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_events.h>
@@ -56,6 +57,7 @@ result_t uhero_init(uhero_t* hero, int argc, char** args)
 		.config = config,
 		.window = window,
 		.gfx = gfx,
+		.input = {},
 		.r2d = r2d,
 		.rs_buffer = rsbuffer,
 		.rstate = rstate,
@@ -125,6 +127,7 @@ float uhero_tick(uhero_t* hero)
 	hero->time = ticks / (float)MILLISECONDS_PER_SECOND;
 
 	SDL_Event event = {};
+	input_t ip = {};
 	while (SDL_PollEvent(&event))
 	{
 		if (SDL_QUIT == event.type)
@@ -134,13 +137,44 @@ float uhero_tick(uhero_t* hero)
 		}
 		else if (SDL_KEYUP == event.type)
 		{
-			if (SDLK_ESCAPE == event.key.keysym.sym)
-			{
-				hero->exit_requested = true;
-				return 0.0;
-			}
+			uint32_t scancode = event.key.keysym.scancode;
+			ip.keys[scancode] = UHKEY_RELEASED;
+		}
+		else if (SDL_KEYDOWN == event.type)
+		{
+			uint32_t scancode = event.key.keysym.scancode;
+			if (!event.key.repeat)
+				ip.keys[scancode] = UHKEY_PRESSED;
 		}
 	}
+	const uint8_t* keys = SDL_GetKeyboardState(NULL);
+
+	for (int i = 0; i < UH_MAX_KEYS; i++)
+	{
+		keystate_t state = hero->input.keys[i];
+
+		if (keys[i]) // down
+		{
+			if (UHKEY_UP == state)
+				state = UHKEY_PRESSED;
+			else
+				state = UHKEY_DOWN;
+		}
+		else
+		{
+			if (UHKEY_DOWN == state)
+				state = UHKEY_RELEASED;
+			else
+				state = UHKEY_UP;
+		}
+
+		hero->input.keys[i] = state;
+	}
+
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	hero->input.mouse_x = x;
+	hero->input.mouse_y = y;
 
 	hero->rstate.viewport = vec4(0, 0, hero->window.width, hero->window.height);
 	hero->rstate.orthographic = uhm_ortho(

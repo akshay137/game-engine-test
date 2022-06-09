@@ -4,6 +4,7 @@
 #include "core/core.h"
 #include "core/config.h"
 #include "core/window.h"
+#include "core/input.h"
 #include "gfx/gfx.h"
 #include "gfx/buffer.h"
 #include "gfx/state.h"
@@ -19,6 +20,7 @@ struct uhero_s
 	config_t config;
 	window_t window;
 	gfx_t gfx;
+	input_t input;
 
 	renderstate_t rstate;
 	buffer_t rs_buffer;	
@@ -47,6 +49,13 @@ API result_t uhero_setLevel(uhero_t* hero, void* userdata,
 );
 
 API float uhero_tick(uhero_t* hero);
+
+API_INLINE void uhero_requestExit(uhero_t* hero)
+{
+	assert(hero);
+
+	hero->exit_requested = true;
+}
 
 API_INLINE bool uhero_exitRequested(const uhero_t* hero)
 {

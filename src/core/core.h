@@ -28,6 +28,7 @@ typedef enum result_e result_t;
 UH_TDEF_STRUCT(version);
 UH_TDEF_STRUCT(config);
 UH_TDEF_STRUCT(window);
+UH_TDEF_STRUCT(input);
 UH_TDEF_STRUCT(uhero);
 
 UH_TDEF_STRUCT(gfx);
