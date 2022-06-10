@@ -193,7 +193,7 @@ float uhero_tick(uhero_t* hero)
 	// render
 	glViewport(0, 0, hero->window.width, hero->window.height);
 
-	float color[] = { 0, 0, 0, 0 };
+	float color[] = { 0.2, 0.2, 0.2, 0 };
 	glClearBufferfv(GL_COLOR, 0, color);
 	glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
 

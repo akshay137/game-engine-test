@@ -8,7 +8,7 @@
 #include <math.h>
 #include <SDL2/SDL_scancode.h>
 
-
+/*
 struct glyph_t
 {
 	uint32_t codepoint;
@@ -46,7 +46,7 @@ size_t drawText(render2d_t* render, struct font_t* font, ivec2_t pos, str_t fmt,
 	size_t res = vsprintf(buffer, fmt.ptr, args);
 	va_end(args);
 
-	texture_bindSlost(&(font->atlas), 0);
+	texture_bindSlot(&(font->atlas), 0);
 	render2d_begin(render);
 
 	vec2_t pen = vec2(pos.x, pos.y);
@@ -131,6 +131,7 @@ struct font_t loadFont(const char* file)
 	uh_closeFile(&af);
 	return font;
 }
+*/
 
 struct game_s
 {
@@ -138,8 +139,6 @@ struct game_s
 	sprite_t sprite;
 	float scale;
 	vec2_t pos;
-
-	struct font_t font;
 };
 
 result_t game_load(uhero_t* hero, void* user)
@@ -155,7 +154,6 @@ result_t game_load(uhero_t* hero, void* user)
 
 	game->pos = vec2(hero->window.width * 0.5, hero->window.height * 0.5);
 
-	game->font = loadFont("assets/font.atlas");
 	return res;
 }
 
@@ -164,7 +162,6 @@ void game_clear(uhero_t* hero, void* user)
 	struct game_s* game = (struct game_s*)user;
 
 	texture_delete(&(game->diffuse));
-	texture_delete(&(game->font.atlas));
 }
 
 void game_update(uhero_t* hero, void* user)
@@ -206,7 +203,7 @@ void game_render(uhero_t* hero, void* user)
 
 	render2d_t* r2d = &(hero->r2d);
 
-	texture_bindSlost(&(game->diffuse), 0);
+	texture_bindSlot(&(game->diffuse), 0);
 
 	render2d_begin(r2d);
 	for (int i = 0; i < 4; i++)
@@ -218,15 +215,37 @@ void game_render(uhero_t* hero, void* user)
 			game->scale, 0.0f
 		);
 	}
+
+	fontstyle_t style = {
+		.font_size = 32,
+		.text_color = color32(1, 1, 1, 1),
+		.outline_color = color32(0, 0, 0, 1),
+		.outline_size = 0.1f,
+	};
+	render2d_text(r2d, style, vec2(0, hero->window.height),
+		str("Hellow World! dt: %.3f"), hero->delta
+	);
+	style.text_color = color32(0, 1, 1, 1);
+	style.outline_color = color32(1, 1, 1, 1);
+	render2d_text(r2d, style, vec2(0, hero->window.height - style.font_size),
+		str("the quick brown fox jumps over lazy dog.")
+	);
+	style.text_color = color32(1, 0, 0, 1);
+	render2d_text(r2d, style, vec2(0, hero->window.height - style.font_size * 2),
+		str("THE QUICK BROWN FOX JUMPS OVER LAZY DOG.")
+	);
+	style.text_color = color32(0, 1, 0, 1);
+	render2d_text(r2d, style, vec2(0, hero->window.height - style.font_size * 3),
+		str("`~!@#$%%^&*()_+1234567890-=\n{}[]<>;:'\",./?\\|")
+	);
+
+	style.font_size = 64;
+	style.text_color = color32(1, 1, 1, 1);
+	render2d_text(r2d, style, vec2(0, hero->window.height - style.font_size * 3),
+		str("Score: %4d | time: %.2fs"), hero->_ticks / 1000, hero->time
+	);
+
 	render2d_end(r2d);
-
-	drawText(r2d, &(game->font), ivec2(0, hero->window.height),
-		str("Hello World! dt: %.4f\n"), hero->delta
-	);
-
-	drawText(r2d, &(game->font), ivec2(0, hero->window.height - 128),
-		str("the quick brown fox jumps over lazy dog")
-	);
 }
 
 int main(int argc, char** args)

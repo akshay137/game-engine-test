@@ -42,6 +42,9 @@ result_t gfx_init(gfx_t* out_gfx, const config_t* conf, const window_t* window)
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	str_t gpu = str((const char*)glGetString(GL_RENDERER));
 
 	*out_gfx = (gfx_t) {

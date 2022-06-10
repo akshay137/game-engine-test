@@ -95,7 +95,7 @@ void texture_setFiltering(texture_t* tex, texfilter_t filter)
 	glTextureParameteri(tex->gl_id, GL_TEXTURE_MAG_FILTER, mag_filter);
 }
 
-void texture_bindSlost(texture_t* tex, uint32_t slot)
+void texture_bindSlot(texture_t* tex, uint32_t slot)
 {
 	assert(tex);
 

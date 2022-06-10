@@ -87,6 +87,13 @@ result_t pso_create(pso_t* out_pso,
 			normalized = GL_FALSE;
 			byte_size = sizeof(float) * 4;
 		}
+		else if (UHVATTRIB_BVEC4_NORM == attrib)
+		{
+			element_count = 4;
+			gl_type = GL_UNSIGNED_BYTE;
+			normalized = GL_TRUE;
+			byte_size = 4;
+		}
 
 		glVertexArrayAttribFormat(pso.vao, index,
 			element_count, gl_type, normalized, relative_offset

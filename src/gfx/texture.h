@@ -32,6 +32,6 @@ API result_t texture_new(texture_t* out_tex, pixelformat_t format,
 API void texture_delete(texture_t* tex);
 
 API void texture_setFiltering(texture_t* tex, texfilter_t filter);
-API void texture_bindSlost(texture_t* tex, uint32_t slot);
+API void texture_bindSlot(texture_t* tex, uint32_t slot);
 
 #endif

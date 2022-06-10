@@ -40,6 +40,9 @@ UH_TDEF_STRUCT(texture);
 UH_TDEF_STRUCT(vertex2d);
 UH_TDEF_STRUCT(vertex3d);
 UH_TDEF_STRUCT(sprite);
+UH_TDEF_STRUCT(glyph);
+UH_TDEF_STRUCT(font);
+UH_TDEF_STRUCT(fontstyle);
 UH_TDEF_STRUCT(render2d);
 
 UH_TDEF_STRUCT(file);

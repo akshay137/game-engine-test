@@ -9,6 +9,8 @@ enum vattrib_e
 	UHVATTRIB_VEC2 = 1,
 	UHVATTRIB_VEC3 = 2,
 	UHVATTRIB_VEC4 = 3,
+
+	UHVATTRIB_BVEC4_NORM = 4, // 4 single byte normalized values
 };
 typedef enum vattrib_e vattrib_t;
 
