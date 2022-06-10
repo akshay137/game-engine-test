@@ -31,4 +31,7 @@ API_INLINE size_t uh_readFileFull(const char* filename, void* buffer)
 	return read;
 }
 
+API int32_t uh_readFileI32(file_t* file);
+API uint32_t uh_readFileU32(file_t* file);
+
 #endif

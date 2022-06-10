@@ -1,4 +1,5 @@
 #include "render2d.h"
+#include "texture.h"
 #include "../core/logger.h"
 #include "../ds/str.h"
 #include "../res/file.h"
@@ -125,38 +126,56 @@ void render2d_end(render2d_t* renderer)
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
 }
 
-void render2d_drawSprite(render2d_t* renderer, sprite_t* sprite, vec2_t pos)
-{
-	struct rquad_s quad = rquad_default();
+// void render2d_drawSprite(render2d_t* renderer, sprite_t* sprite, vec2_t pos)
+// {
+// 	struct rquad_s quad = rquad_default();
+// 	const vec4_t clip = sprite->clip;
+// 	const ivec2_t tsize = ivec2(sprite->_tex->width, sprite->_tex->height);
 
-	quad.top_left.pos = pos;
+// 	quad.top_left.pos = pos;
+// 	quad.top_left.uv = vec2(clip.x / tsize.x, clip.y / tsize.y);
 
-	quad.top_right.pos = vec2(pos.x + sprite->clip.z, pos.y);
+// 	quad.top_right.pos = vec2(pos.x + sprite->clip.z, pos.y);
+// 	quad.top_right.uv = vec2((clip.x + clip.z) / tsize.x, clip.y / tsize.y);
 
-	quad.bottom_left.pos = vec2(pos.x, pos.y + sprite->clip.w);
+// 	quad.bottom_left.pos = vec2(pos.x, pos.y + sprite->clip.w);
+// 	quad.bottom_left.uv = vec2(clip.x / tsize.x, (clip.y + clip.w) / tsize.y);
 
-	quad.bottom_right.pos = vec2(pos.x + sprite->clip.z, pos.y + sprite->clip.w);
+// 	quad.bottom_right.pos = vec2(pos.x + sprite->clip.z, pos.y + sprite->clip.w);
+// 	quad.bottom_right.uv = vec2(
+// 		(clip.x + clip.z) / tsize.x,
+// 		(clip.y + clip.w) / tsize.y
+// 	);
 
-	size_t index = renderer->current_sprites;
-	renderer->_quads[index] = quad;
-	renderer->current_sprites += 1;
-}
+// 	size_t index = renderer->current_sprites;
+// 	renderer->_quads[index] = quad;
+// 	renderer->current_sprites += 1;
+// }
 
 void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
 	vec2_t pos, float scale, float angle
 )
 {
 	struct rquad_s quad = rquad_default();
+	const ivec2_t tsize = ivec2(sprite->_tex->width, sprite->_tex->height);
+	const vec4_t clip = sprite->clip;
 
 	quad.top_left.pos = pos;
+	quad.top_left.uv = vec2(clip.x / tsize.x, (clip.y + clip.w) / tsize.y);
 
 	quad.top_right.pos = vec2(pos.x + sprite->clip.z * scale, pos.y);
+	quad.top_right.uv = vec2(
+		(clip.x + clip.z) / tsize.x,
+		(clip.y + clip.w) / tsize.y
+	);
 
 	quad.bottom_left.pos = vec2(pos.x, pos.y + sprite->clip.w * scale);
+	quad.bottom_left.uv = vec2(clip.x / tsize.x, clip.y / tsize.y);
 
 	quad.bottom_right.pos = vec2(pos.x + sprite->clip.z * scale,
 		pos.y + sprite->clip.w * scale
 	);
+	quad.bottom_right.uv = vec2((clip.x + clip.z) / tsize.x, clip.y / tsize.y);
 
 	size_t index = renderer->current_sprites;
 	renderer->_quads[index] = quad;

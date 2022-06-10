@@ -1,0 +1,712 @@
+{
+	"image": "atlas.png",
+	"data": [
+		{
+			"codepoint": 36,
+			"pos": [0, 0],
+			"size": [32, 50],
+			"bearing": [-6, 37],
+			"advance": 1280
+		},
+		{
+			"codepoint": 81,
+			"pos": [34, 0],
+			"size": [35, 45],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 47,
+			"pos": [0, 52],
+			"size": [33, 47],
+			"bearing": [-7, 35],
+			"advance": 1280
+		},
+		{
+			"codepoint": 92,
+			"pos": [35, 52],
+			"size": [33, 47],
+			"bearing": [-7, 35],
+			"advance": 1280
+		},
+		{
+			"codepoint": 64,
+			"pos": [71, 0],
+			"size": [36, 43],
+			"bearing": [-8, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 37,
+			"pos": [109, 0],
+			"size": [36, 41],
+			"bearing": [-8, 32],
+			"advance": 1280
+		},
+		{
+			"codepoint": 0,
+			"pos": [70, 52],
+			"size": [34, 42],
+			"bearing": [-7, 32],
+			"advance": 1280
+		},
+		{
+			"codepoint": 103,
+			"pos": [0, 101],
+			"size": [33, 43],
+			"bearing": [-6, 28],
+			"advance": 1280
+		},
+		{
+			"codepoint": 65,
+			"pos": [147, 0],
+			"size": [36, 39],
+			"bearing": [-8, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 87,
+			"pos": [185, 0],
+			"size": [36, 39],
+			"bearing": [-8, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 125,
+			"pos": [0, 146],
+			"size": [28, 49],
+			"bearing": [-4, 36],
+			"advance": 1280
+		},
+		{
+			"codepoint": 106,
+			"pos": [30, 146],
+			"size": [28, 49],
+			"bearing": [-5, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 123,
+			"pos": [60, 146],
+			"size": [28, 49],
+			"bearing": [-5, 36],
+			"advance": 1280
+		},
+		{
+			"codepoint": 86,
+			"pos": [223, 0],
+			"size": [35, 39],
+			"bearing": [-8, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 89,
+			"pos": [260, 0],
+			"size": [35, 39],
+			"bearing": [-8, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 121,
+			"pos": [106, 52],
+			"size": [32, 42],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 107,
+			"pos": [140, 52],
+			"size": [32, 42],
+			"bearing": [-5, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 79,
+			"pos": [297, 0],
+			"size": [34, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 88,
+			"pos": [333, 0],
+			"size": [34, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 84,
+			"pos": [369, 0],
+			"size": [34, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 77,
+			"pos": [405, 0],
+			"size": [34, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 38,
+			"pos": [441, 0],
+			"size": [34, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 41,
+			"pos": [90, 146],
+			"size": [27, 49],
+			"bearing": [-3, 36],
+			"advance": 1280
+		},
+		{
+			"codepoint": 108,
+			"pos": [174, 52],
+			"size": [32, 41],
+			"bearing": [-7, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 102,
+			"pos": [208, 52],
+			"size": [32, 41],
+			"bearing": [-5, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 98,
+			"pos": [35, 101],
+			"size": [31, 42],
+			"bearing": [-5, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 100,
+			"pos": [68, 101],
+			"size": [31, 42],
+			"bearing": [-6, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 169,
+			"pos": [242, 52],
+			"size": [35, 37],
+			"bearing": [-8, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 71,
+			"pos": [477, 0],
+			"size": [33, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 68,
+			"pos": [101, 101],
+			"size": [33, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 67,
+			"pos": [136, 101],
+			"size": [33, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 83,
+			"pos": [171, 101],
+			"size": [33, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 35,
+			"pos": [206, 101],
+			"size": [33, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 75,
+			"pos": [241, 101],
+			"size": [33, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 52,
+			"pos": [119, 146],
+			"size": [32, 40],
+			"bearing": [-6, 32],
+			"advance": 1280
+		},
+		{
+			"codepoint": 40,
+			"pos": [0, 197],
+			"size": [26, 49],
+			"bearing": [-4, 36],
+			"advance": 1280
+		},
+		{
+			"codepoint": 57,
+			"pos": [28, 197],
+			"size": [31, 41],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 113,
+			"pos": [61, 197],
+			"size": [31, 41],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 112,
+			"pos": [94, 197],
+			"size": [31, 41],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 105,
+			"pos": [0, 248],
+			"size": [30, 42],
+			"bearing": [-5, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 9745,
+			"pos": [279, 52],
+			"size": [34, 37],
+			"bearing": [-7, 29],
+			"advance": 1280
+		},
+		{
+			"codepoint": 85,
+			"pos": [276, 101],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 80,
+			"pos": [310, 101],
+			"size": [32, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 82,
+			"pos": [344, 101],
+			"size": [32, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 90,
+			"pos": [378, 101],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 116,
+			"pos": [412, 101],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 56,
+			"pos": [446, 101],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 54,
+			"pos": [153, 146],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 51,
+			"pos": [187, 146],
+			"size": [32, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 50,
+			"pos": [221, 146],
+			"size": [32, 39],
+			"bearing": [-7, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 48,
+			"pos": [255, 146],
+			"size": [32, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 104,
+			"pos": [127, 197],
+			"size": [30, 41],
+			"bearing": [-5, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 119,
+			"pos": [315, 52],
+			"size": [36, 34],
+			"bearing": [-8, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 63,
+			"pos": [289, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 78,
+			"pos": [322, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 74,
+			"pos": [355, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 72,
+			"pos": [388, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 66,
+			"pos": [421, 146],
+			"size": [31, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 53,
+			"pos": [454, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 55,
+			"pos": [159, 197],
+			"size": [30, 40],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 93,
+			"pos": [0, 292],
+			"size": [25, 47],
+			"bearing": [-3, 35],
+			"advance": 1280
+		},
+		{
+			"codepoint": 91,
+			"pos": [27, 292],
+			"size": [25, 47],
+			"bearing": [-2, 35],
+			"advance": 1280
+		},
+		{
+			"codepoint": 73,
+			"pos": [480, 101],
+			"size": [30, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 70,
+			"pos": [191, 197],
+			"size": [30, 39],
+			"bearing": [-4, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 69,
+			"pos": [223, 197],
+			"size": [30, 39],
+			"bearing": [-4, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 76,
+			"pos": [255, 197],
+			"size": [30, 39],
+			"bearing": [-4, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 49,
+			"pos": [287, 197],
+			"size": [30, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 9746,
+			"pos": [353, 52],
+			"size": [34, 34],
+			"bearing": [-7, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 9744,
+			"pos": [389, 52],
+			"size": [34, 34],
+			"bearing": [-7, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 109,
+			"pos": [425, 52],
+			"size": [34, 34],
+			"bearing": [-7, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 174,
+			"pos": [461, 52],
+			"size": [34, 33],
+			"bearing": [-7, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 42,
+			"pos": [319, 197],
+			"size": [34, 33],
+			"bearing": [-7, 27],
+			"advance": 1280
+		},
+		{
+			"codepoint": 120,
+			"pos": [32, 248],
+			"size": [33, 34],
+			"bearing": [-7, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 118,
+			"pos": [67, 248],
+			"size": [33, 34],
+			"bearing": [-7, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 124,
+			"pos": [0, 341],
+			"size": [20, 56],
+			"bearing": [0, 38],
+			"advance": 1280
+		},
+		{
+			"codepoint": 97,
+			"pos": [54, 292],
+			"size": [32, 35],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 111,
+			"pos": [102, 248],
+			"size": [32, 34],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 101,
+			"pos": [136, 248],
+			"size": [32, 34],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 60,
+			"pos": [88, 292],
+			"size": [31, 35],
+			"bearing": [-6, 28],
+			"advance": 1280
+		},
+		{
+			"codepoint": 62,
+			"pos": [121, 292],
+			"size": [31, 35],
+			"bearing": [-6, 28],
+			"advance": 1280
+		},
+		{
+			"codepoint": 114,
+			"pos": [170, 248],
+			"size": [31, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 115,
+			"pos": [203, 248],
+			"size": [31, 34],
+			"bearing": [-6, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 43,
+			"pos": [355, 197],
+			"size": [32, 32],
+			"bearing": [-6, 27],
+			"advance": 1280
+		},
+		{
+			"codepoint": 122,
+			"pos": [236, 248],
+			"size": [30, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 99,
+			"pos": [268, 248],
+			"size": [30, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 117,
+			"pos": [300, 248],
+			"size": [30, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 110,
+			"pos": [332, 248],
+			"size": [30, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 59,
+			"pos": [487, 146],
+			"size": [23, 39],
+			"bearing": [-2, 25],
+			"advance": 1280
+		},
+		{
+			"codepoint": 94,
+			"pos": [389, 197],
+			"size": [32, 27],
+			"bearing": [-6, 37],
+			"advance": 1280
+		},
+		{
+			"codepoint": 33,
+			"pos": [22, 341],
+			"size": [22, 39],
+			"bearing": [-1, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 61,
+			"pos": [423, 197],
+			"size": [30, 25],
+			"bearing": [-5, 23],
+			"advance": 1280
+		},
+		{
+			"codepoint": 126,
+			"pos": [455, 197],
+			"size": [34, 22],
+			"bearing": [-7, 22],
+			"advance": 1280
+		},
+		{
+			"codepoint": 176,
+			"pos": [364, 248],
+			"size": [27, 27],
+			"bearing": [-6, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 58,
+			"pos": [154, 292],
+			"size": [22, 33],
+			"bearing": [-1, 25],
+			"advance": 1280
+		},
+		{
+			"codepoint": 34,
+			"pos": [393, 248],
+			"size": [26, 25],
+			"bearing": [-3, 33],
+			"advance": 1280
+		},
+		{
+			"codepoint": 95,
+			"pos": [421, 248],
+			"size": [34, 19],
+			"bearing": [-7, 5],
+			"advance": 1280
+		},
+		{
+			"codepoint": 44,
+			"pos": [178, 292],
+			"size": [23, 28],
+			"bearing": [-2, 14],
+			"advance": 1280
+		},
+		{
+			"codepoint": 45,
+			"pos": [457, 248],
+			"size": [30, 19],
+			"bearing": [-5, 20],
+			"advance": 1280
+		},
+		{
+			"codepoint": 96,
+			"pos": [203, 292],
+			"size": [24, 22],
+			"bearing": [-2, 34],
+			"advance": 1280
+		},
+		{
+			"codepoint": 46,
+			"pos": [229, 292],
+			"size": [23, 22],
+			"bearing": [-2, 14],
+			"advance": 1280
+		},
+		{
+			"codepoint": 39,
+			"pos": [46, 341],
+			"size": [20, 25],
+			"bearing": [0, 33],
+			"advance": 1280
+		}
+	]
+}

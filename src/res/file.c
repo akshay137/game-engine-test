@@ -54,3 +54,16 @@ size_t uh_readFile(file_t* file, void* buffer, uint32_t size)
 	size_t read = SDL_RWread(file->_rw, buffer, 1, size);
 	return read;
 }
+
+int32_t uh_readFileI32(file_t* file)
+{
+	uint32_t temp = SDL_ReadLE32(file->_rw);
+	int32_t* i = (int32_t*)&temp;
+	return *i;
+}
+
+uint32_t uh_readFileU32(file_t* file)
+{
+	uint32_t temp = SDL_ReadLE32(file->_rw);
+	return temp;
+}

@@ -4,6 +4,7 @@
 #include "../core/core.h"
 
 UH_TDEF_UNION(vec2);
+UH_TDEF_UNION(ivec2);
 UH_TDEF_UNION(vec3);
 UH_TDEF_UNION(vec4);
 
@@ -15,6 +16,12 @@ union vec2_u
 {
 	float arr[2];
 	struct { float x, y; };
+};
+
+union ivec2_u
+{
+	int32_t arr[2];
+	struct { int32_t x, y; };
 };
 
 union vec3_u
@@ -68,6 +75,12 @@ union mat4_u
 API_INLINE vec2_t vec2(float x, float y)
 {
 	vec2_t res = { .x = x, .y = y };
+	return res;
+}
+
+API_INLINE ivec2_t ivec2(int32_t x, int32_t y)
+{
+	ivec2_t res = { .x = x, .y = y };
 	return res;
 }
 

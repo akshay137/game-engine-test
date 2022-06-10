@@ -41,12 +41,16 @@ API void render2d_delete(render2d_t* renderer);
 API void render2d_begin(render2d_t* renderer);
 API void render2d_end(render2d_t* renderer);
 
-API void render2d_drawSprite(render2d_t* renderer, sprite_t* sprite, vec2_t pos);
-API void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
-	vec2_t pos, float scale, float angle
-);
 API void render2d_drawSpriteMatrix(render2d_t* renderer, sprite_t* sprite,
 	mat3_t transform
 );
+API void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
+	vec2_t pos, float scale, float angle
+);
+API_INLINE void render2d_drawSprite(render2d_t* renderer, sprite_t* sprite, vec2_t pos)
+{
+	render2d_drawSpriteEx(renderer, sprite, pos, 1.0f, 0.0f);
+}
+
 
 #endif
