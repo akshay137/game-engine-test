@@ -168,11 +168,26 @@ void render2d_begin(render2d_t* renderer)
 {
 	assert(renderer);
 
-	renderer->current_sprites = 0;
+	render2d_beginSprite(renderer);
 	render2d_beginText(renderer);
 }
 
 void render2d_end(render2d_t* renderer)
+{
+	assert(renderer);
+
+	render2d_endSprite(renderer);
+	render2d_endText(renderer);
+}
+
+void render2d_beginSprite(render2d_t* renderer)
+{
+	assert(renderer);
+
+	renderer->current_sprites = 0;
+}
+
+void render2d_endSprite(render2d_t* renderer)
 {
 	assert(renderer);
 
@@ -187,8 +202,6 @@ void render2d_end(render2d_t* renderer)
 
 	uint32_t count = renderer->current_sprites * 6;
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
-
-	render2d_endText(renderer);
 }
 
 void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
@@ -219,6 +232,9 @@ void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
 	size_t index = renderer->current_sprites;
 	renderer->_quads[index] = quad;
 	renderer->current_sprites += 1;
+
+	if (renderer->current_sprites > renderer->MAX_SPRITES)
+		render2d_end(renderer);
 }
 
 void render2d_drawSpriteMatrix(render2d_t* renderer, sprite_t* sprite,
@@ -289,6 +305,9 @@ void render2d_drawGlyph(render2d_t* renderer, fontstyle_t* style,
 	size_t index = renderer->current_texquads;
 	renderer->_textquads[index] = quad;
 	renderer->current_texquads += 1;
+
+	if (renderer->current_texquads > renderer->MAX_SPRITES)
+		render2d_endText(renderer);
 }
 
 size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
@@ -298,7 +317,7 @@ size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
 	char buffer[2048] = { 0 };
 	va_list args;
 	va_start(args, fmt);
-	size_t count = vsprintf(buffer, fmt.ptr, args);
+	size_t count = vsnprintf(buffer, 2048, fmt.ptr, args);
 	va_end(args);
 
 	font_t* fnt = &(renderer->_font);

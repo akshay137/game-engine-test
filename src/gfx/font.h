@@ -48,6 +48,8 @@ UH_TDEF_STRUCT(vertexglyph);
 
 API void font_delete(font_t* fnt);
 
+// returns glyph for codepoint if it exist
+// otherwise returns glyph for `undefined`
 API glyph_t font_findGlyph(font_t* fnt, uint32_t codepoint);
 
 #endif
