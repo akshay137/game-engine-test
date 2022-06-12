@@ -19,7 +19,7 @@ namespace uhero::gfx
 			data.channel_format, data.data_type,
 			pixels
 		);
-		
+
 		this->set_swizzle(data.swizzle);
 
 		this->width = w;
@@ -39,7 +39,7 @@ namespace uhero::gfx
 		gl_id = 0;
 	}
 
-	void Texture::bind_slot(u32 index)
+	void Texture::bind_slot(u32 index) const
 	{
 		assert(gl_id);
 

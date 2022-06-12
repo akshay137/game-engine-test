@@ -19,7 +19,7 @@ out VS_OUT
 
 void main()
 {
-	const vec4 pos4 = vec4(position * 64 + vec2(100, 100), 0.0f, 1.0f);
+	const vec4 pos4 = vec4(position, 0.0f, 1.0f);
 	vec4 pos = orthographic * pos4;
 	gl_Position = pos;
 

@@ -75,7 +75,7 @@ namespace uhero::gfx
 
 		void clear();
 
-		void bind_slot(u32 index);
+		void bind_slot(u32 index) const;
 
 		void set_filter(TextureFilter filter);
 		void set_swizzle(const Swizzle& swizzle);

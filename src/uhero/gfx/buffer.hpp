@@ -56,6 +56,11 @@ namespace uhero::gfx
 			buffer.clear();
 		}
 
+		operator Buffer&()
+		{
+			return buffer;
+		}
+
 		const Buffer& get_buffer() const
 		{
 			return buffer;
