@@ -67,6 +67,7 @@ namespace uhero::gfx
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
 			UH_ERROR("%s", message);
+			assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{

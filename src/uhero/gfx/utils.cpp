@@ -84,6 +84,8 @@ namespace uhero::gfx
 
 	u32 Utils::load_shader_from_file(const char* file, u32 gl_shader_type)
 	{
+		UH_INFO("Loading shader file: %s\n", file);
+
 		u32 shader = glCreateShader(gl_shader_type);
 		if (0 == shader)
 		{

@@ -1,4 +1,5 @@
 #include "pso.hpp"
+#include "buffer.hpp"
 #include "utils.hpp"
 #include "../logger.hpp"
 
@@ -23,7 +24,7 @@ namespace uhero::gfx
 	void PSO::clear()
 	{
 		UH_VERB("Deleting PSO [V: %u | P: %u]\n", vao, program);
-		
+
 		glDeleteVertexArrays(1, &vao);
 		glDeleteProgram(program);
 
@@ -35,5 +36,17 @@ namespace uhero::gfx
 	{
 		glUseProgram(program);
 		glBindVertexArray(vao);
+	}
+
+	void PSO::set_vertex_buffer(const Buffer& vbuffer, u32 index,
+		u32 offset, u32 stride
+	)
+	{
+		glVertexArrayVertexBuffer(vao, index, vbuffer.gl_id, offset, stride);
+	}
+
+	void PSO::set_index_buffer(const Buffer& ibuffer)
+	{
+		glVertexArrayElementBuffer(vao, ibuffer.gl_id);
 	}
 }

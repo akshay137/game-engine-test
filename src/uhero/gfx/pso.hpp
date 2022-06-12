@@ -5,6 +5,8 @@
 
 namespace uhero::gfx
 {
+	struct Buffer;
+
 	constexpr u32 MAX_VERTEX_ATTRIBUTES = 16;
 	
 	enum VertexAttribute : u16
@@ -43,6 +45,11 @@ namespace uhero::gfx
 		void clear();
 
 		void make_current();
+
+		void set_vertex_buffer(const Buffer& vbuffer, u32 index,
+			u32 offset, u32 stride
+		);
+		void set_index_buffer(const Buffer& ibuffer);
 	};
 }
 
