@@ -49,6 +49,8 @@ namespace uhero
 
 	void Context::shutdown()
 	{
+		Config::write_config(config, UHERO_CONFIG_FILE);
+
 		main_window.close();
 
 		// clear dependencies

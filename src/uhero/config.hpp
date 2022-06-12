@@ -20,6 +20,7 @@ namespace uhero
 		// loads config from file,
 		// values not present in the config file will be set to default
 		static Config read_config(const char* config_file);
+		static Result write_config(const Config& config, const char* filename);
 	};
 }
 

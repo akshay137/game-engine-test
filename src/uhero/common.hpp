@@ -23,6 +23,9 @@ namespace uhero
 	using f32 = float;
 	using f64 = double;
 
+	using isize = int64_t;
+	using usize = uint64_t;
+
 	enum Result : i32
 	{
 		Success = 0,

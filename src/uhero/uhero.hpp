@@ -7,7 +7,7 @@
 
 namespace uhero
 {
-	constexpr const char* const UHERO_CONFIG_FILE = "uhero.conf";
+	constexpr const char* const UHERO_CONFIG_FILE = "uhero_config.toml";
 
 	// uhero context
 	// optional, this is here just to provide convinience?
