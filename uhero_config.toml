@@ -1,4 +1,6 @@
 [window]
 	display = 0
-	width = 720
+	width = 1280
 	height = 720
+[gfx]
+	gl_debug = true

@@ -4,6 +4,8 @@
 #include "common.hpp"
 #include "config.hpp"
 #include "window.hpp"
+#include "gfx/gfx.hpp"
+#include "level.hpp"
 
 namespace uhero
 {
@@ -16,14 +18,27 @@ namespace uhero
 	{
 		Config config;
 		Window main_window;
+		gfx::Context gfx;
+
+		Level* current_level;
+
+		float time;
+		u64 ticks;
+		bool should_exit;
 
 		Result parse_cmd(i32 argc, char** args);
 
-		// clears all systems
 		void shutdown();
 
 		// check if everything is initialized ok
 		bool is_ok() const;
+
+		Result set_current_level(Level* level);
+
+		bool exit_requested() const { return should_exit; }
+		void request_exit() { should_exit = true; }
+
+		float tick();
 
 		static Context create_context(i32 argc, char** args);
 	};

@@ -22,6 +22,9 @@ namespace uhero
 		config.display_index = twindow["display"].value_or(0);
 		config.window_width = twindow["width"].value_or(1280);
 		config.window_height = twindow["height"].value_or(720);
+		
+		const auto& tgfx = tconf["gfx"];
+		config.gl_debug = tgfx["gl_debug"].value_or(true);
 
 		return config;
 	}
@@ -38,6 +41,9 @@ namespace uhero
 		file.write_format("\tdisplay = %d\n", config.display_index);
 		file.write_format("\twidth = %d\n", config.window_width);
 		file.write_format("\theight = %d\n", config.window_height);
+
+		file.write_format("[gfx]\n");
+		file.write_format("\tgl_debug = %s\n", config.gl_debug ? "true" : "false");
 
 		return Result::Success;
 	}

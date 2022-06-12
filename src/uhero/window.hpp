@@ -28,6 +28,8 @@ namespace uhero
 		);
 		void close();
 
+		void swap_buffers();
+
 		static Result setup_opengl_properties();
 	};
 }

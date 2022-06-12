@@ -58,6 +58,20 @@ namespace uhero
 
 		i32 read_le32();
 		u32 read_leu32();
+
+		static usize read_full(const char* filename,
+			void* buffer, usize buffer_size
+		)
+		{
+			File _f {};
+			_f.open(filename, FileMode::FRead);
+			usize to_read = buffer_size;
+			if (to_read > _f.size)
+				to_read = _f.size;
+			
+			usize br = _f.read(buffer, to_read);
+			return br;
+		}
 	};
 }
 

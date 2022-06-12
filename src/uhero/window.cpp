@@ -42,6 +42,13 @@ namespace uhero
 		handle = nullptr;
 	}
 
+	void Window::swap_buffers()
+	{
+		assert(handle);
+
+		SDL_GL_SwapWindow(handle);
+	}
+
 	Result Window::setup_opengl_properties()
 	{
 		i32 res = 0;

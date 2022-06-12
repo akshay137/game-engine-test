@@ -15,6 +15,8 @@ namespace uhero
 		i32 window_width = 1280;
 		i32 window_height = 720;
 
+		bool gl_debug = true;
+
 		Config() = default;
 
 		// loads config from file,

@@ -13,6 +13,7 @@ workspace "uhero"
 		
 		includedirs { "ext/" }
 		files { "ext/**.cpp" }
+		files { "ext/**.c" }
 
 		libdirs { "libs/" }
 

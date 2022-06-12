@@ -25,6 +25,8 @@ namespace uhero
 		this->size = SDL_RWsize(handle);
 		SDL_RWseek(handle, 0, RW_SEEK_SET);
 
+		UH_VERB("Opened File %s[%lld] @%p\n", filename, size, handle);
+
 		return Result::Success;
 	}
 
