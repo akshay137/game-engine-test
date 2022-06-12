@@ -41,12 +41,16 @@ namespace uhero::gfx
 			glDebugMessageCallback(uh_gldebug_callback, nullptr);
 		}
 
+		UH_VERB("Created OpenGL context: %p\n", gl_context);
+
 		return Result::Success;
 	}
 
 	void Context::clear()
 	{
 		assert(gl_context);
+
+		UH_VERB("Destroying OpenGL context: %p\n", gl_context);
 
 		SDL_GL_DeleteContext(gl_context);
 		gl_context = nullptr;

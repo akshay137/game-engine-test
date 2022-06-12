@@ -13,7 +13,7 @@ layout (location = 0) out vec4 color;
 
 void main()
 {
-	// vec4 tcolor = texture(diffuse, vs.uv);
-	vec4 tcolor = vec4(vs.color, 1.0f);
+	vec4 tcolor = texture(diffuse, vs.uv);
+	// vec4 tcolor = vec4(vs.color, 1.0f);
 	color = tcolor;
 }

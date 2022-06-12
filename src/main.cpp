@@ -2,6 +2,7 @@
 #include "uhero/logger.hpp"
 #include "uhero/gfx/pso.hpp"
 #include "uhero/gfx/buffer.hpp"
+#include "uhero/res/texture.hpp"
 
 #include <glad/glad.h>
 
@@ -43,15 +44,12 @@ struct RenderState
 using namespace uhero;
 struct Game : uhero::Level
 {
-	// data_begin
-	// Texture logo;
-	// vec2 position;
-	// data_end
 	gfx::PSO quad;
 	gfx::TBuffer<Vertex2d> vbuffer;
 	gfx::TBuffer<u16> ibuffer;
 	gfx::TBuffer<RenderState> rsbuffer;
 	RenderState rstate;
+	gfx::Texture logo;
 
 	uhero::Result load(uhero::Context& ctx) override
 	{
@@ -63,10 +61,10 @@ struct Game : uhero::Level
 		auto res = quad.create(layout, "assets/quad.vert", "assets/quad.frag");
 
 		Vertex2d vertices[] = {
-			Vertex2d(glm::vec2(-0.5f, 0.5f), glm::vec3(1, 0, 0)),
-			Vertex2d(glm::vec2(0.5f, 0.5f), glm::vec3(0, 1, 0)),
-			Vertex2d(glm::vec2(0.5f, -0.5f), glm::vec3(0, 0, 1)),
-			Vertex2d(glm::vec2(-0.5f, -0.5f), glm::vec3(1, 0, 1))
+			Vertex2d(glm::vec2(-0.5f, 0.5f), glm::vec2(0, 0), glm::vec3(1, 0, 0)),
+			Vertex2d(glm::vec2(0.5f, 0.5f), glm::vec2(1, 0), glm::vec3(0, 1, 0)),
+			Vertex2d(glm::vec2(0.5f, -0.5f), glm::vec2(1, 1), glm::vec3(0, 0, 1)),
+			Vertex2d(glm::vec2(-0.5f, -0.5f), glm::vec2(0, 1), glm::vec3(1, 0, 1))
 		};
 		vbuffer.create(gfx::BufferType::Static, 4, vertices);
 
@@ -82,12 +80,15 @@ struct Game : uhero::Level
 		rstate.viewport = glm::vec4(0.0f, 0.0f, w, h);
 		rsbuffer.create(gfx::BufferType::Dynaminc, 1, &rstate);
 
+		logo = res::load_texture("assets/logo.png");
+
 		UH_INFO("Loaded Game\n");
 		return uhero::Result::Success;
 	}
 
 	void clear(uhero::Context& ctx) override
 	{
+		logo.clear();
 		ibuffer.clear();
 		vbuffer.clear();
 		rsbuffer.clear();
@@ -109,12 +110,13 @@ struct Game : uhero::Level
 	void render(uhero::Context& ctx) override
 	{
 		auto& gfx = ctx.gfx;
+
+		logo.bind_slot(0);
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 		quad.make_current();
 		quad.set_vertex_buffer(vbuffer.get_buffer(), 0, 0, vbuffer.stride());
 		quad.set_index_buffer(ibuffer.get_buffer());
 
-		// glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, ibuffer.count, GL_UNSIGNED_SHORT, 0);
 	}
 };
