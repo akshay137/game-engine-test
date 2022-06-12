@@ -1,31 +1,33 @@
-workspace "pong"
+workspace "uhero"
 	configurations { "debug", "release" }
 
 	project "pong"
 		kind "ConsoleApp"
-		language "C"
-		cdialect "C11"
+		language "C++"
+		cppdialect "C++17"
 		architecture "x86_64"
 
 		targetdir "bin/%{cfg.buildcfg}"
 
-		files { "src/**.h", "src/**.c" }
+		files { "src/**.hpp", "src/**.cpp" }
 		
 		includedirs { "ext/" }
-		files { "ext/**.c" }
+		files { "ext/**.cpp" }
 
-		libdirs { "ext/winlibs" }
-		links {  }
+		libdirs { "libs/" }
+
+		-- glm defines
+		defines { "GLM_FORCE_RADIANS" }
 
 		warnings "Extra"
 		vectorextensions "sse3"
 
 		filter { "system:linux" }
 			defines { "PLT_LINUX" }
-			links { "m", "dl", "SDL2", "GL" }
+			links { "m", "SDL2", "dl", "GL" }
 		filter { "system:Windows" }
 			defines { "PLT_WINDOWS" }
-			links { "SDL2main", "SDL2", "opengl32" }
+			links { "SDL2main", "SDL", "opengl32" }
 		
 		filter { "configurations:debug" }
 			defines { "DEBUG", "PROFILE" }
