@@ -7,6 +7,8 @@ layout (location = 3) in vec4 outline_color;
 
 layout (location = 4) in float width;
 layout (location = 4, component = 1) in float edge;
+layout (location = 4, component = 2) in float border_width;
+layout (location = 4, component = 3) in float border_edge;
 
 layout (std140, binding = 0) uniform rstate
 {
@@ -19,8 +21,8 @@ out VS_OUT
 	vec2 uv;
 	vec4 text_color;
 	vec4 outline_color;
-	float width;
-	float edge;
+	vec2 widths;
+	vec2 edges;
 } vs;
 
 void main()
@@ -31,6 +33,6 @@ void main()
 	vs.uv = uv;
 	vs.text_color = text_color;
 	vs.outline_color = outline_color;
-	vs.width = width;
-	vs.edge = edge;
+	vs.widths = vec2(width, border_width);
+	vs.edges = vec2(edge, border_edge);
 }

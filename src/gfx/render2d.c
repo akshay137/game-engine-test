@@ -37,13 +37,36 @@ API_INLINE struct rquad_s rquad_default(void)
 
 API_INLINE struct tquad_s tquad_default(fontstyle_t* style, uint32_t lineheight)
 {
+	/*
+		lower font size -> higher edge
+		bigger font size -> lower edge
+
+		lh: 38, l: 6
+	*/
 	float width = 0.5f;
 	float edge = 0.1f;
+	// if (style->font_size < 12)
+	// {
+	// 	width = 0.4;
+	// 	edge = 0.4;
+	// }
+	// else if (style->font_size < 24)
+	// {
+	// 	width = 0.55f;
+	// 	edge = 0.08f;
+	// }
+	// else if (style->font_size > 32)
+	// {
+	// 	width = 0.5f;
+	// 	edge = 0.05f;
+	// }
 	vertexglyph_t v = {
 		.text_color = color32Swap(style->text_color),
 		.outline_color = color32Swap(style->outline_color),
 		.width = width,
-		.edge = edge
+		.edge = edge,
+		.border_width = width + style->outline_size,
+		.border_edge = edge,
 	};
 	struct tquad_s quad = {
 		.top_left = v,
@@ -95,7 +118,7 @@ result_t render2d_new(render2d_t* out_renderer,
 		(vattrib_t[]) {
 			UHVATTRIB_VEC2, UHVATTRIB_VEC2,
 			UHVATTRIB_BVEC4_NORM, UHVATTRIB_BVEC4_NORM,
-			UHVATTRIB_VEC2,
+			UHVATTRIB_VEC4,
 			UHVATTRIB_NONE
 		},
 		UHGEOM_TRIANGLES, UHFILLMODE_FILL, UHCULLMODE_CULL_BACK
@@ -106,7 +129,7 @@ result_t render2d_new(render2d_t* out_renderer,
 		return res;
 	}
 	font_t font = {};
-	res = font_loadAtlas(&font, "assets/font.atlas");
+	res = font_loadAtlas(&font, "assets/firacode.atlas");
 	if (UH_SUCCESS != res)
 	{
 		ERROR("Could not load font atlas: %d\n", res);
@@ -164,27 +187,12 @@ void render2d_delete(render2d_t* renderer)
 	font_delete(&(renderer->_font));
 }
 
-void render2d_begin(render2d_t* renderer)
+void render2d_beginSprite(render2d_t* renderer, texture_t* tex)
 {
 	assert(renderer);
+	assert(tex);
 
-	render2d_beginSprite(renderer);
-	render2d_beginText(renderer);
-}
-
-void render2d_end(render2d_t* renderer)
-{
-	assert(renderer);
-
-	render2d_endSprite(renderer);
-	render2d_endText(renderer);
-}
-
-void render2d_beginSprite(render2d_t* renderer)
-{
-	assert(renderer);
-
-	renderer->current_sprites = 0;
+	texture_bindSlot(tex, 0);
 }
 
 void render2d_endSprite(render2d_t* renderer)
@@ -202,6 +210,8 @@ void render2d_endSprite(render2d_t* renderer)
 
 	uint32_t count = renderer->current_sprites * 6;
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
+
+	renderer->current_sprites = 0;
 }
 
 void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
@@ -234,7 +244,7 @@ void render2d_drawSpriteEx(render2d_t* renderer, sprite_t* sprite,
 	renderer->current_sprites += 1;
 
 	if (renderer->current_sprites > renderer->MAX_SPRITES)
-		render2d_end(renderer);
+		render2d_endSprite(renderer);
 }
 
 void render2d_drawSpriteMatrix(render2d_t* renderer, sprite_t* sprite,
@@ -245,22 +255,22 @@ void render2d_drawSpriteMatrix(render2d_t* renderer, sprite_t* sprite,
 }
 
 
-void render2d_beginText(render2d_t* renderer)
+void render2d_beginText(render2d_t* renderer, font_t* font)
 {
 	assert(renderer);
-	renderer->current_texquads = 0;
+	assert(font);
+
+	texture_bindSlot(&(font->bitmap), 1);
 }
 
 void render2d_endText(render2d_t* renderer)
 {
 	assert(renderer);
 
-	font_t* fnt = &(renderer->_font);
 	pso_t* pso = &(renderer->_text_pso);
 
 	buffer_update(&(renderer->_textvertex_buffer), renderer->_textquads);
 
-	texture_bindSlot(&(fnt->bitmap), 1);
 	pso_makeCurrent(pso);
 	pso_setVertexBuffer(pso, 0,
 		&(renderer->_textvertex_buffer), 0, sizeof(vertexglyph_t)
@@ -269,6 +279,8 @@ void render2d_endText(render2d_t* renderer)
 
 	uint32_t count = renderer->current_texquads * 6;
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
+
+	renderer->current_texquads = 0;
 }
 
 void render2d_drawGlyph(render2d_t* renderer, fontstyle_t* style,
@@ -310,7 +322,7 @@ void render2d_drawGlyph(render2d_t* renderer, fontstyle_t* style,
 		render2d_endText(renderer);
 }
 
-size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
+vec2_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
 	str_t fmt, ...
 )
 {
@@ -321,13 +333,17 @@ size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
 	va_end(args);
 
 	font_t* fnt = &(renderer->_font);
+	if (style.font)
+		fnt = style.font;
+
+	render2d_beginText(renderer, fnt);
 
 	float scale = style.font_size / (float)fnt->line_height;
 	vec2_t pen = pos;
 	int32_t line = 1;
 	for (size_t i = 0; i < count; i++)
 	{
-		pen.y = pos.y - line * fnt->line_height * scale;
+		pen.y = pos.y - line * ((fnt->line_height * 0.8) * scale);
 
 		const char c = buffer[i];
 		if (' ' == c)
@@ -358,5 +374,7 @@ size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
 		}
 	}
 
-	return count;
+	render2d_endText(renderer);
+
+	return pen;
 }

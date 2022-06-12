@@ -38,8 +38,8 @@ result_t font_loadAtlas(font_t* out_fnt, const char* filename)
 		fnt.glyphs[i] = g;
 	}
 
-	fnt.space = fnt.glyphs[0].advance;
-	fnt.line_height = fnt.glyphs[0].size.y * 1.25f;
+	fnt.space = fnt.glyphs[0].advance * 0.7;
+	fnt.line_height = fnt.glyphs[0].size.y;
 
 	INFO("FontAtlas: %s\nGlyphCount: %d | BitmapSize: %d\n"
 		"LineHeight: %d | Space: %d\n",

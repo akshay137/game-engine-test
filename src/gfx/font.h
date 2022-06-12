@@ -33,6 +33,7 @@ struct fontstyle_s
 	float outline_size;
 	color32_t text_color;
 	color32_t outline_color;
+	font_t* font;
 };
 
 struct vertexglyph_s
@@ -43,6 +44,8 @@ struct vertexglyph_s
 	color32_t outline_color;
 	float width;
 	float edge;
+	float border_width;
+	float border_edge;
 };
 UH_TDEF_STRUCT(vertexglyph);
 

@@ -57,20 +57,17 @@ API result_t render2d_new(render2d_t* out_renderer,
 );
 API void render2d_delete(render2d_t* renderer);
 
-API void render2d_begin(render2d_t* renderer);
-API void render2d_end(render2d_t* renderer);
-
-API void render2d_beginText(render2d_t* renderer);
+API void render2d_beginText(render2d_t* renderer, font_t* font);
 API void render2d_endText(render2d_t* renderer);
 
 API void render2d_drawGlyph(render2d_t* renderer, fontstyle_t* style,
 	vec2_t pos, glyph_t* glyph
 );
-API size_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
+API vec2_t render2d_text(render2d_t* renderer, fontstyle_t style, vec2_t pos,
 	str_t fmt, ...
 );
 
-API void render2d_beginSprite(render2d_t* renderer);
+API void render2d_beginSprite(render2d_t* renderer, texture_t* tex);
 API void render2d_endSprite(render2d_t* renderer);
 
 API void render2d_drawSpriteMatrix(render2d_t* renderer, sprite_t* sprite,
@@ -83,6 +80,5 @@ API_INLINE void render2d_drawSprite(render2d_t* renderer, sprite_t* sprite, vec2
 {
 	render2d_drawSpriteEx(renderer, sprite, pos, 1.0f, 0.0f);
 }
-
 
 #endif

@@ -1,5 +1,5 @@
 {
-	"image": "atlas.png",
+	"image": "firacode.png",
 	"data": [
 		{
 			"codepoint": 36,
@@ -16,14 +16,14 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 47,
+			"codepoint": 92,
 			"pos": [0, 52],
 			"size": [33, 47],
 			"bearing": [-7, 35],
 			"advance": 1280
 		},
 		{
-			"codepoint": 92,
+			"codepoint": 47,
 			"pos": [35, 52],
 			"size": [33, 47],
 			"bearing": [-7, 35],
@@ -58,14 +58,14 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 65,
+			"codepoint": 87,
 			"pos": [147, 0],
 			"size": [36, 39],
 			"bearing": [-8, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 87,
+			"codepoint": 65,
 			"pos": [185, 0],
 			"size": [36, 39],
 			"bearing": [-8, 31],
@@ -93,14 +93,14 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 86,
+			"codepoint": 89,
 			"pos": [223, 0],
 			"size": [35, 39],
 			"bearing": [-8, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 89,
+			"codepoint": 86,
 			"pos": [260, 0],
 			"size": [35, 39],
 			"bearing": [-8, 31],
@@ -121,21 +121,21 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 79,
+			"codepoint": 84,
 			"pos": [297, 0],
 			"size": [34, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 88,
+			"codepoint": 38,
 			"pos": [333, 0],
 			"size": [34, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 84,
+			"codepoint": 79,
 			"pos": [369, 0],
 			"size": [34, 39],
 			"bearing": [-7, 31],
@@ -149,7 +149,7 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 38,
+			"codepoint": 88,
 			"pos": [441, 0],
 			"size": [34, 39],
 			"bearing": [-7, 31],
@@ -191,13 +191,6 @@
 			"advance": 1280
 		},
 		{
-			"codepoint": 169,
-			"pos": [242, 52],
-			"size": [35, 37],
-			"bearing": [-8, 33],
-			"advance": 1280
-		},
-		{
 			"codepoint": 71,
 			"pos": [477, 0],
 			"size": [33, 39],
@@ -205,505 +198,470 @@
 			"advance": 1280
 		},
 		{
+			"codepoint": 75,
+			"pos": [242, 52],
+			"size": [33, 39],
+			"bearing": [-5, 31],
+			"advance": 1280
+		},
+		{
 			"codepoint": 68,
-			"pos": [101, 101],
+			"pos": [277, 52],
 			"size": [33, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 67,
-			"pos": [136, 101],
+			"pos": [312, 52],
 			"size": [33, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 83,
-			"pos": [171, 101],
+			"pos": [347, 52],
 			"size": [33, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 35,
-			"pos": [206, 101],
+			"pos": [382, 52],
 			"size": [33, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 75,
-			"pos": [241, 101],
-			"size": [33, 39],
-			"bearing": [-5, 31],
-			"advance": 1280
-		},
-		{
 			"codepoint": 52,
-			"pos": [119, 146],
+			"pos": [101, 101],
 			"size": [32, 40],
 			"bearing": [-6, 32],
 			"advance": 1280
 		},
 		{
 			"codepoint": 40,
-			"pos": [0, 197],
+			"pos": [119, 146],
 			"size": [26, 49],
 			"bearing": [-4, 36],
 			"advance": 1280
 		},
 		{
 			"codepoint": 57,
-			"pos": [28, 197],
+			"pos": [147, 146],
 			"size": [31, 41],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 113,
-			"pos": [61, 197],
+			"pos": [180, 146],
 			"size": [31, 41],
 			"bearing": [-6, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 112,
-			"pos": [94, 197],
+			"pos": [213, 146],
 			"size": [31, 41],
 			"bearing": [-5, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 105,
-			"pos": [0, 248],
+			"pos": [0, 197],
 			"size": [30, 42],
 			"bearing": [-5, 34],
 			"advance": 1280
 		},
 		{
-			"codepoint": 9745,
-			"pos": [279, 52],
-			"size": [34, 37],
-			"bearing": [-7, 29],
+			"codepoint": 82,
+			"pos": [417, 52],
+			"size": [32, 39],
+			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 85,
-			"pos": [276, 101],
+			"pos": [451, 52],
 			"size": [32, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 80,
-			"pos": [310, 101],
+			"pos": [135, 101],
 			"size": [32, 39],
 			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 82,
-			"pos": [344, 101],
+			"codepoint": 48,
+			"pos": [169, 101],
 			"size": [32, 39],
-			"bearing": [-5, 31],
+			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 90,
-			"pos": [378, 101],
+			"pos": [203, 101],
 			"size": [32, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 116,
-			"pos": [412, 101],
+			"pos": [237, 101],
 			"size": [32, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 56,
-			"pos": [446, 101],
+			"pos": [271, 101],
 			"size": [32, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 54,
-			"pos": [153, 146],
+			"pos": [305, 101],
 			"size": [32, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 51,
-			"pos": [187, 146],
+			"pos": [339, 101],
 			"size": [32, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 50,
-			"pos": [221, 146],
+			"pos": [373, 101],
 			"size": [32, 39],
 			"bearing": [-7, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 48,
-			"pos": [255, 146],
-			"size": [32, 39],
-			"bearing": [-6, 31],
-			"advance": 1280
-		},
-		{
 			"codepoint": 104,
-			"pos": [127, 197],
+			"pos": [246, 146],
 			"size": [30, 41],
 			"bearing": [-5, 33],
 			"advance": 1280
 		},
 		{
 			"codepoint": 119,
-			"pos": [315, 52],
+			"pos": [407, 101],
 			"size": [36, 34],
 			"bearing": [-8, 26],
 			"advance": 1280
 		},
 		{
-			"codepoint": 63,
-			"pos": [289, 146],
-			"size": [31, 39],
-			"bearing": [-6, 31],
-			"advance": 1280
-		},
-		{
 			"codepoint": 78,
-			"pos": [322, 146],
-			"size": [31, 39],
-			"bearing": [-6, 31],
-			"advance": 1280
-		},
-		{
-			"codepoint": 74,
-			"pos": [355, 146],
-			"size": [31, 39],
-			"bearing": [-6, 31],
-			"advance": 1280
-		},
-		{
-			"codepoint": 72,
-			"pos": [388, 146],
+			"pos": [278, 146],
 			"size": [31, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 66,
-			"pos": [421, 146],
+			"pos": [311, 146],
 			"size": [31, 39],
 			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
+			"codepoint": 72,
+			"pos": [344, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 63,
+			"pos": [377, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
+			"codepoint": 74,
+			"pos": [410, 146],
+			"size": [31, 39],
+			"bearing": [-6, 31],
+			"advance": 1280
+		},
+		{
 			"codepoint": 53,
-			"pos": [454, 146],
+			"pos": [443, 146],
 			"size": [31, 39],
 			"bearing": [-6, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 55,
-			"pos": [159, 197],
+			"pos": [32, 197],
 			"size": [30, 40],
 			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 93,
-			"pos": [0, 292],
+			"pos": [0, 241],
 			"size": [25, 47],
 			"bearing": [-3, 35],
 			"advance": 1280
 		},
 		{
 			"codepoint": 91,
-			"pos": [27, 292],
+			"pos": [27, 241],
 			"size": [25, 47],
 			"bearing": [-2, 35],
 			"advance": 1280
 		},
 		{
 			"codepoint": 73,
-			"pos": [480, 101],
+			"pos": [476, 146],
 			"size": [30, 39],
 			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 70,
-			"pos": [191, 197],
+			"codepoint": 69,
+			"pos": [64, 197],
 			"size": [30, 39],
 			"bearing": [-4, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 69,
-			"pos": [223, 197],
+			"codepoint": 70,
+			"pos": [96, 197],
 			"size": [30, 39],
 			"bearing": [-4, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 76,
-			"pos": [255, 197],
+			"pos": [128, 197],
 			"size": [30, 39],
 			"bearing": [-4, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 49,
-			"pos": [287, 197],
+			"pos": [160, 197],
 			"size": [30, 39],
 			"bearing": [-5, 31],
 			"advance": 1280
 		},
 		{
-			"codepoint": 9746,
-			"pos": [353, 52],
-			"size": [34, 34],
-			"bearing": [-7, 26],
-			"advance": 1280
-		},
-		{
-			"codepoint": 9744,
-			"pos": [389, 52],
-			"size": [34, 34],
-			"bearing": [-7, 26],
-			"advance": 1280
-		},
-		{
 			"codepoint": 109,
-			"pos": [425, 52],
+			"pos": [445, 101],
 			"size": [34, 34],
 			"bearing": [-7, 26],
 			"advance": 1280
 		},
 		{
-			"codepoint": 174,
-			"pos": [461, 52],
-			"size": [34, 33],
-			"bearing": [-7, 33],
+			"codepoint": 118,
+			"pos": [192, 197],
+			"size": [33, 34],
+			"bearing": [-7, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 42,
-			"pos": [319, 197],
+			"pos": [227, 197],
 			"size": [34, 33],
 			"bearing": [-7, 27],
 			"advance": 1280
 		},
 		{
 			"codepoint": 120,
-			"pos": [32, 248],
-			"size": [33, 34],
-			"bearing": [-7, 26],
-			"advance": 1280
-		},
-		{
-			"codepoint": 118,
-			"pos": [67, 248],
+			"pos": [54, 241],
 			"size": [33, 34],
 			"bearing": [-7, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 124,
-			"pos": [0, 341],
+			"pos": [0, 290],
 			"size": [20, 56],
 			"bearing": [0, 38],
 			"advance": 1280
 		},
 		{
 			"codepoint": 97,
-			"pos": [54, 292],
+			"pos": [22, 290],
 			"size": [32, 35],
 			"bearing": [-6, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 111,
-			"pos": [102, 248],
+			"pos": [89, 241],
 			"size": [32, 34],
 			"bearing": [-6, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 101,
-			"pos": [136, 248],
+			"pos": [123, 241],
 			"size": [32, 34],
 			"bearing": [-6, 26],
 			"advance": 1280
 		},
 		{
-			"codepoint": 60,
-			"pos": [88, 292],
-			"size": [31, 35],
-			"bearing": [-6, 28],
-			"advance": 1280
-		},
-		{
 			"codepoint": 62,
-			"pos": [121, 292],
+			"pos": [56, 290],
 			"size": [31, 35],
 			"bearing": [-6, 28],
 			"advance": 1280
 		},
 		{
-			"codepoint": 114,
-			"pos": [170, 248],
-			"size": [31, 34],
-			"bearing": [-5, 26],
+			"codepoint": 60,
+			"pos": [89, 290],
+			"size": [31, 35],
+			"bearing": [-6, 28],
 			"advance": 1280
 		},
 		{
 			"codepoint": 115,
-			"pos": [203, 248],
+			"pos": [157, 241],
 			"size": [31, 34],
 			"bearing": [-6, 26],
 			"advance": 1280
 		},
 		{
+			"codepoint": 114,
+			"pos": [190, 241],
+			"size": [31, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
 			"codepoint": 43,
-			"pos": [355, 197],
+			"pos": [263, 197],
 			"size": [32, 32],
 			"bearing": [-6, 27],
 			"advance": 1280
 		},
 		{
 			"codepoint": 122,
-			"pos": [236, 248],
-			"size": [30, 34],
-			"bearing": [-5, 26],
-			"advance": 1280
-		},
-		{
-			"codepoint": 99,
-			"pos": [268, 248],
+			"pos": [223, 241],
 			"size": [30, 34],
 			"bearing": [-5, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 117,
-			"pos": [300, 248],
+			"pos": [255, 241],
 			"size": [30, 34],
 			"bearing": [-5, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 110,
-			"pos": [332, 248],
+			"pos": [287, 241],
+			"size": [30, 34],
+			"bearing": [-5, 26],
+			"advance": 1280
+		},
+		{
+			"codepoint": 99,
+			"pos": [319, 241],
 			"size": [30, 34],
 			"bearing": [-5, 26],
 			"advance": 1280
 		},
 		{
 			"codepoint": 59,
-			"pos": [487, 146],
+			"pos": [485, 52],
 			"size": [23, 39],
 			"bearing": [-2, 25],
 			"advance": 1280
 		},
 		{
 			"codepoint": 94,
-			"pos": [389, 197],
+			"pos": [297, 197],
 			"size": [32, 27],
 			"bearing": [-6, 37],
 			"advance": 1280
 		},
 		{
 			"codepoint": 33,
-			"pos": [22, 341],
+			"pos": [0, 348],
 			"size": [22, 39],
 			"bearing": [-1, 31],
 			"advance": 1280
 		},
 		{
 			"codepoint": 61,
-			"pos": [423, 197],
+			"pos": [331, 197],
 			"size": [30, 25],
 			"bearing": [-5, 23],
 			"advance": 1280
 		},
 		{
 			"codepoint": 126,
-			"pos": [455, 197],
+			"pos": [363, 197],
 			"size": [34, 22],
 			"bearing": [-7, 22],
 			"advance": 1280
 		},
 		{
-			"codepoint": 176,
-			"pos": [364, 248],
-			"size": [27, 27],
-			"bearing": [-6, 34],
-			"advance": 1280
-		},
-		{
 			"codepoint": 58,
-			"pos": [154, 292],
+			"pos": [481, 101],
 			"size": [22, 33],
 			"bearing": [-1, 25],
 			"advance": 1280
 		},
 		{
 			"codepoint": 34,
-			"pos": [393, 248],
+			"pos": [351, 241],
 			"size": [26, 25],
 			"bearing": [-3, 33],
 			"advance": 1280
 		},
 		{
 			"codepoint": 95,
-			"pos": [421, 248],
+			"pos": [399, 197],
 			"size": [34, 19],
 			"bearing": [-7, 5],
 			"advance": 1280
 		},
 		{
 			"codepoint": 44,
-			"pos": [178, 292],
+			"pos": [122, 290],
 			"size": [23, 28],
 			"bearing": [-2, 14],
 			"advance": 1280
 		},
 		{
 			"codepoint": 45,
-			"pos": [457, 248],
+			"pos": [435, 197],
 			"size": [30, 19],
 			"bearing": [-5, 20],
 			"advance": 1280
 		},
 		{
 			"codepoint": 96,
-			"pos": [203, 292],
+			"pos": [379, 241],
 			"size": [24, 22],
 			"bearing": [-2, 34],
 			"advance": 1280
 		},
 		{
 			"codepoint": 46,
-			"pos": [229, 292],
+			"pos": [405, 241],
 			"size": [23, 22],
 			"bearing": [-2, 14],
 			"advance": 1280
 		},
 		{
 			"codepoint": 39,
-			"pos": [46, 341],
+			"pos": [147, 290],
 			"size": [20, 25],
 			"bearing": [0, 33],
 			"advance": 1280
