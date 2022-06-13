@@ -45,6 +45,7 @@ namespace uhero
 
 		ctx.should_exit = false;
 		ctx.current_level = nullptr;
+		ctx.main_clock.reset();
 
 		DUMPI(ctx.config.display_index);
 		DUMPI(ctx.config.window_width);
@@ -100,11 +101,9 @@ namespace uhero
 	float Context::tick()
 	{
 		UH_STACK_RESET();
-		
-		auto current = SDL_GetTicks();
-		auto diff = current - ticks;
-		float delta = diff / 1000.0f;
-		time += delta;
+
+		main_clock.tick();
+		float delta = main_clock.delta();
 
 		SDL_Event event {};
 		while (SDL_PollEvent(&event))
@@ -116,6 +115,8 @@ namespace uhero
 			}
 		}
 
+		float color[4] = { 0 };
+		gfx.clear_buffer(color, 1.0f, 0);
 		if (current_level)
 		{
 			current_level->update(delta);

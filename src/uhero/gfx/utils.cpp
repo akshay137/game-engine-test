@@ -98,7 +98,7 @@ namespace uhero::gfx
 		usize size = sfile.size;
 		char* source = UH_STACK_ALLOCATE_TYPE(char, size + 1);
 		usize bread = sfile.read(source, size);
-		source[size] = 0;
+		source[bread] = 0;
 
 		const GLchar* sources[] = { source };
 		glShaderSource(shader, 1, sources, nullptr);

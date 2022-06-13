@@ -28,6 +28,8 @@ struct Game : uhero::Level
 	RenderState rstate;
 	gfx::Texture logo;
 	gfx::BatchRenderer batch;
+	glm::vec4 clip;
+	i32 size = 512 + 256;
 
 	uhero::Result load(uhero::Context& ctx) override
 	{
@@ -38,6 +40,10 @@ struct Game : uhero::Level
 		rsbuffer.create(gfx::BufferType::Dynaminc, 1, &rstate);
 
 		logo = res::load_texture("assets/logo.png");
+		logo.set_filter(gfx::TextureFilter::Nearest);
+
+		float aspect = logo.get_aspect_ratio();
+		clip = glm::vec4(0, 0, size, size * aspect);
 
 		batch.create(1024);
 
@@ -72,15 +78,8 @@ struct Game : uhero::Level
 		logo.bind_slot(0);
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 
-		float h = ctx->main_window.height;
-
-		float lw = logo.width;
-		float lh = logo.height;
-
 		batch.begin(logo);
-		batch.draw_sprite(glm::vec2(0, h / 2), glm::vec4(0, 0, lw, lh));
-		batch.draw_sprite(glm::vec2(512, 0), glm::vec4(0, 0, lw / 2, lh / 2));
-		batch.draw_sprite(glm::vec2(0, lw), glm::vec4(lw / 2, lh / 2, lw / 2, lh / 2));
+		batch.draw_sprite(glm::vec2(0), glm::vec4(0, 0, logo.width, logo.height));
 		batch.end();
 	}
 };

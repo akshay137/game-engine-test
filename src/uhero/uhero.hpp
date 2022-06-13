@@ -6,6 +6,7 @@
 #include "window.hpp"
 #include "gfx/gfx.hpp"
 #include "level.hpp"
+#include "time.hpp"
 
 namespace uhero
 {
@@ -20,10 +21,9 @@ namespace uhero
 		Window main_window;
 		gfx::Context gfx;
 
+		Clock main_clock;
 		Level* current_level;
 
-		float time;
-		u64 ticks;
 		bool should_exit;
 
 		Result parse_cmd(i32 argc, char** args);

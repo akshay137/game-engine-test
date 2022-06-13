@@ -5,7 +5,7 @@
 
 namespace uhero::res
 {
-	UHAPI gfx::Texture load_texture(const char* file);
+	UHAPI gfx::Texture load_texture(const char* file, i32 mipmaps = 0);
 }
 
 #endif

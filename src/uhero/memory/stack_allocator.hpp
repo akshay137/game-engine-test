@@ -21,7 +21,13 @@ namespace uhero
 		void reset();
 
 		usize used() const { return top; }
-		usize get_empty_size() const { return pool_size - top; }
+		usize get_empty_space() const { return pool_size - top; }
+
+		// following functions are for single scope allocations
+
+		[[nodiscard]]
+		usize begin_group() { return top; }
+		void end_group(usize group) { top = group; };
 
 		template <typename T>
 		[[nodiscard]]
@@ -51,5 +57,8 @@ namespace uhero
 
 #define UH_STACK_INIT(size) uhero::global_stack.create(size)
 #define UH_STACK_CLEAR() uhero::global_stack.clear()
+
+#define UH_STACK_GROUP() uhero::global_stack.begin_group()
+#define UH_STACK_GROUP_END(g) uhero::global_stack.end_group(g)
 
 #endif

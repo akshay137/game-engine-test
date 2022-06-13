@@ -9,7 +9,7 @@
 
 namespace uhero::res
 {
-	gfx::Texture load_texture(const char* file)
+	gfx::Texture load_texture(const char* file, i32 mipmaps)
 	{
 		i32 x, y, n;
 		u8* pixeldata = stbi_load(file, &x, &y, &n, 0);
@@ -21,6 +21,7 @@ namespace uhero::res
 		}
 
 		u8* aligned_pixels = pixeldata;
+		auto group = UH_STACK_GROUP();
 		if (0 != (x * n) % 4)
 		{
 			UH_WARN("%s is not 4 byte aligned, manually aligning...\n", file);
@@ -30,15 +31,16 @@ namespace uhero::res
 			u32 aligned_pitch = pitch + pad;
 			u32 new_size = y * aligned_pitch;
 
-			aligned_pixels = UH_ALLOCATE_TYPE(u8, new_size);
+			aligned_pixels = UH_STACK_ALLOCATE_TYPE(u8, new_size);
 
 			for (i32 i = 0; i < y; i++)
 			{
 				void* src = pixeldata + pitch * i;
 				void* dst = aligned_pixels + aligned_pitch * i;
-				std::memcpy(dst, src, new_size);
+				std::memcpy(dst, src, pitch);
 			}
 		}
+		UH_STACK_GROUP_END(group);
 
 		gfx::PixelFormat format;
 		if (1 == n) format = gfx::PixelFormat::GREYSCALE;
@@ -46,14 +48,11 @@ namespace uhero::res
 		else if (4 == n) format = gfx::PixelFormat::RGBA8;
 
 		gfx::Texture texture {};
-		auto res = texture.create(x, y, format, aligned_pixels);
+		auto res = texture.create(x, y, format, aligned_pixels, mipmaps);
 
 		UH_VERB("Loaded texture: %s[%dx%d|%d]\n", file, x, y, n);
 
-		if (aligned_pixels != pixeldata)
-			UH_FREE(aligned_pixels);
-		else
-			stbi_image_free(pixeldata);
+		stbi_image_free(pixeldata);
 		
 		if (Result::Success != res)
 		{

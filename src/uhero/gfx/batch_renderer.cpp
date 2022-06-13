@@ -34,7 +34,7 @@ namespace uhero::gfx
 		*/
 		u32 index_count = max_sprites * 6;
 		// u16* indices = new u16[index_count];
-		u16* indices = UH_ALLOCATE_TYPE(u16, index_count);
+		u16* indices = UH_STACK_ALLOCATE_TYPE(u16, index_count);
 		constexpr u16 QUAD_INDICES[] = { 0, 1, 2, 2, 1, 3 };
 		for (u32 i = 0; i < max_sprites; i++)
 		{
@@ -49,8 +49,6 @@ namespace uhero::gfx
 		this->max_quads = max_sprites;
 		current_texture = nullptr;
 
-		UH_FREE(indices);
-		// delete[] indices;
 		return Result::Success;
 	}
 

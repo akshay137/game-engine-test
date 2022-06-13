@@ -18,6 +18,8 @@ namespace uhero::gfx
 
 		Result create(Window& window, bool debug = false);
 		void clear();
+
+		void clear_buffer(float* color, float depth, i32 stencil);
 	};
 }
 

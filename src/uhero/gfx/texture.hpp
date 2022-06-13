@@ -59,7 +59,8 @@ namespace uhero::gfx
 	enum TextureFilter : u32
 	{
 		Nearest = 0,
-		Linear = 1
+		Linear = 1,
+		MipmapLinear = 2,
 	};
 
 	struct Texture
@@ -67,16 +68,23 @@ namespace uhero::gfx
 		u32 gl_id;
 		i32 width;
 		i32 height;
+		i32 mipmaps;
 		PixelFormat pixel_format;
 
 		Result create(i32 w, i32 h, PixelFormat format,
-			const void* pixels = nullptr
+			const void* pixels = nullptr,
+			i32 mipmaps = 0
 		);
-
 		void clear();
+
+		float get_aspect_ratio() const
+		{
+			return (float)height / width;
+		}
 
 		void bind_slot(u32 index) const;
 
+		void generate_mipmaps();
 		void set_filter(TextureFilter filter);
 		void set_swizzle(const Swizzle& swizzle);
 

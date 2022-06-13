@@ -56,6 +56,12 @@ namespace uhero::gfx
 		gl_context = nullptr;
 	}
 
+	void Context::clear_buffer(float* color, float depth, i32 stencil)
+	{
+		glClearBufferfv(GL_COLOR, 0, color);
+		glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);
+	}
+
 	void uh_gldebug_callback(GLenum source,
 		GLenum type, GLuint id, GLenum severity,
 		GLsizei length, const GLchar *message,
@@ -70,12 +76,12 @@ namespace uhero::gfx
 
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
-			UH_ERROR("%s", message);
+			UH_ERROR("%*s", length, message);
 			assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{
-			UH_WARN("%s", message);
+			UH_WARN("%*s", length, message);
 		}
 		else
 		{

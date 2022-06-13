@@ -6,14 +6,14 @@
 namespace uhero::gfx
 {
 	Result Texture::create(i32 w, i32 h, PixelFormat format,
-		const void* pixels
+		const void* pixels, i32 mipmaps
 	)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &gl_id);
 
 		PixelData data = pixeldata_from_format(format);
 
-		glTextureStorage2D(gl_id, 1, data.internal_format, w, h);
+		glTextureStorage2D(gl_id, mipmaps + 1, data.internal_format, w, h);
 		glTextureSubImage2D(gl_id, 0,
 			0, 0, w, h, 
 			data.channel_format, data.data_type,
@@ -25,6 +25,7 @@ namespace uhero::gfx
 		this->width = w;
 		this->height = h;
 		this->pixel_format = format;
+		this->mipmaps = mipmaps;
 
 		return Result::Success;
 	}
@@ -46,6 +47,13 @@ namespace uhero::gfx
 		glBindTextureUnit(index, gl_id);
 	}
 
+	void Texture::generate_mipmaps()
+	{
+		assert(gl_id);
+
+		glGenerateTextureMipmap(gl_id);
+	}
+
 	void Texture::set_filter(TextureFilter filter)
 	{
 		assert(gl_id);
@@ -58,6 +66,11 @@ namespace uhero::gfx
 		else if (TextureFilter::Linear == filter)
 		{
 			glTextureParameteri(gl_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(gl_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+		else if (TextureFilter::MipmapLinear == filter)
+		{
+			glTextureParameteri(gl_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTextureParameteri(gl_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 		else
