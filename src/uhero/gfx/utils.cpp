@@ -1,5 +1,6 @@
 #include "utils.hpp"
 #include "pso.hpp"
+#include "../memory/memory.hpp"
 #include "../file.hpp"
 #include "../logger.hpp"
 
@@ -92,9 +93,12 @@ namespace uhero::gfx
 			return Result::ExternalLibraryError;
 		}
 
-		char source[2048];
-		usize bread = File::read_full(file, source, 2048);
-		source[bread] = 0;
+		File sfile;
+		sfile.open(file, FileMode::FRead | FileMode::FBinary);
+		usize size = sfile.size;
+		char* source = UH_STACK_ALLOCATE_TYPE(char, size + 1);
+		usize bread = sfile.read(source, size);
+		source[size] = 0;
 
 		const GLchar* sources[] = { source };
 		glShaderSource(shader, 1, sources, nullptr);

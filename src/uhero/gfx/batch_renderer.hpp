@@ -54,14 +54,7 @@ namespace uhero::gfx
 			const char* vs = nullptr, const char* fs = nullptr
 		);
 
-		void clear()
-		{
-			delete[] quads;
-			delete[] vertices;
-			pso.clear();
-			vertex_buffer.clear();
-			index_buffer.clear();
-		}
+		void clear();
 
 		void begin(const Texture& texture);
 		void end();

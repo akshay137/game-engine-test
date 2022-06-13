@@ -17,6 +17,8 @@ namespace uhero
 
 		bool gl_debug = true;
 
+		u32 stack_size;
+
 		Config() = default;
 
 		// loads config from file,

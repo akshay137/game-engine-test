@@ -4,3 +4,5 @@
 	height = 720
 [gfx]
 	gl_debug = true
+[system]
+	stack = 134217728

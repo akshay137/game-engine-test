@@ -11,10 +11,10 @@ namespace uhero
 	{
 		virtual ~Level() {}
 
-		virtual Result load(Context& ctx) { return Result::Success; }
-		virtual void clear(Context& ctx) {}
-		virtual void update(Context& ctx, float delta) {}
-		virtual void render(Context& ctx) {}
+		virtual Result load(Context& ctx) = 0;
+		virtual void clear() = 0;
+		virtual void update(float delta) = 0;
+		virtual void render() = 0;
 	};
 }
 

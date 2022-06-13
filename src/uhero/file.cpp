@@ -5,7 +5,7 @@
 
 namespace uhero
 {
-	Result File::open(const char* filename, FileMode mode)
+	Result File::open(const char* filename, u32 mode)
 	{
 		char sdl_mode[8] = { 0 };
 		isize i = 0;

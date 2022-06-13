@@ -1,4 +1,5 @@
 #include "batch_renderer.hpp"
+#include "../memory/memory.hpp"
 #include "texture.hpp"
 #include "../logger.hpp"
 
@@ -21,8 +22,10 @@ namespace uhero::gfx
 			return res;
 		}
 
-		quads = new Quad[max_sprites];
-		vertices = new Vertex2d[max_sprites * 4];
+		// quads = new Quad[max_sprites];
+		// vertices = new Vertex2d[max_sprites * 4];
+		quads = UH_ALLOCATE_TYPE(Quad, max_sprites);
+		vertices = UH_ALLOCATE_TYPE(Vertex2d, max_sprites * 4);
 
 		/*
 			0_____1
@@ -30,7 +33,8 @@ namespace uhero::gfx
 			2____|3
 		*/
 		u32 index_count = max_sprites * 6;
-		u16* indices = new u16[index_count];
+		// u16* indices = new u16[index_count];
+		u16* indices = UH_ALLOCATE_TYPE(u16, index_count);
 		constexpr u16 QUAD_INDICES[] = { 0, 1, 2, 2, 1, 3 };
 		for (u32 i = 0; i < max_sprites; i++)
 		{
@@ -45,8 +49,20 @@ namespace uhero::gfx
 		this->max_quads = max_sprites;
 		current_texture = nullptr;
 
-		delete[] indices;
+		UH_FREE(indices);
+		// delete[] indices;
 		return Result::Success;
+	}
+
+	void BatchRenderer::clear()
+	{
+		UH_FREE(quads);
+		UH_FREE(vertices);
+		// delete[] quads;
+		// delete[] vertices;
+		pso.clear();
+		vertex_buffer.clear();
+		index_buffer.clear();
 	}
 
 	void BatchRenderer::begin(const Texture& texture)

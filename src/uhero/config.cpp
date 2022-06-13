@@ -1,6 +1,7 @@
 #include "config.hpp"
 #include "logger.hpp"
 #include "file.hpp"
+#include "memory/memory.hpp"
 
 #define TOML_EXCEPTIONS 0
 #include <toml++/toml.h>
@@ -26,6 +27,14 @@ namespace uhero
 		const auto& tgfx = tconf["gfx"];
 		config.gl_debug = tgfx["gl_debug"].value_or(true);
 
+		const auto& tsys = tconf["system"];
+		config.stack_size = tsys["stack"].value_or(Memory::megabytes_to_bytes(128));
+		if (config.stack_size > Memory::megabytes_to_bytes(256))
+		{
+			UH_WARN("Stack size will be set to 256MB\n");
+			config.stack_size = Memory::megabytes_to_bytes(256);
+		}
+
 		return config;
 	}
 
@@ -44,6 +53,9 @@ namespace uhero
 
 		file.write_format("[gfx]\n");
 		file.write_format("\tgl_debug = %s\n", config.gl_debug ? "true" : "false");
+
+		file.write_format("[system]\n");
+		file.write_format("\tstack = %u\n", config.stack_size);
 
 		return Result::Success;
 	}

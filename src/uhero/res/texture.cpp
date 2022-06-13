@@ -1,4 +1,5 @@
 #include "texture.hpp"
+#include "../memory/memory.hpp"
 #include "../logger.hpp"
 
 #include <cstring>
@@ -29,7 +30,7 @@ namespace uhero::res
 			u32 aligned_pitch = pitch + pad;
 			u32 new_size = y * aligned_pitch;
 
-			aligned_pixels = new u8[new_size];
+			aligned_pixels = UH_ALLOCATE_TYPE(u8, new_size);
 
 			for (i32 i = 0; i < y; i++)
 			{
@@ -50,7 +51,7 @@ namespace uhero::res
 		UH_VERB("Loaded texture: %s[%dx%d|%d]\n", file, x, y, n);
 
 		if (aligned_pixels != pixeldata)
-			delete[] aligned_pixels;
+			UH_FREE(aligned_pixels);
 		else
 			stbi_image_free(pixeldata);
 		

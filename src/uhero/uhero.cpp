@@ -1,4 +1,5 @@
 #include "uhero.hpp"
+#include "memory/memory.hpp"
 #include "logger.hpp"
 #include "deps.hpp"
 
@@ -27,6 +28,7 @@ namespace uhero
 		{
 			UH_WARN("Some invalid arguments were passed through command line\n");
 		}
+		UH_STACK_INIT(ctx.config.stack_size);
 
 		res = Window::setup_opengl_properties();
 		res = ctx.main_window.create_window(ctx.config.app_name,
@@ -62,7 +64,7 @@ namespace uhero
 	void Context::shutdown()
 	{
 		if (current_level)
-			current_level->clear(*this);
+			current_level->clear();
 		Config::write_config(config, UHERO_CONFIG_FILE);
 
 		gfx.clear();
@@ -71,6 +73,10 @@ namespace uhero
 		// clear dependencies
 		if (dependencies_loaded)
 			uhero_clear_dependencies();
+		
+		UH_STACK_CLEAR();
+		UH_DUMP_ALL_ALLOCATIONS();
+		global_allocator.free_all();
 	}
 
 	bool Context::is_ok() const
@@ -84,7 +90,7 @@ namespace uhero
 	Result Context::set_current_level(Level* level)
 	{
 		if (current_level)
-			current_level->clear(*this);
+			current_level->clear();
 		
 		current_level = level;
 		auto res = current_level->load(*this);
@@ -93,6 +99,8 @@ namespace uhero
 
 	float Context::tick()
 	{
+		UH_STACK_RESET();
+		
 		auto current = SDL_GetTicks();
 		auto diff = current - ticks;
 		float delta = diff / 1000.0f;
@@ -110,8 +118,8 @@ namespace uhero
 
 		if (current_level)
 		{
-			current_level->update(*this, delta);
-			current_level->render(*this);
+			current_level->update(delta);
+			current_level->render();
 		}
 
 		main_window.swap_buffers();

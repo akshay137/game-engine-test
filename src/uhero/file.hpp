@@ -27,10 +27,10 @@ namespace uhero
 	{
 		const char* path;
 		SDL_RWops* handle;
-		FileMode mode;
+		u32 mode;
 		isize size;
 
-		Result open(const char* filename, FileMode mode);
+		Result open(const char* filename, u32 mode);
 		void close();
 
 		Result seek(isize offset, SeekPosition pos);

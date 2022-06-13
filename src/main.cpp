@@ -4,6 +4,7 @@
 #include "uhero/gfx/buffer.hpp"
 #include "uhero/gfx/batch_renderer.hpp"
 #include "uhero/res/texture.hpp"
+#include "uhero/memory/memory.hpp"
 
 #include <glad/glad.h>
 
@@ -22,6 +23,7 @@ struct RenderState
 using namespace uhero;
 struct Game : uhero::Level
 {
+	Context* ctx;
 	gfx::TBuffer<RenderState> rsbuffer;
 	RenderState rstate;
 	gfx::Texture logo;
@@ -37,13 +39,16 @@ struct Game : uhero::Level
 
 		logo = res::load_texture("assets/logo.png");
 
-		auto res = batch.create(1024);
+		batch.create(1024);
 
+		this->ctx = &ctx;
+
+		UH_DUMP_ALL_ALLOCATIONS();
 		UH_INFO("Loaded Game\n");
 		return uhero::Result::Success;
 	}
 
-	void clear(uhero::Context& ctx) override
+	void clear() override
 	{
 		batch.clear();
 		logo.clear();
@@ -51,26 +56,23 @@ struct Game : uhero::Level
 		UH_INFO("Cleared Game\n");
 	}
 
-	void update(uhero::Context& ctx, float delta) override
+	void update(float delta) override
 	{
 		UH_INFO("delta: %.4f\r", delta);
 
-		float w = ctx.main_window.width;
-		float h = ctx.main_window.height;
+		float w = ctx->main_window.width;
+		float h = ctx->main_window.height;
 		rstate.orthographic = glm::ortho(0.0f, w, 0.0f, h, -1.0f, 1.0f);
 		rstate.viewport = glm::vec4(0.0f, 0.0f, w, h);
 		rsbuffer.update(&rstate);
 	}
 
-	void render(uhero::Context& ctx) override
+	void render() override
 	{
-		auto& gfx = ctx.gfx;
-
 		logo.bind_slot(0);
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 
-		float w = ctx.main_window.width;
-		float h = ctx.main_window.height;
+		float h = ctx->main_window.height;
 
 		float lw = logo.width;
 		float lh = logo.height;
