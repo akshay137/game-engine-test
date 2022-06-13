@@ -7,7 +7,9 @@
 
 namespace uhero::gfx
 {
-	Result BatchRenderer::create(u32 max_sprites, const char* vs, const char* fs)
+	Result BatchRenderer::create(u32 max_sprites,
+		const char* vs, const char* fs
+	)
 	{
 		if (nullptr == vs) vs = BATCH_VERTEX_SHADER;
 		if (nullptr == fs) fs = BATCH_FRAGMENT_SHADER;
@@ -16,14 +18,13 @@ namespace uhero::gfx
 		layout.add_attribute(VertexAttribute::Vec2); // position
 		layout.add_attribute(VertexAttribute::Vec2); // uv
 		layout.add_attribute(VertexAttribute::Vec3); // color
+		
 		auto res = pso.create(layout, vs, fs);
 		if (Result::Success != res)
 		{
 			return res;
 		}
 
-		// quads = new Quad[max_sprites];
-		// vertices = new Vertex2d[max_sprites * 4];
 		quads = UH_ALLOCATE_TYPE(Quad, max_sprites);
 		vertices = UH_ALLOCATE_TYPE(Vertex2d, max_sprites * 4);
 
@@ -33,7 +34,6 @@ namespace uhero::gfx
 			2____|3
 		*/
 		u32 index_count = max_sprites * 6;
-		// u16* indices = new u16[index_count];
 		u16* indices = UH_STACK_ALLOCATE_TYPE(u16, index_count);
 		constexpr u16 QUAD_INDICES[] = { 0, 1, 2, 2, 1, 3 };
 		for (u32 i = 0; i < max_sprites; i++)
@@ -56,8 +56,6 @@ namespace uhero::gfx
 	{
 		UH_FREE(quads);
 		UH_FREE(vertices);
-		// delete[] quads;
-		// delete[] vertices;
 		pso.clear();
 		vertex_buffer.clear();
 		index_buffer.clear();
@@ -106,11 +104,10 @@ namespace uhero::gfx
 	void BatchRenderer::update_vertex_buffer()
 	{
 		glm::vec3 color;
-		float alpha;
 		for (u32 i = 0; i < current_quads; i++)
 		{
 			const Quad& quad = quads[i];
-			quad.color.to_float(color.r, color.g, color.b, alpha);
+			quad.color.to_rgb(color.r, color.g, color.b);
 
 			Vertex2d v[4];
 			v[0].position = glm::vec2(quad.rect.x, quad.rect.y);

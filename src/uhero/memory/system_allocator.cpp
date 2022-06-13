@@ -5,9 +5,9 @@
 
 namespace uhero
 {
-	Allocator global_allocator;
+	SystemAllocator global_allocator;
 
-	void* Allocator::allocate(usize bytes, const char* source, isize line)
+	void* SystemAllocator::allocate(usize bytes, const char* source, isize line)
 	{
 		void* res = std::malloc(bytes);
 		if (nullptr == res)
@@ -22,7 +22,7 @@ namespace uhero
 		return res;
 	}
 
-	void Allocator::release(void* ptr)
+	void SystemAllocator::release(void* ptr)
 	{
 		std::free(ptr);
 
@@ -38,7 +38,7 @@ namespace uhero
 		}
 	}
 
-	void Allocator::free_all()
+	void SystemAllocator::free_all()
 	{
 		for (auto& info : allocations)
 		{
@@ -47,7 +47,7 @@ namespace uhero
 		allocations.clear();
 	}
 
-	void Allocator::dump_current_allocations() const
+	void SystemAllocator::dump_current_allocations() const
 	{
 		UH_INFO("Current Allocations: %lu\n", allocations.size());
 		for (const auto& info : allocations)

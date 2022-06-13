@@ -4,6 +4,7 @@
 #include "uhero/gfx/buffer.hpp"
 #include "uhero/gfx/batch_renderer.hpp"
 #include "uhero/res/texture.hpp"
+#include "uhero/res/font_atlas.hpp"
 #include "uhero/memory/memory.hpp"
 
 #include <glad/glad.h>
@@ -31,6 +32,8 @@ struct Game : uhero::Level
 	glm::vec4 clip;
 	i32 size = 512 + 256;
 
+	gfx::Font cascadia;
+
 	uhero::Result load(uhero::Context& ctx) override
 	{
 		float w = ctx.main_window.width;
@@ -47,6 +50,9 @@ struct Game : uhero::Level
 
 		batch.create(1024);
 
+		cascadia = res::load_font("assets/cascadia.atlas");
+		// cascadia = res::load_font("assets/firacode.atlas");
+
 		this->ctx = &ctx;
 
 		UH_DUMP_ALL_ALLOCATIONS();
@@ -56,6 +62,7 @@ struct Game : uhero::Level
 
 	void clear() override
 	{
+		cascadia.clear();
 		batch.clear();
 		logo.clear();
 		rsbuffer.clear();
@@ -79,7 +86,9 @@ struct Game : uhero::Level
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 
 		batch.begin(logo);
-		batch.draw_sprite(glm::vec2(0), glm::vec4(0, 0, logo.width, logo.height));
+		batch.draw_sprite(glm::vec2(0), glm::vec4(0, 0, logo.width, logo.height),
+			ctx->main_window.height / (float)logo.height
+		);
 		batch.end();
 	}
 };

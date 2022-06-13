@@ -20,7 +20,7 @@ namespace uhero
 
 	// gets memory from system
 	// e.g, new, malloc, etc.
-	struct Allocator
+	struct SystemAllocator
 	{
 		std::vector<AllocationInfo> allocations;
 
@@ -46,7 +46,7 @@ namespace uhero
 		void dump_current_allocations() const;
 	};
 
-	extern Allocator global_allocator;
+	extern SystemAllocator global_allocator;
 }
 
 #define UH_ALLOCATE(size) uhero::global_allocator.allocate(size, __FILE__, __LINE__)

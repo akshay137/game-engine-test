@@ -12,7 +12,7 @@ namespace uhero
 		{
 			return kb * 1024;
 		}
-		
+
 		static usize megabytes_to_bytes(usize mb)
 		{
 			return mb * 1024 * 1024;

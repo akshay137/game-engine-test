@@ -42,6 +42,8 @@ namespace uhero
 
 	constexpr i32 OPENGL_MAJOR_VERSION = 4;
 	constexpr i32 OPENGL_MINOR_VERSION = 5;
+
+	struct IAllocator;
 }
 
 #endif

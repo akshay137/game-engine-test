@@ -16,6 +16,7 @@ namespace uhero
 
 		[[nodiscard]]
 		void* allocate(usize bytes);
+		void release(void*) { }
 
 		// resets stack to 0
 		void reset();

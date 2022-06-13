@@ -33,7 +33,7 @@ namespace uhero
 			return nullptr;
 		}
 
-		void* res = pool + top;
+		void* res = (void*)((u8*)pool + top);
 		top += bytes;
 		return res;
 	}

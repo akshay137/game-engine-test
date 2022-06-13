@@ -57,6 +57,8 @@ namespace uhero
 		file.write_format("[system]\n");
 		file.write_format("\tstack = %u\n", config.stack_size);
 
+		file.close();
+
 		return Result::Success;
 	}
 }
