@@ -4,6 +4,7 @@
 #include "uhero/gfx/buffer.hpp"
 #include "uhero/gfx/batch_renderer.hpp"
 #include "uhero/gfx/text_renderer.hpp"
+#include "uhero/file.hpp"
 #include "uhero/res/texture.hpp"
 #include "uhero/res/font_atlas.hpp"
 #include "uhero/memory/memory.hpp"
@@ -34,6 +35,9 @@ struct Game : uhero::Level
 	glm::vec4 clip;
 	i32 size = 512 + 256;
 
+	char* code;
+	const char* file = "premake5.lua";
+
 	gfx::Font cascadia;
 
 	uhero::Result load(uhero::Context& ctx) override
@@ -53,8 +57,13 @@ struct Game : uhero::Level
 		batch.create(1024);
 		text.create(1024);
 
-		// cascadia = res::load_font("assets/cascadia.atlas");
-		cascadia = res::load_font("assets/firacode.atlas");
+		cascadia = res::load_font("assets/cascadia.atlas");
+		// cascadia = res::load_font("assets/firacode.atlas");
+
+		auto buffer_size = Memory::kilobytes_to_bytes(1);
+		code = UH_ALLOCATE_TYPE(char, buffer_size);
+		auto read = File::read_full(file, code, buffer_size);
+		code[read] = 0;
 
 		this->ctx = &ctx;
 
@@ -65,6 +74,7 @@ struct Game : uhero::Level
 
 	void clear() override
 	{
+		UH_FREE(code);
 		cascadia.clear();
 		batch.clear();
 		text.clear();
@@ -94,7 +104,7 @@ struct Game : uhero::Level
 		batch.end();
 
 		gfx::FontStyle style;
-		gfx::FontStyle s1{32};
+		gfx::FontStyle s1;
 		s1.text_color = gfx::Color32::from_rgba(1, 0, 0);
 		gfx::FontStyle s2;
 		s2.text_color = gfx::Color32::from_rgba(0, 1, 0);
@@ -103,12 +113,31 @@ struct Game : uhero::Level
 		auto pen = glm::vec2(.0f, rstate.viewport.w);
 		text.begin(cascadia, style);
 		pen = text.write(pen, 0, "float aspect = logo.get_aspect_ratio();");
-		pen = text.write(pen, 0, "Hello World!");
 
+		pen = text.write(pen, 0, "Hello World!\n");
 		pen = text.write(pen, &s1, "How is this?\n");
 		pen = text.write(pen, &s2, "Maybe this?");
 
-		pen = text.write(pen, 0, "delta: %f", ctx->main_clock.delta());
+		pen = text.write(pen, 0, "delta: %f\n", ctx->main_clock.delta());
+
+		pen.x = 0;
+		pen = text.write(pen, 0, "the quick brown fox jumps over lazy dog.\n");
+		pen = text.write(pen, 0, "THE QUICK BROWN FOX JUMPS OVER LAZY DOG.\n");
+		pen = text.write(pen, 0,
+			"struct Texture\n"
+			"{\n"
+			"\tu32 gl_id;\n"
+			"\ti32 width;\n"
+			"\ti32 height;\n"
+			"\tPixelFormat format;\n"
+			"};\n"
+		);
+		pen = text.write(pen, 0, "1234567890|`~!@#$%^&*_+-=,./\\;':\"(){}[]<>\n");
+		pen = text.write(pen, &s1, "Press Alt F4 to quit.");
+
+		pen = glm::vec2(rstate.viewport.z / 2, rstate.viewport.w);
+		pen = text.write(pen, 0, "%s:\n", file);
+		pen = text.write(pen, 0, code);
 		text.end();
 	}
 };

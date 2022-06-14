@@ -84,7 +84,6 @@ namespace uhero::gfx
 		u32 count = current_glyphs * 6;
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, 0);
 
-		current_font = nullptr;
 		current_glyphs = 0;
 	}
 
@@ -110,7 +109,7 @@ namespace uhero::gfx
 		);
 
 		quads[current_glyphs++] = quad;
-		if (current_glyphs > max_glyphs)
+		if (current_glyphs >= max_glyphs)
 			this->end();
 	}
 
@@ -130,12 +129,13 @@ namespace uhero::gfx
 			style = &current_style;
 		
 		glm::vec2 pen = position;
-		float scale = style->size / (float)current_font->line_height;
+		float scale = current_font->size_scale(style->size);
+		float line_height = current_font->line_height + style->line_spacing;
 		i32 line = 1;
 
 		for (i32 i = 0; i < count; i++)
 		{
-			pen.y = position.y - line * current_font->line_height * scale;
+			pen.y = position.y - line * line_height * scale;
 			char c = buffer[i];
 
 			if (' ' == c)
@@ -149,6 +149,11 @@ namespace uhero::gfx
 				line++;
 				continue;
 			}
+			if ('\t' == c)
+			{
+				pen.x += 4 * current_font->space * scale;
+				continue;
+			}
 
 			const auto& g = current_font->find_glyph(c);
 
@@ -160,7 +165,7 @@ namespace uhero::gfx
 			pen.x = x + g.advance_x * scale;
 		}
 
-		pen.y = position.y - (line - 1) * current_font->line_height * scale;
+		pen.y = position.y - (line - 1) * line_height * scale;
 		return pen;
 	}
 
@@ -196,7 +201,7 @@ namespace uhero::gfx
 			vertices[vindex + 3] = v[3];
 		}
 
-		vertex_buffer.update_range(0, current_glyphs * 4, vertices);
+		vertex_buffer.update(vertices);
 	}
 
 	GlyphVertex TextRenderer::vertex_glyph_from_quad(const GlyphQuad& quad)

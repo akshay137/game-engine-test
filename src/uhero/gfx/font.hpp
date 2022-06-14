@@ -21,17 +21,20 @@ namespace uhero::gfx
 		u32 advance_x;
 	};
 
+	constexpr f32 PT_TO_PIXEL = 1.328147f;
 	struct FontStyle
 	{
-		i32 size;
+		f32 size;
 		f32 border_size;
+		f32 line_spacing;
 		Color32 text_color;
 		Color32 border_color;
 
-		FontStyle(i32 size=16)
-			: size{size}
+		FontStyle(f32 size=12)
+			: size{size * PT_TO_PIXEL}
 		{
 			border_size = 0.01f;
+			line_spacing = size * 0.3f;
 			text_color = Color32(255);
 			border_color = Color32(0, 0, 0, 255);
 		}
@@ -49,6 +52,8 @@ namespace uhero::gfx
 		void clear(bool free_glyphs = true);
 
 		Glyph find_glyph(codepoint code) const;
+
+		float size_scale(u32 size) const { return size / (float)line_height; }
 	};
 }
 

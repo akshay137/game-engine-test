@@ -78,7 +78,6 @@ namespace uhero::gfx
 		u32 index_count = current_quads * 6;
 		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_SHORT, 0);
 
-		current_texture = nullptr;
 		current_quads = 0;
 	}
 

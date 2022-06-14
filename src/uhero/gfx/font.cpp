@@ -29,19 +29,19 @@ namespace uhero::gfx
 		Glyph g = glyphs[0];
 
 		u32 start = 0;
-		u32 end = glyph_count;
+		u32 end = glyph_count - 1;
 
 		while (start <= end)
 		{
-			u32 mid = start + (end - start) / 2;
+			u32 mid = (start + end) / 2;
 
 			if (glyphs[mid].code == code)
 				return glyphs[mid];
 			
 			if (glyphs[mid].code > code)
-				end = mid;
+				end = mid - 1;
 			else
-				start = mid;
+				start = mid + 1;
 		}
 
 		return g;
