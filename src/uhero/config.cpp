@@ -25,6 +25,7 @@ namespace uhero
 		config.window_height = twindow["height"].value_or(720);
 		
 		const auto& tgfx = tconf["gfx"];
+		config.font_size = tgfx["font_size"].value_or(16);
 		config.gl_debug = tgfx["gl_debug"].value_or(true);
 
 		const auto& tsys = tconf["system"];
@@ -52,6 +53,7 @@ namespace uhero
 		file.write_format("\theight = %d\n", config.window_height);
 
 		file.write_format("[gfx]\n");
+		file.write_format("\tfont_size = %d\n", config.font_size);
 		file.write_format("\tgl_debug = %s\n", config.gl_debug ? "true" : "false");
 
 		file.write_format("[system]\n");

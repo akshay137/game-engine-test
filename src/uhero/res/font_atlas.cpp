@@ -22,6 +22,7 @@ namespace uhero::res
 		auto id = file.read_leu32();
 
 		font.glyph_count = file.read_leu32();
+		font.line_height = file.read_le32();
 		i32 w = file.read_le32(); // width
 		i32 h = file.read_le32(); // height
 
@@ -50,8 +51,8 @@ namespace uhero::res
 		file.read(image, image_size);
 
 		font.atlas.create(w, h, gfx::PixelFormat::GREYSCALE, image);
-		font.line_height = font.glyphs[0].size_y * 0.75;
-		font.space = font.glyphs[0].advance_x * 0.8;
+		// font.line_height = font.glyphs[0].size_y;
+		font.space = font.glyphs[0].advance_x;
 
 		UH_VERB("FONT_ATLAS: %s: [GC: %u | <%dx%d> | HxW: <%dx%d>]\n",
 			filename,

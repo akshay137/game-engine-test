@@ -1,8 +1,9 @@
 [window]
 	display = 0
-	width = 1280
-	height = 720
+	width = 1600
+	height = 900
 [gfx]
+	font_size = 16
 	gl_debug = true
 [system]
 	stack = 134217728

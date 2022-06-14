@@ -1,7 +1,8 @@
 #include "uhero.hpp"
-#include "memory/memory.hpp"
-#include "logger.hpp"
 #include "deps.hpp"
+#include "logger.hpp"
+#include "memory/memory.hpp"
+#include "res/font_atlas.hpp"
 
 #include <SDL2/SDL_events.h>
 
@@ -42,6 +43,14 @@ namespace uhero
 			return ctx;
 		}
 
+		ctx.system_font = res::load_font(SYSTEM_FONT_FILE);
+		auto style = gfx::FontStyle(ctx.config.font_size);
+		ctx.style_normal = style;
+		ctx.style_info = style;
+		ctx.style_info.text_color = gfx::Color32::from_rgba(0, 1, 0);
+		ctx.style_error = style;
+		ctx.style_error.text_color = gfx::Color32::from_rgba(1, 0, 0);
+
 		ctx.should_exit = false;
 		ctx.current_level = nullptr;
 		ctx.main_clock.reset();
@@ -67,6 +76,7 @@ namespace uhero
 			current_level->clear();
 		Config::write_config(config, UHERO_CONFIG_FILE);
 
+		system_font.clear();
 		gfx.clear();
 		main_window.close();
 
@@ -114,7 +124,7 @@ namespace uhero
 			}
 		}
 
-		float color[4] = { 0 };
+		float color[4] = { .1, .1, .1, 0 };
 		gfx.clear_buffer(color, 1.0f, 0);
 		if (current_level)
 		{

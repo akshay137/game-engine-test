@@ -1,5 +1,6 @@
 {
-	"image": "firacode.png",
+	"image": "assets/firacode.png",
+	"height": 32,
 	"data": [
 		{
 			"codepoint": 36,

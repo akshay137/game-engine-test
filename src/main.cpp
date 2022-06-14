@@ -38,8 +38,6 @@ struct Game : uhero::Level
 	char* code;
 	const char* file = "premake5.lua";
 
-	gfx::Font cascadia;
-
 	uhero::Result load(uhero::Context& ctx) override
 	{
 		float w = ctx.main_window.width;
@@ -57,9 +55,6 @@ struct Game : uhero::Level
 		batch.create(1024);
 		text.create(1024);
 
-		cascadia = res::load_font("assets/cascadia.atlas");
-		// cascadia = res::load_font("assets/firacode.atlas");
-
 		auto buffer_size = Memory::kilobytes_to_bytes(1);
 		code = UH_ALLOCATE_TYPE(char, buffer_size);
 		auto read = File::read_full(file, code, buffer_size);
@@ -75,7 +70,6 @@ struct Game : uhero::Level
 	void clear() override
 	{
 		UH_FREE(code);
-		cascadia.clear();
 		batch.clear();
 		text.clear();
 		logo.clear();
@@ -101,22 +95,18 @@ struct Game : uhero::Level
 
 		batch.begin(logo);
 		batch.draw_sprite(glm::vec2(0), glm::vec4(0, 0, logo.width, logo.height));
+		batch.draw_sprite(glm::vec2(logo.width * 1.1, 0.0),
+			glm::vec4(logo.width / 2, 0, logo.width / 2, logo.height / 2)
+		);
 		batch.end();
 
-		gfx::FontStyle style;
-		gfx::FontStyle s1;
-		s1.text_color = gfx::Color32::from_rgba(1, 0, 0);
-		gfx::FontStyle s2;
-		s2.text_color = gfx::Color32::from_rgba(0, 1, 0);
-		s2.border_color = gfx::Color32::from_rgba(1, 0, 1);
-
 		auto pen = glm::vec2(.0f, rstate.viewport.w);
-		text.begin(cascadia, style);
+		text.begin(ctx->get_system_font(), ctx->style_normal);
 		pen = text.write(pen, 0, "float aspect = logo.get_aspect_ratio();");
 
 		pen = text.write(pen, 0, "Hello World!\n");
-		pen = text.write(pen, &s1, "How is this?\n");
-		pen = text.write(pen, &s2, "Maybe this?");
+		pen = text.write(pen, &ctx->style_error, "How is this?\n");
+		pen = text.write(pen, &ctx->style_info, "Maybe this?\n");
 
 		pen = text.write(pen, 0, "delta: %f\n", ctx->main_clock.delta());
 
@@ -133,7 +123,7 @@ struct Game : uhero::Level
 			"};\n"
 		);
 		pen = text.write(pen, 0, "1234567890|`~!@#$%^&*_+-=,./\\;':\"(){}[]<>\n");
-		pen = text.write(pen, &s1, "Press Alt F4 to quit.");
+		pen = text.write(pen, &ctx->style_info, "Press Alt F4 to quit.");
 
 		pen = glm::vec2(rstate.viewport.z / 2, rstate.viewport.w);
 		pen = text.write(pen, 0, "%s:\n", file);

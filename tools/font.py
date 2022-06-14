@@ -36,9 +36,10 @@ if '__main__' == __name__:
 		s = atlasf.read()
 		atlas = json.loads(s)
 	
+	height = atlas['height']
 	base = opts.i.replace(os.path.basename(opts.i), '')
 	print(base)
-	img = os.path.join(base, atlas['image'])
+	img = atlas['image']
 	print(img)
 	image = Image.open(img)
 
@@ -61,6 +62,7 @@ if '__main__' == __name__:
 	with open(opts.o, 'wb') as out:
 		out.write(struct.pack('<I', 0x00AABB00)) # identifier
 		out.write(struct.pack('<I', len(data))) # number of code points
+		out.write(struct.pack('<i', height)) # height of glyph
 		out.write(struct.pack('<ii', *image.size)) # resolution of atlas image
 		
 		for code in data:

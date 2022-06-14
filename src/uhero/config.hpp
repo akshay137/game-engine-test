@@ -15,6 +15,7 @@ namespace uhero
 		i32 window_width = 1280;
 		i32 window_height = 720;
 
+		i32 font_size = 16;
 		bool gl_debug = true;
 
 		u32 stack_size;
