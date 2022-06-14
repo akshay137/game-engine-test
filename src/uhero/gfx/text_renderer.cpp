@@ -152,10 +152,12 @@ namespace uhero::gfx
 
 			const auto& g = current_font->find_glyph(c);
 
+			float x = pen.x;
 			pen.y -= (g.size_y - g.bearing_y) * scale;
+			pen.x += (g.bearing_x) * scale;
 			this->draw_glyph(g, pen, *style);
 
-			pen.x += g.advance_x * scale;
+			pen.x = x + g.advance_x * scale;
 		}
 
 		pen.y = position.y - (line - 1) * current_font->line_height * scale;
@@ -199,8 +201,8 @@ namespace uhero::gfx
 
 	GlyphVertex TextRenderer::vertex_glyph_from_quad(const GlyphQuad& quad)
 	{
-		float width = 0.5f;
-		float edge = 0.1f;
+		float width = 0.45f;
+		float edge = 0.12f;
 
 		GlyphVertex vertex {};
 		vertex.text_color = quad.text_color;

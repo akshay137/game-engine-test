@@ -53,8 +53,8 @@ struct Game : uhero::Level
 		batch.create(1024);
 		text.create(1024);
 
-		cascadia = res::load_font("assets/cascadia.atlas");
-		// cascadia = res::load_font("assets/firacode.atlas");
+		// cascadia = res::load_font("assets/cascadia.atlas");
+		cascadia = res::load_font("assets/firacode.atlas");
 
 		this->ctx = &ctx;
 
@@ -94,17 +94,16 @@ struct Game : uhero::Level
 		batch.end();
 
 		gfx::FontStyle style;
-		text.begin(cascadia, style);
-		// text.draw_glyph(g, glm::vec2(0, 512));
-		auto pen = text.write(glm::vec2(.0f, rstate.viewport.w), 0,
-			"Hello World!"
-		);
-
 		gfx::FontStyle s1{32};
 		s1.text_color = gfx::Color32::from_rgba(1, 0, 0);
 		gfx::FontStyle s2;
 		s2.text_color = gfx::Color32::from_rgba(0, 1, 0);
 		s2.border_color = gfx::Color32::from_rgba(1, 0, 1);
+
+		auto pen = glm::vec2(.0f, rstate.viewport.w);
+		text.begin(cascadia, style);
+		pen = text.write(pen, 0, "float aspect = logo.get_aspect_ratio();");
+		pen = text.write(pen, 0, "Hello World!");
 
 		pen = text.write(pen, &s1, "How is this?\n");
 		pen = text.write(pen, &s2, "Maybe this?");

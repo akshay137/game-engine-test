@@ -31,7 +31,7 @@ namespace uhero::gfx
 		FontStyle(i32 size=16)
 			: size{size}
 		{
-			border_size = 0.1f;
+			border_size = 0.01f;
 			text_color = Color32(255);
 			border_color = Color32(0, 0, 0, 255);
 		}
