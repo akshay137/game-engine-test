@@ -5,6 +5,18 @@
 
 namespace uhero
 {
+	struct StackAllocator;
+
+	// Convinience struct for using stack group in scope
+	struct StackGroup
+	{
+		usize top;
+		StackAllocator& allocator;
+
+		StackGroup(StackAllocator& allocator);
+		~StackGroup();
+	};
+
 	struct StackAllocator
 	{
 		void* pool;
@@ -29,6 +41,8 @@ namespace uhero
 		[[nodiscard]]
 		usize begin_group() { return top; }
 		void end_group(usize group) { top = group; };
+
+		StackGroup group() { return StackGroup(*this); }
 
 		template <typename T>
 		[[nodiscard]]
@@ -59,7 +73,9 @@ namespace uhero
 #define UH_STACK_INIT(size) uhero::global_stack.create(size)
 #define UH_STACK_CLEAR() uhero::global_stack.clear()
 
-#define UH_STACK_GROUP() uhero::global_stack.begin_group()
+#define UH_STACK_GROUP_BEGIN() uhero::global_stack.begin_group()
 #define UH_STACK_GROUP_END(g) uhero::global_stack.end_group(g)
+
+#define UH_STACK_GROUP() auto __group = uhero::global_stack.group();
 
 #endif

@@ -4,7 +4,6 @@
 #include "deps.hpp"
 
 #include <SDL2/SDL_events.h>
-#include <SDL2/SDL_timer.h>
 
 namespace uhero
 {
@@ -126,5 +125,15 @@ namespace uhero
 		main_window.swap_buffers();
 
 		return delta;
+	}
+
+	SystemAllocator& Context::system_allocator()
+	{
+		return global_allocator;
+	}
+
+	StackAllocator& Context::stack_allocator()
+	{
+		return global_stack;
 	}
 }

@@ -11,6 +11,8 @@ namespace uhero::gfx
 		this->glyphs = glyphs;
 		line_height = lh;
 		space = sp;
+
+		return Result::Success;
 	}
 
 	void Font::clear(bool free_glyphs)
@@ -21,5 +23,27 @@ namespace uhero::gfx
 	}
 
 	Glyph Font::find_glyph(codepoint code) const
-	{}
+	{
+		assert(glyphs);
+
+		Glyph g = glyphs[0];
+
+		u32 start = 0;
+		u32 end = glyph_count;
+
+		while (start <= end)
+		{
+			u32 mid = start + (end - start) / 2;
+
+			if (glyphs[mid].code == code)
+				return glyphs[mid];
+			
+			if (glyphs[mid].code > code)
+				end = mid;
+			else
+				start = mid;
+		}
+
+		return g;
+	}
 }

@@ -88,6 +88,9 @@ namespace uhero::gfx
 		void set_filter(TextureFilter filter);
 		void set_swizzle(const Swizzle& swizzle);
 
+		float normalized_x(float x) const { return x / width; }
+		float normalized_y(float y) const { return y / height; }
+
 		static PixelData pixeldata_from_format(PixelFormat format);
 		static i32 swizzle_mask_to_glenum(SwizzleMask mask);
 	};

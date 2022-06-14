@@ -24,9 +24,17 @@ namespace uhero::gfx
 	struct FontStyle
 	{
 		i32 size;
-		f32 outline_size;
+		f32 border_size;
 		Color32 text_color;
 		Color32 border_color;
+
+		FontStyle(i32 size=16)
+			: size{size}
+		{
+			border_size = 0.1f;
+			text_color = Color32(255);
+			border_color = Color32(0, 0, 0, 255);
+		}
 	};
 
 	struct Font

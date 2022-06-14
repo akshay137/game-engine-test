@@ -41,6 +41,8 @@ namespace uhero
 		float tick();
 
 		static Context create_context(i32 argc, char** args);
+		static struct SystemAllocator& system_allocator();
+		static struct StackAllocator& stack_allocator();
 	};
 }
 

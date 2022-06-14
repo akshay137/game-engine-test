@@ -21,7 +21,7 @@ namespace uhero::res
 		}
 
 		u8* aligned_pixels = pixeldata;
-		auto group = UH_STACK_GROUP();
+		UH_STACK_GROUP();
 		if (0 != (x * n) % 4)
 		{
 			UH_WARN("%s is not 4 byte aligned, manually aligning...\n", file);
@@ -40,7 +40,6 @@ namespace uhero::res
 				std::memcpy(dst, src, pitch);
 			}
 		}
-		UH_STACK_GROUP_END(group);
 
 		gfx::PixelFormat format;
 		if (1 == n) format = gfx::PixelFormat::GREYSCALE;

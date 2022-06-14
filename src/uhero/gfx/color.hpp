@@ -27,16 +27,6 @@ namespace uhero::gfx
 			: red{r}, green{g}, blue{b}, alpha{a}
 		{}
 
-		static Color32 from_rgba(f32 r, f32 g, f32 b, f32 a = 1.0f)
-		{
-			Color32 color;
-			color.red = (u32)(r * 255) & 0xff;
-			color.green = (u32)(b * 255) & 0xff;
-			color.blue = (u32)(g * 255) & 0xff;
-			color.alpha = (u32)(a * 255) & 0xff;
-			return color;
-		}
-
 		void to_rgb(f32& r, f32& g, f32& b) const
 		{
 			r = red / 255.0f;
@@ -50,6 +40,26 @@ namespace uhero::gfx
 			g = green / 255.0f;
 			b = blue / 255.0f;
 			a = alpha / 255.0f;
+		}
+
+		static Color32 from_rgba(f32 r, f32 g, f32 b, f32 a = 1.0f)
+		{
+			Color32 color;
+			color.red = (u32)(r * 255) & 0xff;
+			color.green = (u32)(g * 255) & 0xff;
+			color.blue = (u32)(b * 255) & 0xff;
+			color.alpha = (u32)(a * 255) & 0xff;
+			return color;
+		}
+
+		static Color32 swap_bytes(const Color32 color)
+		{
+			Color32 swapped;
+			swapped.red = color.alpha;
+			swapped.green = color.blue;
+			swapped.blue = color.green;
+			swapped.alpha = color.red;
+			return swapped;
 		}
 	};
 }

@@ -44,7 +44,7 @@ namespace uhero::res
 
 		// read image
 		usize image_size = w * h;
-		auto group = UH_STACK_GROUP();
+		UH_STACK_GROUP();
 		void* image = UH_STACK_ALLOCATE(image_size);
 
 		file.read(image, image_size);
@@ -52,8 +52,6 @@ namespace uhero::res
 		font.atlas.create(w, h, gfx::PixelFormat::GREYSCALE, image);
 		font.line_height = font.glyphs[0].size_y * 0.75;
 		font.space = font.glyphs[0].advance_x * 0.8;
-
-		UH_STACK_GROUP_END(group);
 
 		UH_VERB("FONT_ATLAS: %s: [GC: %u | <%dx%d> | HxW: <%dx%d>]\n",
 			filename,

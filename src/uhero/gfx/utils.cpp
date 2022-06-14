@@ -67,6 +67,16 @@ namespace uhero::gfx
 				}
 					break;
 				
+				case VertexAttribute::ByteNVec4:
+				{
+					count = 4;
+					gl_type = GL_UNSIGNED_BYTE;
+					offset = relative_offset;
+					normalized = GL_TRUE;
+					relative_offset += 4;
+				}
+					break;
+				
 				default:
 				{
 					UH_ERROR("Invalid VertexAttribute: %u\n",

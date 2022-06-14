@@ -8,6 +8,17 @@ namespace uhero
 {
 	StackAllocator global_stack;
 
+	StackGroup::StackGroup(StackAllocator& allocator)
+		: allocator{allocator}
+	{
+		this->top = allocator.begin_group();
+	}
+
+	StackGroup::~StackGroup()
+	{
+		allocator.end_group(top);
+	}
+
 	Result StackAllocator::create(usize size)
 	{
 		pool = UH_ALLOCATE(size);

@@ -51,7 +51,7 @@ namespace uhero::gfx
 		const Texture* current_texture;
 
 		Result create(u32 max_sprites,
-			const char* vs = nullptr, const char* fs = nullptr
+			const char* vs=nullptr, const char* fs=nullptr
 		);
 
 		void clear();

@@ -64,11 +64,11 @@ namespace uhero::gfx
 	void BatchRenderer::begin(const Texture& texture)
 	{
 		current_texture = &texture;
-		texture.bind_slot(0);
 	}
 
 	void BatchRenderer::end()
 	{
+		current_texture->bind_slot(0);
 		update_vertex_buffer();
 
 		pso.make_current();
@@ -84,13 +84,14 @@ namespace uhero::gfx
 
 	void BatchRenderer::draw_sprite(glm::vec2 position, glm::vec4 src, float scale)
 	{
+		const Texture& tex = *current_texture;
 		Quad quad {};
 		quad.rect = glm::vec4(position.x, position.y, src.z * scale, src.w * scale);
 		quad.clip = glm::vec4(
-			src.x / current_texture->width,
-			src.y / current_texture->height,
-			src.z / current_texture->width,
-			src.w / current_texture->height
+			tex.normalized_x(src.x),
+			tex.normalized_y(src.y),
+			tex.normalized_x(src.z),
+			tex.normalized_y(src.w)
 		);
 		quad.color = Color32(1, 1, 1, 1);
 		quad.angle = 1.0f;
