@@ -114,6 +114,7 @@ namespace uhero
 		main_clock.tick();
 		float delta = main_clock.delta();
 
+		input.reset();
 		SDL_Event event {};
 		while (SDL_PollEvent(&event))
 		{
@@ -122,8 +123,45 @@ namespace uhero
 				should_exit = true;
 				return 0.0f;
 			}
+
+			if (SDL_KEYUP == event.type) // released
+			{
+				auto scancode = event.key.keysym.scancode;
+				input.set_keystate(scancode, KeyState::Released);
+			}
+			else if (SDL_KEYDOWN == event.type) // pressed
+			{
+				auto scancode = event.key.keysym.scancode;
+				input.set_keystate(scancode, KeyState::Pressed);
+
+				if (event.key.repeat)
+					input.set_keystate(scancode, KeyState::Repeat);
+			}
+			else if (SDL_MOUSEBUTTONDOWN == event.type) // mouse pressed
+			{
+				auto button = event.button.button;
+				// input.keys[button] &= KeyState::Pressed;
+			}
+			else if (SDL_MOUSEBUTTONUP == event.type) // mouse released
+			{
+				auto button = event.button.button;
+				// input.keys[button] &= KeyState::Released;
+			}
 		}
 
+		i32 nkeys = 0;
+		const u8* keys = SDL_GetKeyboardState(&nkeys);
+		for (i32 i = 0; i < nkeys; i++)
+		{
+			if (keys[i]) input.set_keystate(i, KeyState::Down);
+		}
+
+		i32 x, y;
+		SDL_GetMouseState(&x, &y);
+		input.mouse.x = x;
+		input.mouse.y = y;
+
+		gfx.update_render_state(main_window.width, main_window.height);
 		float color[4] = { .1, .1, .1, 0 };
 		gfx.clear_buffer(color, 1.0f, 0);
 		if (current_level)

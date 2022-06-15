@@ -13,7 +13,7 @@ namespace uhero::gfx
 {
 	struct GlyphQuad
 	{
-		Glyph glyph;
+		// Glyph glyph;
 		glm::vec2 position;
 		glm::vec2 size;
 		glm::vec4 clip;

@@ -99,7 +99,7 @@ namespace uhero::gfx
 		float scale = style.size / (float)current_font->line_height;
 
 		GlyphQuad quad {};
-		quad.glyph = glyph;
+		// quad.glyph = glyph;
 		quad.position = position;
 		quad.text_color = style.text_color;
 		quad.border_color = style.border_color;

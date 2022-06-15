@@ -44,6 +44,9 @@ namespace uhero::gfx
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		render_state.resize(window.width, window.height);
+		rsbuffer.create(BufferType::Dynaminc, 1, &render_state);
+
 		UH_VERB("Created OpenGL context: %p\n", gl_context);
 
 		return Result::Success;
@@ -55,14 +58,24 @@ namespace uhero::gfx
 
 		UH_VERB("Destroying OpenGL context: %p\n", gl_context);
 
+		rsbuffer.clear();
 		SDL_GL_DeleteContext(gl_context);
 		gl_context = nullptr;
 	}
 
 	void Context::clear_buffer(float* color, float depth, i32 stencil)
 	{
+		auto vp = render_state.viewport;
+		glViewport(vp.x, vp.y, vp.z, vp.w);
 		glClearBufferfv(GL_COLOR, 0, color);
 		glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);
+	}
+
+	void Context::update_render_state(float width, float height)
+	{
+		render_state.resize(width, height);
+		rsbuffer.update(&render_state);
+		rsbuffer.bind_base(BufferBase::Uniform, 0);
 	}
 
 	void uh_gldebug_callback(GLenum source,
@@ -79,8 +92,8 @@ namespace uhero::gfx
 
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
-			UH_ERROR("%*s", length, message);
-			assert(false);
+			UH_ERROR("%.*s", length, message);
+			// assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{

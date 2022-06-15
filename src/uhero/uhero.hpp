@@ -4,6 +4,7 @@
 #include "common.hpp"
 #include "config.hpp"
 #include "window.hpp"
+#include "input.hpp"
 #include "gfx/gfx.hpp"
 #include "gfx/font.hpp"
 #include "level.hpp"
@@ -22,6 +23,7 @@ namespace uhero
 	{
 		Config config;
 		Window main_window;
+		Input input;
 		gfx::Context gfx;
 
 		gfx::Font system_font;

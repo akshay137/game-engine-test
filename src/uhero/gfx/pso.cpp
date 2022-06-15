@@ -49,4 +49,9 @@ namespace uhero::gfx
 	{
 		glVertexArrayElementBuffer(vao, ibuffer.gl_id);
 	}
+
+	void PSO::set_float(i32 index, f32 value)
+	{
+		glProgramUniform1f(program, index, value);
+	}
 }

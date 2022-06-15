@@ -52,6 +52,8 @@ namespace uhero::gfx
 			u32 offset, u32 stride
 		);
 		void set_index_buffer(const Buffer& ibuffer);
+
+		void set_float(i32 index, f32 value);
 	};
 }
 
