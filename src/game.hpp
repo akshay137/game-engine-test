@@ -2,16 +2,14 @@
 #define GAME_H__ 1
 
 #include "uhero/level.hpp"
-#include "uhero/gfx/batch_renderer.hpp"
-#include "uhero/gfx/text_renderer.hpp"
+#include "uhero/gfx/renderer.hpp"
 
 namespace game
 {
 	struct Game : public uhero::Level
 	{
 		uhero::Context& ctx;
-		uhero::gfx::BatchRenderer batch;
-		uhero::gfx::TextRenderer text;
+		uhero::gfx::Renderer uber;
 
 		uhero::gfx::Texture spritesheet;
 

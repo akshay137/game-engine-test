@@ -4,12 +4,9 @@
 #include "uhero/gfx/color.hpp"
 #include "uhero/res/texture.hpp"
 
-#include "uhero/gfx/renderer.hpp"
-
 namespace game
 {
 	using namespace uhero;
-	gfx::Renderer uber;
 
 	uhero::Result Game::load(uhero::Context&)
 	{
@@ -32,8 +29,6 @@ namespace game
 
 	void Game::update(float)
 	{
-		using namespace uhero;
-
 		auto& ip = ctx.input;
 		if (ip.is_key_released(KeyCode::Escape))
 			ctx.request_exit();
@@ -41,8 +36,6 @@ namespace game
 
 	void Game::render()
 	{
-		using namespace uhero;
-
 		glm::vec2 pos;
 		pos.x = ctx.input.mouse.x;
 		pos.y = ctx.main_window.height - ctx.input.mouse.y;
