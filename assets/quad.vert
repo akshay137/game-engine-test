@@ -2,7 +2,8 @@
 
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 uv;
-layout (location = 2) in vec3 color;
+layout (location = 1, component = 2) in float blend;
+layout (location = 2) in vec4 color;
 
 layout (std140, binding = 0) uniform rstate
 {
@@ -14,7 +15,8 @@ out VS_OUT
 {
 	vec3 wpos;
 	vec2 uv;
-	vec3 color;
+	float blend;
+	vec4 color;
 } vs;
 
 void main()
@@ -25,6 +27,7 @@ void main()
 
 	vs.wpos = pos4.xyz;
 	vs.uv = uv;
+	vs.blend = blend;
 	vs.color = color;
 
 	// static program

@@ -67,6 +67,10 @@ namespace uhero::gfx
 			const char* fmt, ...
 		);
 
+		glm::vec2 calculate_size(i32 count, const char* buffer,
+			const Font& font, const FontStyle& style
+		);
+
 		void update_vertex_buffer();
 
 		static GlyphVertex vertex_glyph_from_quad(const GlyphQuad& quad);

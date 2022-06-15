@@ -29,10 +29,12 @@ namespace uhero::gfx
 		f32 line_spacing;
 		Color32 text_color;
 		Color32 border_color;
+		i32 wrap_width;
 
 		FontStyle(f32 size=16)
 			: size{size * PT_TO_PIXEL}
 		{
+			wrap_width = 0;
 			border_size = 0.01f;
 			line_spacing = 0;
 			text_color = Color32(255);

@@ -20,6 +20,7 @@ namespace uhero::gfx
 		glm::vec4 rect;
 		glm::vec4 clip; // texture region
 		float angle;
+		float blend;
 		Color32 color;
 
 		Quad() = default;
@@ -29,7 +30,8 @@ namespace uhero::gfx
 	{
 		glm::vec2 position;
 		glm::vec2 uv;
-		glm::vec3 color;
+		float blend;
+		Color32 color;
 	};
 
 	constexpr u32 size = sizeof(Quad);
@@ -59,7 +61,14 @@ namespace uhero::gfx
 		void begin(const Texture& texture);
 		void end();
 
-		void draw_sprite(glm::vec2 position, glm::vec4 src, float scale=1);
+		void draw_sprite(glm::vec2 position, glm::vec4 src,
+			float scale=1.0f, float angle=0.0f,
+			float blend_factor=0.0f,
+			Color32 color_key=Color32(255, 255, 255, 255)
+		);
+		void draw_color(glm::vec2 position, glm::vec2 size, Color32 color,
+			float angle=0.0f
+		);
 
 		void update_vertex_buffer();
 	};

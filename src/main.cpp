@@ -9,8 +9,9 @@
 #include "uhero/res/font_atlas.hpp"
 #include "uhero/memory/memory.hpp"
 
-#include <glad/glad.h>
+#include <string>
 
+#include <glad/glad.h>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -21,6 +22,12 @@ struct RenderState
 {
 	glm::mat4 orthographic;
 	glm::vec4 viewport;
+};
+
+struct Button
+{
+	glm::vec2 position;
+	std::string title;
 };
 
 using namespace uhero;
@@ -34,9 +41,27 @@ struct Game : uhero::Level
 	gfx::TextRenderer text;
 	glm::vec4 clip;
 	i32 size = 512 + 256;
+	usize read;
 
 	char* code;
 	const char* file = "premake5.lua";
+
+	void draw_button(const Button& button)
+	{
+		auto size = text.calculate_size(
+			button.title.size(), button.title.c_str(),
+			ctx->get_system_font(), ctx->style_normal
+		);
+		size *= 1.1f;
+		batch.begin(logo);
+		batch.draw_color(button.position, size,
+			gfx::Color32::from_rgba(0, 1, 0)
+		);
+		batch.end();
+		text.begin(ctx->get_system_font(), ctx->style_normal);
+		text.write(button.position + glm::vec2(2.5f, size.y + 2.5f), 0, button.title.c_str());
+		text.end();
+	}
 
 	uhero::Result load(uhero::Context& ctx) override
 	{
@@ -57,7 +82,7 @@ struct Game : uhero::Level
 
 		auto buffer_size = Memory::kilobytes_to_bytes(1);
 		code = UH_ALLOCATE_TYPE(char, buffer_size);
-		auto read = File::read_full(file, code, buffer_size);
+		read = File::read_full(file, code, buffer_size);
 		code[read] = 0;
 
 		this->ctx = &ctx;
@@ -93,10 +118,18 @@ struct Game : uhero::Level
 		logo.bind_slot(0);
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 
+		Button button;
+		button.position = glm::vec2(0, rstate.viewport.w - 64);
+		button.title = "Click Me";
+		draw_button(button);
+
 		batch.begin(logo);
 		batch.draw_sprite(glm::vec2(0), glm::vec4(0, 0, logo.width, logo.height));
 		batch.draw_sprite(glm::vec2(logo.width * 1.1, 0.0),
 			glm::vec4(logo.width / 2, 0, logo.width / 2, logo.height / 2)
+		);
+		batch.draw_color(glm::vec2(0, logo.height), glm::vec2(256, 32),
+			gfx::Color32::from_rgba(0, 1, 1)
 		);
 		batch.end();
 
@@ -112,7 +145,9 @@ struct Game : uhero::Level
 
 		pen.x = 0;
 		pen = text.write(pen, 0, "the quick brown fox jumps over lazy dog.\n");
-		pen = text.write(pen, 0, "THE QUICK BROWN FOX JUMPS OVER LAZY DOG.\n");
+		gfx::FontStyle style{16};
+		style.wrap_width = 1;
+		pen = text.write(pen, &style, "THE QUICK BROWN FOX JUMPS OVER LAZY DOG.\n");
 		pen = text.write(pen, 0,
 			"struct Texture\n"
 			"{\n"
@@ -124,7 +159,6 @@ struct Game : uhero::Level
 		);
 		pen = text.write(pen, 0, "1234567890|`~!@#$%^&*_+-=,./\\;':\"(){}[]<>\n");
 		pen = text.write(pen, &ctx->style_info, "Press Alt F4 to quit.");
-
 		pen = glm::vec2(rstate.viewport.z / 2, rstate.viewport.w);
 		pen = text.write(pen, 0, "%s:\n", file);
 		pen = text.write(pen, 0, code);

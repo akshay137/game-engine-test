@@ -74,6 +74,8 @@ namespace uhero::gfx
 
 	void TextRenderer::end()
 	{
+		if (0 == current_glyphs) return;
+
 		update_vertex_buffer();
 
 		current_font->atlas.bind_slot(1);
@@ -135,6 +137,15 @@ namespace uhero::gfx
 
 		for (i32 i = 0; i < count; i++)
 		{
+			if (style->wrap_width > 0)
+			{
+				if (style->wrap_width < (pen.x - position.x)) // went beyond
+				{
+					pen.x = position.x;
+					line++;
+				}
+			}
+
 			pen.y = position.y - line * line_height * scale;
 			char c = buffer[i];
 
@@ -169,9 +180,51 @@ namespace uhero::gfx
 		return pen;
 	}
 
+	glm::vec2 TextRenderer::calculate_size(i32 count, const char* buffer,
+		const Font& font, const FontStyle& style
+	)
+	{
+		glm::vec2 size(0.0f);
+		float width = 0.0f;
+		float scale = font.size_scale(style.size);
+		float line_height = font.line_height + style.line_spacing;
+		float space = font.space;
+		i32 line = 1;
+
+		for (i32 i = 0; i < count; i++)
+		{
+			char c = buffer[i];
+
+			if ('\n' == c)
+			{
+				line++;
+				if (size.x < width)
+					size.x = width;
+				width = 0.0f;
+				continue;
+			}
+			if (' ' == c)
+			{
+				width += space * scale;
+				continue;
+			}
+			if ('\t' == c)
+			{
+				width += (4 * space) * scale;
+				continue;
+			}
+
+			const auto& glyph = font.find_glyph(c);
+
+			width += glyph.advance_x * scale;
+		}
+		if (size.x < width) size.x = width;
+		size.y = line * line_height * scale;
+		return size;
+	}
+
 	void TextRenderer::update_vertex_buffer()
 	{
-
 		for (u32 i = 0; i < current_glyphs; i++)
 		{
 			const GlyphQuad& quad = quads[i];

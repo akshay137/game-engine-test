@@ -16,8 +16,8 @@ namespace uhero::gfx
 
 		VertexLayout layout {};
 		layout.add_attribute(VertexAttribute::Vec2); // position
-		layout.add_attribute(VertexAttribute::Vec2); // uv
-		layout.add_attribute(VertexAttribute::Vec3); // color
+		layout.add_attribute(VertexAttribute::Vec3); // uv + blend
+		layout.add_attribute(VertexAttribute::ByteNVec4); // color
 		
 		auto res = pso.create(layout, vs, fs);
 		if (Result::Success != res)
@@ -68,6 +68,8 @@ namespace uhero::gfx
 
 	void BatchRenderer::end()
 	{
+		if (0 == current_quads) return;
+
 		current_texture->bind_slot(0);
 		update_vertex_buffer();
 
@@ -81,7 +83,9 @@ namespace uhero::gfx
 		current_quads = 0;
 	}
 
-	void BatchRenderer::draw_sprite(glm::vec2 position, glm::vec4 src, float scale)
+	void BatchRenderer::draw_sprite(glm::vec2 position, glm::vec4 src,
+		float scale, float angle, float blend_factor, Color32 color_key
+	)
 	{
 		const Texture& tex = *current_texture;
 		Quad quad {};
@@ -92,8 +96,9 @@ namespace uhero::gfx
 			tex.normalized_x(src.z),
 			tex.normalized_y(src.w)
 		);
-		quad.color = Color32(1, 1, 1, 1);
-		quad.angle = 1.0f;
+		quad.color = color_key;
+		quad.angle = angle;
+		quad.blend = blend_factor;
 
 		quads[current_quads++] = quad;
 
@@ -101,34 +106,52 @@ namespace uhero::gfx
 			this->end();
 	}
 
+	void BatchRenderer::draw_color(glm::vec2 position, glm::vec2 size,
+		Color32 color, float angle
+	)
+	{
+		Quad quad {};
+		quad.rect = glm::vec4(position.x, position.y, size.x, size.y);
+		quad.clip = glm::vec4(0.0f);
+		quad.color = color;
+		quad.angle = angle;
+		quad.blend = 1.0f;
+
+		quads[current_quads++] = quad;
+		if (current_quads >= max_quads)
+			this->end();
+	}
+
 	void BatchRenderer::update_vertex_buffer()
 	{
-		glm::vec3 color;
 		for (u32 i = 0; i < current_quads; i++)
 		{
 			const Quad& quad = quads[i];
-			quad.color.to_rgb(color.r, color.g, color.b);
 
 			Vertex2d v[4];
 			v[0].position = glm::vec2(quad.rect.x, quad.rect.y);
 			v[0].uv = glm::vec2(quad.clip.x, quad.clip.y + quad.clip.w);
-			v[0].color = color;
+			v[0].blend = quad.blend;
+			v[0].color = quad.color;
 
 			v[1].position = glm::vec2(quad.rect.x + quad.rect.z, quad.rect.y);
 			v[1].uv = glm::vec2(quad.clip.x + quad.clip.z,
 				quad.clip.y + quad.clip.w
 			);
-			v[1].color = color;
+			v[1].blend = quad.blend;
+			v[1].color = quad.color;
 
 			v[2].position = glm::vec2(quad.rect.x, quad.rect.y + quad.rect.w);
 			v[2].uv = glm::vec2(quad.clip.x, quad.clip.y);
-			v[2].color = color;
+			v[2].blend = quad.blend;
+			v[2].color = quad.color;
 
 			v[3].position = glm::vec2(quad.rect.x + quad.rect.z,
 				quad.rect.y + quad.rect.w
 			);
 			v[3].uv = glm::vec2(quad.clip.x + quad.clip.z, quad.clip.y);
-			v[3].color = color;
+			v[3].blend = quad.blend;
+			v[3].color = quad.color;
 
 			u32 v_index = i * 4;
 			vertices[v_index + 0] = v[0];
