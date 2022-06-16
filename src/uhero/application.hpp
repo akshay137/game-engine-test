@@ -1,5 +1,5 @@
-#ifndef UHERO_LEVEL_H__
-#define UHERO_LEVEL_H__ 1
+#ifndef UHERO_APPLICATION_H__
+#define UHERO_APPLICATION_H__ 1
 
 #include "common.hpp"
 
@@ -7,9 +7,9 @@ namespace uhero
 {
 	struct Context;
 
-	struct Level
+	struct IApplication
 	{
-		virtual ~Level() {}
+		virtual ~IApplication() {}
 
 		virtual Result load(Context& ctx) = 0;
 		virtual void clear() = 0;

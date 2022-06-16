@@ -11,6 +11,8 @@ namespace uhero::res
 {
 	gfx::Texture load_texture(const char* file, i32 mipmaps)
 	{
+		UH_STACK_GROUP();
+
 		i32 x, y, n;
 		u8* pixeldata = stbi_load(file, &x, &y, &n, 0);
 		if (nullptr == pixeldata)
@@ -21,7 +23,6 @@ namespace uhero::res
 		}
 
 		u8* aligned_pixels = pixeldata;
-		UH_STACK_GROUP();
 		if (0 != (x * n) % 4)
 		{
 			UH_WARN("%s is not 4 byte aligned, manually aligning...\n", file);
@@ -45,6 +46,12 @@ namespace uhero::res
 		if (1 == n) format = gfx::PixelFormat::GREYSCALE;
 		else if (3 == n) format = gfx::PixelFormat::RGB8;
 		else if (4 == n) format = gfx::PixelFormat::RGBA8;
+		else
+		{
+			stbi_image_free(pixeldata);
+			UH_ERROR("Unknown amount of components per pixel: %d\n", n);
+			return {};
+		}
 
 		gfx::Texture texture {};
 		auto res = texture.create(x, y, format, aligned_pixels, mipmaps);

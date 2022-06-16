@@ -1,15 +1,18 @@
 #ifndef GAME_H__
 #define GAME_H__ 1
 
-#include "uhero/level.hpp"
+#include "uhero/application.hpp"
 #include "uhero/gfx/renderer.hpp"
+#include "uhero/gfx/font.hpp"
 
 namespace game
 {
-	struct Game : public uhero::Level
+	struct Game : public uhero::IApplication
 	{
 		uhero::Context& ctx;
 		uhero::gfx::Renderer uber;
+		uhero::gfx::Font font;
+		uhero::gfx::FontStyle style;
 
 		uhero::gfx::Texture spritesheet;
 

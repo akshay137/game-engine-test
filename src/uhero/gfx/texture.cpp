@@ -21,6 +21,8 @@ namespace uhero::gfx
 		);
 
 		this->set_swizzle(data.swizzle);
+		if (mipmaps > 0)
+			this->generate_mipmaps();
 
 		this->width = w;
 		this->height = h;
@@ -38,6 +40,17 @@ namespace uhero::gfx
 
 		glDeleteTextures(1, &gl_id);
 		gl_id = 0;
+	}
+
+	void Texture::update_region(i32 level, i32 x, i32 y, i32 width, i32 height,
+		const void* pixels
+	)
+	{
+		PixelData data = pixeldata_from_format(pixel_format);
+		glTextureSubImage2D(gl_id, level, x, y, width, height,
+			data.channel_format, data.data_type,
+			pixels
+		);
 	}
 
 	void Texture::bind_slot(u32 index) const
@@ -68,7 +81,12 @@ namespace uhero::gfx
 			glTextureParameteri(gl_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTextureParameteri(gl_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
-		else if (TextureFilter::MipmapLinear == filter)
+		else if (TextureFilter::BiLinear == filter)
+		{
+			glTextureParameteri(gl_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+			glTextureParameteri(gl_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+		else if (TextureFilter::TriLinear == filter)
 		{
 			glTextureParameteri(gl_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTextureParameteri(gl_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

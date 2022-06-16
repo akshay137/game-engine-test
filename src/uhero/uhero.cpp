@@ -43,16 +43,8 @@ namespace uhero
 			return ctx;
 		}
 
-		ctx.system_font = res::load_font(SYSTEM_FONT_FILE);
-		auto style = gfx::FontStyle(ctx.config.font_size);
-		ctx.style_normal = style;
-		ctx.style_info = style;
-		ctx.style_info.text_color = gfx::Color32::from_rgba(0, 1, 0);
-		ctx.style_error = style;
-		ctx.style_error.text_color = gfx::Color32::from_rgba(1, 0, 0);
-
 		ctx.should_exit = false;
-		ctx.current_level = nullptr;
+		ctx.app = nullptr;
 		ctx.main_clock.reset();
 
 		DUMPI(ctx.config.display_index);
@@ -72,11 +64,10 @@ namespace uhero
 
 	void Context::shutdown()
 	{
-		if (current_level)
-			current_level->clear();
+		if (app)
+			app->clear();
 		Config::write_config(config, UHERO_CONFIG_FILE);
 
-		system_font.clear();
 		gfx.clear();
 		main_window.close();
 
@@ -97,13 +88,13 @@ namespace uhero
 		return true;
 	}
 
-	Result Context::set_current_level(Level* level)
+	Result Context::set_application(IApplication* new_app)
 	{
-		if (current_level)
-			current_level->clear();
+		if (app)
+			app->clear();
 		
-		current_level = level;
-		auto res = current_level->load(*this);
+		app = new_app;
+		auto res = app->load(*this);
 		return res;
 	}
 
@@ -164,10 +155,11 @@ namespace uhero
 		gfx.update_render_state(main_window.width, main_window.height);
 		float color[4] = { .1, .1, .1, 0 };
 		gfx.clear_buffer(color, 1.0f, 0);
-		if (current_level)
+		
+		if (app)
 		{
-			current_level->update(delta);
-			current_level->render();
+			app->update(delta);
+			app->render();
 		}
 
 		main_window.swap_buffers();

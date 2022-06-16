@@ -19,9 +19,9 @@ namespace uhero::gfx
 		VertexLayout layout;
 		layout.add_attribute(VertexAttribute::Vec2);
 		layout.add_attribute(VertexAttribute::Vec2);
-		layout.add_attribute(VertexAttribute::ByteNVec4);
-		layout.add_attribute(VertexAttribute::Vec4);
-		layout.add_attribute(VertexAttribute::ByteNVec4);
+		layout.add_attribute(VertexAttribute::ByteNVec4); // color
+		layout.add_attribute(VertexAttribute::ByteNVec4); // blend | text data
+		layout.add_attribute(VertexAttribute::ByteNVec4); // border color
 
 		auto res = pso.create(layout, vs, fs);
 		if (Result::Success != res)
@@ -74,17 +74,18 @@ namespace uhero::gfx
 		u32 drawn = 0;
 		while (drawn < current_quads)
 		{
-			u32 count = 0;
-			const QuadType type = quads[drawn].type;
-			const Texture* texture = quads[drawn].texture;
+			const Quad& first = quads[drawn];
+			const Texture* texture = first.texture;
 
-			while (type == quads[drawn + count].type)
+			u32 count = 1;
+			while (first.can_batch_together(quads[drawn + count]))
 			{
 				count += 1;
+				if (current_quads <= (drawn + count)) break;
 			}
 
 			// draw command here
-			if (QuadType::SDFGlyph == type)
+			if (QuadType::SDFGlyph == first.type)
 			{
 				// call text code
 				texture->bind_slot(1);
@@ -110,24 +111,24 @@ namespace uhero::gfx
 		current_quads = 0;
 	}
 
-	void Renderer::draw_sprite(glm::vec2 pos, const Sprite& sprite,
-		float scale, float angle,
+	void Renderer::draw_texture(glm::vec2 pos, const Texture& texture,
+		glm::vec4 src, float scale, float angle,
 		float blend_factor,
 		Color32 color_key
 	)
 	{
 		Quad quad {};
 		quad.type = QuadType::Sprite;
-		quad.texture = &sprite.texture;
+		quad.texture = &texture;
 
 		quad.rect = glm::vec4(pos.x, pos.y,
-			sprite.src.z * scale, sprite.src.w * scale
+			src.z * scale, src.w * scale
 		);
 		quad.clip = glm::vec4(
-			sprite.texture.normalized_x(sprite.src.x),
-			sprite.texture.normalized_y(sprite.src.y),
-			sprite.texture.normalized_x(sprite.src.z),
-			sprite.texture.normalized_y(sprite.src.w)
+			texture.normalized_x(src.x),
+			texture.normalized_y(src.y),
+			texture.normalized_x(src.z),
+			texture.normalized_y(src.w)
 		);
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
@@ -280,13 +281,14 @@ namespace uhero::gfx
 			vertices[vindex + 3] = v[3];
 		}
 
-		vertex_buffer.update(vertices);
+		// vertex_buffer.update(vertices);
+		vertex_buffer.update_range(0, current_quads * 4, vertices);
 	}
 
 	Renderer::Vertex Renderer::glyph_vertex(const Quad& quad)
 	{
 		float width = 0.4f;
-		float edge = 0.2f;
+		float edge = 0.175f;
 
 		Vertex v {};
 		v.color = quad.glyph.text_color;

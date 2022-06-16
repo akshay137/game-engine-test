@@ -3,6 +3,7 @@
 #include "uhero/logger.hpp"
 #include "uhero/gfx/color.hpp"
 #include "uhero/res/texture.hpp"
+#include "uhero/res/font_atlas.hpp"
 
 namespace game
 {
@@ -10,13 +11,15 @@ namespace game
 
 	uhero::Result Game::load(uhero::Context&)
 	{
-		spritesheet = uhero::res::load_texture("assets/spritesheet.png");
-		spritesheet.generate_mipmaps();
-		spritesheet.set_filter(gfx::TextureFilter::MipmapLinear);
+		spritesheet = res::load_texture("assets/spritesheet.png");
+		spritesheet.set_filter(gfx::TextureFilter::Nearest);
 
-		auto res = uber.create(2048);
+		auto res = uber.create(16);
 		if (Result::Success != res)
 			return res;
+
+		font = res::load_font("assets/cascadia.atlas");
+		style = gfx::FontStyle(16);
 
 		return Result::Success;
 	}
@@ -25,6 +28,7 @@ namespace game
 	{
 		uber.clear();
 		spritesheet.clear();
+		font.clear();
 	}
 
 	void Game::update(float)
@@ -36,27 +40,27 @@ namespace game
 
 	void Game::render()
 	{
+		const i32 w = ctx.main_window.width;
+		const i32 h = ctx.main_window.height;
+
 		glm::vec2 pos;
 		pos.x = ctx.input.mouse.x;
-		pos.y = ctx.main_window.height - ctx.input.mouse.y;
-		float scale = 1.5;
+		pos.y = ctx.input.mouse.y;
 
-		gfx::Sprite sprite(spritesheet);
-		uber.draw_sprite(glm::vec2(0), sprite, scale);
-		uber.draw_color(pos, glm::vec2(32), gfx::Color32::from_rgba(1, 0, 0));
+		uber.draw_texture(glm::vec2(0), spritesheet);
+		
 		auto pen = uber.write(glm::vec2(0, ctx.main_window.height),
-			ctx.get_system_font(), ctx.style_normal,
+			font, style,
 			"float aspect = logo.get_aspect_ratio();\n"
 		);
-		pen = uber.write(pen,
-			ctx.get_system_font(), ctx.style_normal,
-			"Hello World.\nfrom uber shader.\n"
+		pen = uber.write(pen, font, style,
+			"Hello World!\nfrom uber shader.\n"
 		);
-		pen = uber.write(pen, ctx.get_system_font(), ctx.style_normal,
-			"spritesheet: [%dx%d] | scale: %f\n",
-			spritesheet.width, spritesheet.height, scale
+		pen = uber.write(pen, font, style,
+			"spritesheet: [%dx%d] | hmm...\n",
+			spritesheet.width, spritesheet.height
 		);
-		pen = uber.write(pen, ctx.get_system_font(), ctx.style_normal,
+		pen = uber.write(pen, font, style,
 			"mouse: <%.1fx%.1f>", pos.x, pos.y
 		);
 

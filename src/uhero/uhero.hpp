@@ -7,14 +7,12 @@
 #include "input.hpp"
 #include "gfx/gfx.hpp"
 #include "gfx/font.hpp"
-#include "level.hpp"
+#include "application.hpp"
 #include "time.hpp"
 
 namespace uhero
 {
 	constexpr const char* const UHERO_CONFIG_FILE = "uhero_config.toml";
-	// constexpr const char* const SYSTEM_FONT_FILE = "assets/firacode.atlas";
-	constexpr const char* const SYSTEM_FONT_FILE = "assets/cascadia.atlas";
 
 	// uhero context
 	// optional, this is here just to provide convinience?
@@ -26,13 +24,8 @@ namespace uhero
 		Input input;
 		gfx::Context gfx;
 
-		gfx::Font system_font;
-		gfx::FontStyle style_normal;
-		gfx::FontStyle style_info;
-		gfx::FontStyle style_error;
-
 		Clock main_clock;
-		Level* current_level;
+		IApplication* app;
 
 		bool should_exit;
 
@@ -43,14 +36,12 @@ namespace uhero
 		// check if everything is initialized ok
 		bool is_ok() const;
 
-		Result set_current_level(Level* level);
+		Result set_application(IApplication* new_app);
 
 		bool exit_requested() const { return should_exit; }
 		void request_exit() { should_exit = true; }
 
 		float tick();
-
-		const gfx::Font& get_system_font() const { return system_font; }
 
 		static Context create_context(i32 argc, char** args);
 		static struct SystemAllocator& system_allocator();

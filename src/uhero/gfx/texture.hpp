@@ -60,7 +60,8 @@ namespace uhero::gfx
 	{
 		Nearest = 0,
 		Linear = 1,
-		MipmapLinear = 2,
+		BiLinear = 2,
+		TriLinear = 3,
 	};
 
 	struct Texture
@@ -76,6 +77,10 @@ namespace uhero::gfx
 			i32 mipmaps = 0
 		);
 		void clear();
+
+		void update_region(i32 level, i32 x, i32 y, i32 width, i32 height,
+			const void* pixels
+		);
 
 		float get_aspect_ratio() const
 		{

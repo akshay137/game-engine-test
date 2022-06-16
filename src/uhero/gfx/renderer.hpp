@@ -5,6 +5,7 @@
 #include "font.hpp"
 #include "pso.hpp"
 #include "buffer.hpp"
+#include "../math/norm_type.hpp"
 
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
@@ -64,6 +65,14 @@ namespace uhero::gfx
 					float border_size;
 				} glyph;
 			};
+
+			bool can_batch_together(const Quad& other) const
+			{
+				if (type != other.type) return false;
+				if (texture != other.texture) return false;
+
+				return true;
+			}
 		}; // struct Quad
 
 		/*
@@ -82,19 +91,19 @@ namespace uhero::gfx
 			union
 			{
 				struct {
-					float blend;
+					math::Normalized<u8> blend;
 				} sprite;
 				struct {
-					float width;
-					float edge;
-					float border_width;
-					float border_edge;
+					math::Normalized<u8> width;
+					math::Normalized<u8> edge;
+					math::Normalized<u8> border_width;
+					math::Normalized<u8> border_edge;
 					Color32 border_color;
 				} glyph;
 			};
 		}; // struct vertex
 
-		static_assert(sizeof(Vertex) == 10 * sizeof(f32), "malformed Vertex");
+		static_assert(sizeof(Vertex) == 7 * sizeof(f32), "malformed Vertex");
 
 		u32 max_quads;
 		u32 current_quads;
@@ -113,8 +122,8 @@ namespace uhero::gfx
 
 		void flush();
 
-		void draw_sprite(glm::vec2 pos, const Sprite& sprite,
-			float scale=1.0f, float angle=0.0f,
+		void draw_texture(glm::vec2 pos, const Texture& texture,
+			glm::vec4 src, float scale=1.0f, float angle=0.0f,
 			float blend_factor=0.0f,
 			Color32 color_key=Color32(255, 255, 255, 255)
 		);
@@ -129,6 +138,29 @@ namespace uhero::gfx
 			const Font& font, const FontStyle& style,
 			const char* fmt, ...
 		);
+
+		void draw_texture(glm::vec2 pos, const Texture& texture,
+			float scale=1.0f, float angle=0.0f,
+			float blend_factor=0.0f,
+			Color32 color_key=Color32(255, 255, 255, 255)
+		)
+		{
+			glm::vec4 src(0, 0, texture.width, texture.height);
+			draw_texture(pos, texture, src, scale, angle,
+				blend_factor, color_key
+			);
+		}
+
+		void draw_sprite(glm::vec2 pos, const Sprite& sprite,
+			float scale=1.0f, float angle=0.0f,
+			float blend_factor=0.0f,
+			Color32 color_key=Color32(255, 255, 255, 255)
+		)
+		{
+			draw_texture(pos, sprite.texture, sprite.src, scale, angle,
+				blend_factor, color_key
+			);
+		}
 
 		void update_vertex_buffer();
 		Vertex glyph_vertex(const Quad& quad);
