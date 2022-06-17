@@ -15,14 +15,17 @@ namespace uhero::gfx
 		PixelData data = pixeldata_from_format(format);
 
 		glTextureStorage2D(gl_id, mipmaps + 1, data.internal_format, w, h);
-		glTextureSubImage2D(gl_id, 0,
-			0, 0, w, h, 
-			data.channel_format, data.data_type,
-			pixels
-		);
+		if (pixels)
+		{
+			glTextureSubImage2D(gl_id, 0,
+				0, 0, w, h, 
+				data.channel_format, data.data_type,
+				pixels
+			);
+		}
 
 		this->set_swizzle(data.swizzle);
-		if (mipmaps > 0)
+		if (pixels && mipmaps > 0)
 			this->generate_mipmaps();
 
 		this->width = w;
@@ -59,6 +62,12 @@ namespace uhero::gfx
 		assert(gl_id);
 
 		glBindTextureUnit(index, gl_id);
+		++Context::gpu_stats.texture_switch;
+	}
+
+	void Texture::reset_slot(u32 index)
+	{
+		glBindTextureUnit(index, 0);
 		++Context::gpu_stats.texture_switch;
 	}
 
@@ -118,6 +127,7 @@ namespace uhero::gfx
 		if (SwizzleMask::Red == mask) return GL_RED;
 		if (SwizzleMask::Green == mask) return GL_GREEN;
 		if (SwizzleMask::Blue == mask) return GL_BLUE;
+		if (SwizzleMask::Alpha == mask) return GL_ALPHA;
 		if (SwizzleMask::Zero == mask) return GL_ZERO;
 		if (SwizzleMask::One == mask) return GL_ONE;
 
@@ -154,6 +164,36 @@ namespace uhero::gfx
 			data.internal_format = GL_RGBA8;
 			data.channel_format = GL_RGBA;
 			data.data_type = GL_UNSIGNED_BYTE;
+			data.swizzle = Swizzle(
+				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
+				SwizzleMask::Alpha
+			);
+		}
+		else if (PixelFormat::RGBA_F16 == format)
+		{
+			data.internal_format = GL_RGBA16F;
+			data.channel_format = GL_RGBA;
+			data.data_type = GL_HALF_FLOAT;
+			data.swizzle = Swizzle(
+				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
+				SwizzleMask::Alpha
+			);
+		}
+		else if (PixelFormat::RGBA_F32 == format)
+		{
+			data.internal_format = GL_RGBA32F;
+			data.channel_format = GL_RGBA;
+			data.data_type = GL_FLOAT;
+			data.swizzle = Swizzle(
+				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
+				SwizzleMask::Alpha
+			);
+		}
+		else if (PixelFormat::Depth24Stencil8 == format)
+		{
+			data.internal_format = GL_DEPTH24_STENCIL8;
+			data.channel_format = GL_DEPTH_STENCIL;
+			data.data_type = GL_UNSIGNED_INT_24_8;
 			data.swizzle = Swizzle(
 				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
 				SwizzleMask::Alpha

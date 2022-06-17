@@ -80,6 +80,16 @@ namespace uhero::gfx
 		rsbuffer.bind_base(BufferBase::Uniform, 0);
 	}
 
+	void Context::use_framebuffer(FrameBuffer& fbo)
+	{
+		fbo.make_current();
+	}
+
+	void Context::use_default_framebuffer()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
 	void uh_gldebug_callback(GLenum source,
 		GLenum type, GLuint id, GLenum severity,
 		GLsizei length, const GLchar *message,

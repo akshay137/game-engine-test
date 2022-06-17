@@ -89,14 +89,22 @@ namespace uhero::gfx
 			{
 				// call text code
 				texture->bind_slot(1);
-				pso.set_float(0, 1);
+				// pso.set_float(0, 1);
+				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_GLYPH);
 			}
 			else
 			{
 				// call sprite/color code
 				if (texture)
+				{
 					texture->bind_slot(0);
-				pso.set_float(0, 0);
+					pso.set_float(UNIFORM_PROGRAM_MODE, UPM_SPRITE);
+				}
+				else
+				{
+					pso.set_float(UNIFORM_PROGRAM_MODE, UPM_COLOR);
+					// Texture::reset_slot(0);
+				}
 			}
 			usize index_offset = drawn * 6 * sizeof(u16);
 			u32 index_count = count * 6;
@@ -111,8 +119,8 @@ namespace uhero::gfx
 		current_quads = 0;
 	}
 
-	void Renderer::draw_texture(glm::vec2 pos, const Texture& texture,
-		glm::vec4 src, float scale, float angle,
+	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
+		const Texture& texture, glm::vec4 src, float scale, float angle,
 		float blend_factor,
 		Color32 color_key
 	)
@@ -122,7 +130,7 @@ namespace uhero::gfx
 		quad.texture = &texture;
 
 		quad.rect = glm::vec4(pos.x, pos.y,
-			src.z * scale, src.w * scale
+			size.x * scale, size.y * scale
 		);
 		quad.clip = glm::vec4(
 			texture.normalized_x(src.x),

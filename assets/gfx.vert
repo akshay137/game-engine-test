@@ -37,7 +37,7 @@ out VS_GLYPH_OUT
 	vec2 edges;
 } glyph;
 
-layout (location = 0) uniform float is_sprite; // 0 if sprite
+layout (location = 0) uniform float program_mode; // 0 if sprite
 
 void main()
 {
@@ -45,20 +45,20 @@ void main()
 	vec4 pos = orthographic * pos4;
 	gl_Position = pos;
 
-	if (0 == int(is_sprite))
-	{
+	// if (0 == int(program_mode))
+	// {
 		sprite.wpos = pos4.xyz;
 		sprite.uv = uv;
 		sprite.blend = blend;
 		sprite.color = color;
-	}
-	else
-	{
+	// }
+	// else
+	// {
 		glyph.uv = uv;
 		glyph.text_color = color;
 		glyph.outline_color = outline_color;
 		glyph.widths = vec2(width, border_width);
 		glyph.edges = vec2(edge, border_edge);
-	}
+	// }
 
 }

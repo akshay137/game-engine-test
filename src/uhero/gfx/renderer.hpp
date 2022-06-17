@@ -88,6 +88,11 @@ namespace uhero::gfx
 
 		static_assert(sizeof(Vertex) == 7 * sizeof(f32), "malformed Vertex");
 
+		constexpr static u32 UNIFORM_PROGRAM_MODE = 0;
+		constexpr static u32 UPM_COLOR = 0;
+		constexpr static u32 UPM_SPRITE = 1;
+		constexpr static u32 UPM_GLYPH = 2;
+
 		u32 max_quads;
 		u32 current_quads;
 
@@ -105,7 +110,7 @@ namespace uhero::gfx
 
 		void flush();
 
-		void draw_texture(glm::vec2 pos, const Texture& texture,
+		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
 			glm::vec4 src, float scale=1.0f, float angle=0.0f,
 			float blend_factor=0.0f,
 			Color32 color_key=Color32(255, 255, 255, 255)
@@ -134,18 +139,19 @@ namespace uhero::gfx
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			draw_texture(pos, texture, src, scale, angle,
+			glm::vec2 size(src.z, src.w);
+			draw_texture(pos, size, texture, src, scale, angle,
 				blend_factor, color_key
 			);
 		}
 
-		void draw_sprite(glm::vec2 pos, const Sprite& sprite,
+		void draw_sprite(glm::vec2 pos, glm::vec2 size, const Sprite& sprite,
 			float scale=1.0f, float angle=0.0f,
 			float blend_factor=0.0f,
 			Color32 color_key=Color32(255, 255, 255, 255)
 		)
 		{
-			draw_texture(pos, sprite.texture, sprite.src, scale, angle,
+			draw_texture(pos, size, sprite.texture, sprite.src, scale, angle,
 				blend_factor, color_key
 			);
 		}

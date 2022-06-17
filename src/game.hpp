@@ -37,8 +37,10 @@ namespace game
 		// returns size of the card
 		glm::vec2 show_image_card(glm::vec2 pos, float size,
 			const uhero::gfx::Texture& texture,
-			std::string_view title
+			std::string_view title, bool y_flipped=false
 		);
+
+		void show_debug_info();
 	};
 }
 

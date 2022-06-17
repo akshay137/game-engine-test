@@ -5,6 +5,7 @@
 #include "../version.hpp"
 #include "render_state.hpp"
 #include "buffer.hpp"
+#include "framebuffer.hpp"
 
 namespace uhero
 {
@@ -39,6 +40,9 @@ namespace uhero::gfx
 
 		void clear_buffer(float* color, float depth, i32 stencil);
 		void update_render_state(float width, float height);
+
+		void use_framebuffer(FrameBuffer& fbo);
+		void use_default_framebuffer();
 
 		static inline GPUStats gpu_stats;
 		static void reset_stats() { gpu_stats.reset(); }

@@ -10,6 +10,11 @@ namespace uhero::gfx
 		GREYSCALE = 0,
 		RGB8,
 		RGBA8,
+
+		// framebuffer related
+		RGBA_F16,
+		RGBA_F32,
+		Depth24Stencil8,
 	};
 
 	enum SwizzleMask : i32
@@ -88,6 +93,7 @@ namespace uhero::gfx
 		}
 
 		void bind_slot(u32 index) const;
+		static void reset_slot(u32 index);
 
 		void generate_mipmaps();
 		void set_filter(TextureFilter filter);
