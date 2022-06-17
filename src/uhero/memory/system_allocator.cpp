@@ -17,7 +17,7 @@ namespace uhero
 		}
 
 		AllocationInfo info(res, bytes, source, line);
-		allocations.push_back(info);
+		allocations[current_allocations++] = info;
 
 		return res;
 	}
@@ -26,13 +26,13 @@ namespace uhero
 	{
 		std::free(ptr);
 
-		for (usize i = 0; i < allocations.size(); i++)
+		for (usize i = 0; i < current_allocations; i++)
 		{
 			const auto& info = allocations[i];
 			if (info.pointer == ptr)
 			{
-				allocations[i] = allocations[allocations.size() - 1];
-				allocations.pop_back();
+				allocations[i] = allocations[current_allocations - 1];
+				--current_allocations;
 				return;
 			}
 		}
@@ -40,18 +40,21 @@ namespace uhero
 
 	void SystemAllocator::free_all()
 	{
-		for (auto& info : allocations)
+		for (usize i = 0; i < current_allocations; i++)
 		{
+			auto& info = allocations[i];
 			std::free(info.pointer);
 		}
-		allocations.clear();
+		current_allocations = 0;
 	}
 
 	void SystemAllocator::dump_current_allocations() const
 	{
-		UH_INFO("Current Allocations: %lu\n", allocations.size());
-		for (const auto& info : allocations)
+		UH_INFO("Current Allocations: %lu\n", current_allocations);
+		// for (const auto& info : allocations)
+		for (usize i = 0; i < current_allocations; i++)
 		{
+			const auto& info = allocations[i];
 			UH_INFO("%p [%lu] {%s:%ld}\n",
 				info.pointer, info.bytes, info.source, info.line
 			);

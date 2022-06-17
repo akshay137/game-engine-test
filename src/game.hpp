@@ -5,6 +5,9 @@
 #include "uhero/gfx/renderer.hpp"
 #include "uhero/gfx/font.hpp"
 
+#include <string_view>
+#include <glm/vec2.hpp>
+
 namespace game
 {
 	struct Game : public uhero::IApplication
@@ -12,6 +15,7 @@ namespace game
 		uhero::Context& ctx;
 		uhero::gfx::Renderer uber;
 		uhero::gfx::Font font;
+		uhero::gfx::Font firacode;
 		uhero::gfx::FontStyle style;
 
 		uhero::gfx::Texture spritesheet;
@@ -25,6 +29,16 @@ namespace game
 		void update(float delta) override;
 		void render() override;
 
+		glm::vec2 screen_to_world(glm::vec2 pos);
+
+		// for video
+
+		// displays image card in screen space coordinates
+		// returns size of the card
+		glm::vec2 show_image_card(glm::vec2 pos, float size,
+			const uhero::gfx::Texture& texture,
+			std::string_view title
+		);
 	};
 }
 

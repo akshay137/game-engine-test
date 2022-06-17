@@ -90,7 +90,6 @@ namespace uhero::gfx
 				// call text code
 				texture->bind_slot(1);
 				pso.set_float(0, 1);
-
 			}
 			else
 			{
@@ -101,9 +100,10 @@ namespace uhero::gfx
 			}
 			usize index_offset = drawn * 6 * sizeof(u16);
 			u32 index_count = count * 6;
-			glDrawElements(GL_TRIANGLES, index_count,
-				GL_UNSIGNED_SHORT, (void*)index_offset
-			);
+			// glDrawElements(GL_TRIANGLES, index_count,
+			// 	GL_UNSIGNED_SHORT, (void*)index_offset
+			// );
+			pso.draw_elements(GL_TRIANGLES, index_count, (void*)index_offset);
 
 			drawn += count;
 		}
@@ -134,9 +134,7 @@ namespace uhero::gfx
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
 
-		quads[current_quads++] = quad;
-		if (current_quads >= max_quads)
-			this->flush();
+		this->submit_quad(quad);
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
@@ -153,9 +151,7 @@ namespace uhero::gfx
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
 
-		quads[current_quads++] = quad;
-		if (current_quads >= max_quads)
-			this->flush();
+		this->submit_quad(quad);
 	}
 
 	void Renderer::draw_glyph(const Glyph& glyph, glm::vec2 pos,
@@ -180,33 +176,23 @@ namespace uhero::gfx
 			tex.normalized_y(glyph.size_y)
 		);
 		quad.glyph.text_color = style.text_color;
-		quad.glyph.border_color = style.text_color;
+		quad.glyph.border_color = style.border_color;
 		quad.glyph.border_size = style.border_size;
 
-		quads[current_quads++] = quad;
-		if (current_quads >= max_quads)
-			this->flush();
+		this->submit_quad(quad);
 	}
 
 	glm::vec2 Renderer::write(glm::vec2 position,
 		const Font& font, const FontStyle& style,
-		const char* fmt, ...
+		usize count, const char* buffer
 	)
 	{
-		UH_STACK_GROUP();
-		usize buffer_size = Memory::kilobytes_to_bytes(512);
-		char* buffer = UH_STACK_ALLOCATE_TYPE(char, buffer_size);
-		va_list args;
-		va_start(args, fmt);
-		i32 count = vsnprintf(buffer, buffer_size, fmt, args);
-		va_end(args);
-
 		glm::vec2 pen = position;
 		float scale = font.size_scale(style.size);
 		float line_height = font.line_height + style.line_spacing;
 		i32 line = 1;
 
-		for (i32 i = 0; i < count; i++)
+		for (usize i = 0; i < count; i++)
 		{
 			// add wrapping support later
 
@@ -224,7 +210,7 @@ namespace uhero::gfx
 			}
 			if ('\t' == c)
 			{
-				pen.x += 4 * font.space * scale;
+				pen.x += font.tab_spaces * font.space * scale;
 				continue;
 			}
 
@@ -242,6 +228,29 @@ namespace uhero::gfx
 
 		pen.y = position.y - (line - 1) * line_height * scale;
 		return pen;
+	}
+
+	glm::vec2 Renderer::write_format(glm::vec2 position,
+		const Font& font, const FontStyle& style,
+		const char* fmt, ...
+	)
+	{
+		UH_STACK_GROUP();
+		usize buffer_size = Memory::kilobytes_to_bytes(512);
+		char* buffer = UH_STACK_ALLOCATE_TYPE(char, buffer_size);
+		va_list args;
+		va_start(args, fmt);
+		i32 count = vsnprintf(buffer, buffer_size, fmt, args);
+		va_end(args);
+
+		return this->write(position, font, style, count, buffer);
+	}
+
+	void Renderer::submit_quad(const Quad& quad)
+	{
+		quads[current_quads++] = quad;
+		if (current_quads >= max_quads)
+			this->flush();
 	}
 
 	void Renderer::update_vertex_buffer()
@@ -281,14 +290,14 @@ namespace uhero::gfx
 			vertices[vindex + 3] = v[3];
 		}
 
-		// vertex_buffer.update(vertices);
 		vertex_buffer.update_range(0, current_quads * 4, vertices);
 	}
 
 	Renderer::Vertex Renderer::glyph_vertex(const Quad& quad)
 	{
-		float width = 0.4f;
-		float edge = 0.175f;
+		// TODO: calculate this based on size of text
+		float width = 0.5f;
+		float edge = 0.1f;
 
 		Vertex v {};
 		v.color = quad.glyph.text_color;

@@ -26,6 +26,7 @@ namespace uhero
 			start = lib_clock::now();
 			elapsed_seconds = start - start;
 			elapsed_nanoseconds = start - start;
+			tick();
 		}
 
 		void tick()
@@ -50,6 +51,20 @@ namespace uhero
 		double delta() const
 		{
 			return tick_duration.count();
+		}
+
+		// frame timestamp, should be used for per frame calculations
+		i64 timestamp() const
+		{
+			return elapsed_nanoseconds.count();
+		}
+
+		// timestamp at current moment, more accurate
+		i64 timestamp_exact() const
+		{
+			auto temp = lib_clock::now();
+			duration_i ts = temp - start;
+			return ts.count();
 		}
 	};
 }

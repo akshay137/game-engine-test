@@ -51,6 +51,7 @@ namespace uhero::res
 		file.read(image, image_size);
 
 		font.atlas.create(w, h, gfx::PixelFormat::GREYSCALE, image);
+		font.atlas.set_filter(gfx::TextureFilter::Linear);
 		// font.line_height = font.glyphs[0].size_y;
 		font.space = font.glyphs[0].advance_x;
 

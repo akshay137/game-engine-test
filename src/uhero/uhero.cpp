@@ -19,6 +19,7 @@ namespace uhero
 				return {};
 			dependencies_loaded = true;
 		}
+		UH_STACK_INIT(Memory::megabytes_to_bytes(128));
 
 		Context ctx {};
 
@@ -28,7 +29,6 @@ namespace uhero
 		{
 			UH_WARN("Some invalid arguments were passed through command line\n");
 		}
-		UH_STACK_INIT(ctx.config.stack_size);
 
 		res = Window::setup_opengl_properties();
 		res = ctx.main_window.create_window(ctx.config.app_name,
@@ -152,6 +152,8 @@ namespace uhero
 		input.mouse.x = x;
 		input.mouse.y = y;
 
+
+		gfx::Context::reset_stats();
 		gfx.update_render_state(main_window.width, main_window.height);
 		float color[4] = { .1, .1, .1, 0 };
 		gfx.clear_buffer(color, 1.0f, 0);

@@ -11,6 +11,15 @@ namespace uhero
 		Escape = SDL_SCANCODE_ESCAPE,
 
 		A = SDL_SCANCODE_A,
+		B = SDL_SCANCODE_B,
+		C = SDL_SCANCODE_C,
+
+		S = SDL_SCANCODE_S,
+		W = SDL_SCANCODE_W,
+		X = SDL_SCANCODE_X,
+
+		Z = SDL_SCANCODE_Z,
+
 		MaxKey = 512,
 	};
 

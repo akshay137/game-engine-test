@@ -1,6 +1,7 @@
 #include "pso.hpp"
 #include "buffer.hpp"
 #include "utils.hpp"
+#include "gfx.hpp"
 #include "../logger.hpp"
 
 #include <glad/glad.h>
@@ -53,5 +54,19 @@ namespace uhero::gfx
 	void PSO::set_float(i32 index, f32 value)
 	{
 		glProgramUniform1f(program, index, value);
+	}
+
+	void PSO::draw_elements(u32 primitive, u32 count, const void* offset)
+	{
+		glDrawElements(primitive, count, GL_UNSIGNED_SHORT, offset);
+		Context::gpu_stats.triangle_count += (count / 3);
+		++Context::gpu_stats.draw_calls;
+	}
+
+	void PSO::draw_arrays(u32 primitive, u32 first, u32 count)
+	{
+		glDrawArrays(primitive, first, count);
+		Context::gpu_stats.triangle_count += (count / 3);
+		++Context::gpu_stats.draw_calls;
 	}
 }

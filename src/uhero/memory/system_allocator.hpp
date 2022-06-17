@@ -2,7 +2,7 @@
 #define UHERO_MEMORY_SYSTEM_ALLOCATOR_H__ 1
 
 #include "../common.hpp"
-#include <vector>
+// #include <vector>
 
 namespace uhero
 {
@@ -13,6 +13,8 @@ namespace uhero
 		const char* source;
 		isize line;
 
+		AllocationInfo() = default;
+
 		AllocationInfo(void* ptr, usize bytes, const char* source, isize line)
 			: pointer{ptr}, bytes{bytes}, source{source}, line{line}
 		{}
@@ -22,7 +24,9 @@ namespace uhero
 	// e.g, new, malloc, etc.
 	struct SystemAllocator
 	{
-		std::vector<AllocationInfo> allocations;
+		constexpr static usize MAX_ALLOCATIONS = 1024;
+		AllocationInfo allocations[MAX_ALLOCATIONS];
+		usize current_allocations;
 
 		[[nodiscard]]
 		void* allocate(usize bytes, const char* source=nullptr, isize line=0);
@@ -40,7 +44,7 @@ namespace uhero
 
 		usize get_current_allocations_count() const
 		{
-			return allocations.size();
+			return current_allocations;
 		}
 
 		void dump_current_allocations() const;

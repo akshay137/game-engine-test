@@ -3,6 +3,7 @@
 #include "file.hpp"
 #include "memory/memory.hpp"
 
+// TODO: remove toml dependency
 #define TOML_EXCEPTIONS 0
 #include <toml++/toml.h>
 
@@ -10,6 +11,8 @@ namespace uhero
 {
 	Config Config::read_config(const char* config_file)
 	{
+		UH_STACK_GROUP();
+
 		Config config {};
 
 		UH_INFO("Reading config from: %s\n", config_file);
@@ -25,16 +28,9 @@ namespace uhero
 		config.window_height = twindow["height"].value_or(720);
 		
 		const auto& tgfx = tconf["gfx"];
-		config.font_size = tgfx["font_size"].value_or(16);
 		config.gl_debug = tgfx["gl_debug"].value_or(true);
 
-		const auto& tsys = tconf["system"];
-		config.stack_size = tsys["stack"].value_or(Memory::megabytes_to_bytes(128));
-		if (config.stack_size > Memory::megabytes_to_bytes(256))
-		{
-			UH_WARN("Stack size will be set to 256MB\n");
-			config.stack_size = Memory::megabytes_to_bytes(256);
-		}
+		// const auto& tsys = tconf["system"];
 
 		return config;
 	}
@@ -53,11 +49,9 @@ namespace uhero
 		file.write_format("\theight = %d\n", config.window_height);
 
 		file.write_format("[gfx]\n");
-		file.write_format("\tfont_size = %d\n", config.font_size);
 		file.write_format("\tgl_debug = %s\n", config.gl_debug ? "true" : "false");
 
 		file.write_format("[system]\n");
-		file.write_format("\tstack = %u\n", config.stack_size);
 
 		file.close();
 

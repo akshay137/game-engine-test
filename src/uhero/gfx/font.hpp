@@ -35,8 +35,8 @@ namespace uhero::gfx
 			: size{size * PT_TO_PIXEL}
 		{
 			wrap_width = 0;
-			border_size = 0.01f;
-			line_spacing = 0;
+			border_size = 0;
+			line_spacing = this->size * 0.1f;
 			text_color = Color32(255);
 			border_color = Color32(0, 0, 0, 255);
 		}
@@ -47,6 +47,7 @@ namespace uhero::gfx
 		Texture atlas;
 		i32 line_height;
 		i32 space;
+		i32 tab_spaces;
 		u32 glyph_count;
 		Glyph* glyphs;
 
@@ -56,6 +57,14 @@ namespace uhero::gfx
 		Glyph find_glyph(codepoint code) const;
 
 		float size_scale(u32 size) const { return size / (float)line_height; }
+
+		// text fitting functions
+
+		float fit_size(usize count, const char* buffer, float size) const;
+
+		void get_box_size(usize count, const char* buffer, const FontStyle& style,
+			float& width, float& height
+		) const;
 	};
 }
 

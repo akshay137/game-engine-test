@@ -5,6 +5,7 @@
 #include "font.hpp"
 #include "pso.hpp"
 #include "buffer.hpp"
+#include "sprite.hpp"
 #include "../math/norm_type.hpp"
 
 #include <glm/vec2.hpp>
@@ -15,24 +16,6 @@ namespace uhero::gfx
 {
 	constexpr const char* REN_VERTEX_SHADER = "assets/gfx.vert";
 	constexpr const char* REN_FRAGMENT_SHADER = "assets/gfx.frag";
-
-	struct Sprite
-	{
-		const Texture& texture;
-		glm::vec4 src;
-
-		Sprite(const Texture& texture)
-			: texture{texture}
-		{
-			src = glm::vec4(0, 0, texture.width, texture.height);
-		}
-
-		Sprite(const Texture& texture, const glm::vec4& clip)
-			: texture{texture}
-		{
-			src = clip;
-		}
-	};
 
 	// uber renderer
 	// can render texture sprites, colored blocks, SDF glyphs
@@ -136,8 +119,13 @@ namespace uhero::gfx
 		);
 		glm::vec2 write(glm::vec2 position,
 			const Font& font, const FontStyle& style,
+			usize count, const char* buffer
+		);
+		glm::vec2 write_format(glm::vec2 position,
+			const Font& font, const FontStyle& style,
 			const char* fmt, ...
 		);
+		void submit_quad(const Quad& quad);
 
 		void draw_texture(glm::vec2 pos, const Texture& texture,
 			float scale=1.0f, float angle=0.0f,

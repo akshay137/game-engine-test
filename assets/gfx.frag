@@ -49,7 +49,7 @@ void main()
 
 		float final_alpha = a + (1.0f - a) * ba;
 
-		vec4 final_color = mix(glyph.outline_color, glyph.text_color, a / final_alpha);
+		vec4 final_color = mix(border_color, text_color, a / final_alpha);
 
 		color = vec4(final_color.rgb, final_alpha);
 	}

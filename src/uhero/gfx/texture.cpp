@@ -1,4 +1,5 @@
 #include "texture.hpp"
+#include "gfx.hpp"
 #include "../logger.hpp"
 
 #include <glad/glad.h>
@@ -58,6 +59,7 @@ namespace uhero::gfx
 		assert(gl_id);
 
 		glBindTextureUnit(index, gl_id);
+		++Context::gpu_stats.texture_switch;
 	}
 
 	void Texture::generate_mipmaps()
