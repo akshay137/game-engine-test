@@ -10,9 +10,14 @@ namespace uhero::gfx
 		const void* pixels, i32 mipmaps
 	)
 	{
-		glCreateTextures(GL_TEXTURE_2D, 1, &gl_id);
+		PixelData data;
+		if (!pixeldata_from_format(format, data))
+		{
+			UH_ERROR("unknown pixel format\n");
+			return Result::InvalidArgument;
+		}
 
-		PixelData data = pixeldata_from_format(format);
+		glCreateTextures(GL_TEXTURE_2D, 1, &gl_id);
 
 		glTextureStorage2D(gl_id, mipmaps + 1, data.internal_format, w, h);
 		if (pixels)
@@ -50,7 +55,12 @@ namespace uhero::gfx
 		const void* pixels
 	)
 	{
-		PixelData data = pixeldata_from_format(pixel_format);
+		PixelData data;
+		if (!pixeldata_from_format(pixel_format, data))
+		{
+			UH_ERROR("Unknown pixel format\n");
+			assert(false);
+		}
 		glTextureSubImage2D(gl_id, level, x, y, width, height,
 			data.channel_format, data.data_type,
 			pixels
@@ -122,88 +132,75 @@ namespace uhero::gfx
 		glTextureParameteriv(gl_id, GL_TEXTURE_SWIZZLE_RGBA, mask);
 	}
 
+	constexpr u32 max_swizzles = static_cast<u32>(SwizzleMask::MaxSwizzleMask);
+	static constexpr i32 gl_swizzles[max_swizzles] = {
+		[ENUM_INT(SwizzleMask::Red)] = GL_RED,
+		[ENUM_INT(SwizzleMask::Green)] = GL_GREEN,
+		[ENUM_INT(SwizzleMask::Blue)] = GL_BLUE,
+		[ENUM_INT(SwizzleMask::Alpha)] = GL_ALPHA,
+		[ENUM_INT(SwizzleMask::Zero)] = GL_ZERO,
+		[ENUM_INT(SwizzleMask::One)] = GL_ONE,
+	};
+
 	i32 Texture::swizzle_mask_to_glenum(SwizzleMask mask)
 	{
-		if (SwizzleMask::Red == mask) return GL_RED;
-		if (SwizzleMask::Green == mask) return GL_GREEN;
-		if (SwizzleMask::Blue == mask) return GL_BLUE;
-		if (SwizzleMask::Alpha == mask) return GL_ALPHA;
-		if (SwizzleMask::Zero == mask) return GL_ZERO;
-		if (SwizzleMask::One == mask) return GL_ONE;
+		u32 index = static_cast<u32>(mask);
+		if (index > max_swizzles)
+		{
+			UH_ERROR("Unknown SwizzleMask: %d\n", mask);
+			assert(false);
+			return GL_ONE;
+		}
 
-		UH_ERROR("Unknown SwizzleMask: %d\n", mask);
-		assert(false);
-		return 0;
+		return gl_swizzles[index];
 	}
 
-	PixelData Texture::pixeldata_from_format(PixelFormat format)
+	constexpr PixelData pixel_data(u32 internal_format, u32 channel_format,
+		u32 data_type, Swizzle swizzle
+	)
 	{
-		PixelData data = {};
-		if (PixelFormat::GREYSCALE == format)
-		{
-			data.internal_format = GL_R8;
-			data.channel_format = GL_RED;
-			data.data_type = GL_UNSIGNED_BYTE;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::Red,
-				SwizzleMask::One
-			);
-		}
-		else if (PixelFormat::RGB8 == format)
-		{
-			data.internal_format = GL_RGB8;
-			data.channel_format = GL_RGB;
-			data.data_type = GL_UNSIGNED_BYTE;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
-				SwizzleMask::One
-			);
-		}
-		else if (PixelFormat::RGBA8 == format)
-		{
-			data.internal_format = GL_RGBA8;
-			data.channel_format = GL_RGBA;
-			data.data_type = GL_UNSIGNED_BYTE;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
-				SwizzleMask::Alpha
-			);
-		}
-		else if (PixelFormat::RGBA_F16 == format)
-		{
-			data.internal_format = GL_RGBA16F;
-			data.channel_format = GL_RGBA;
-			data.data_type = GL_HALF_FLOAT;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
-				SwizzleMask::Alpha
-			);
-		}
-		else if (PixelFormat::RGBA_F32 == format)
-		{
-			data.internal_format = GL_RGBA32F;
-			data.channel_format = GL_RGBA;
-			data.data_type = GL_FLOAT;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
-				SwizzleMask::Alpha
-			);
-		}
-		else if (PixelFormat::Depth24Stencil8 == format)
-		{
-			data.internal_format = GL_DEPTH24_STENCIL8;
-			data.channel_format = GL_DEPTH_STENCIL;
-			data.data_type = GL_UNSIGNED_INT_24_8;
-			data.swizzle = Swizzle(
-				SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue,
-				SwizzleMask::Alpha
-			);
-		}
-		else
-		{
-			UH_ERROR("Unknown pixel format: %u\n", format);
-			assert(false);
-		}
+		PixelData data{};
+		data.internal_format = internal_format;
+		data.channel_format = channel_format;
+		data.data_type = data_type,
+		data.swizzle = swizzle;
 		return data;
+	}
+
+	constexpr u32 max_formats = static_cast<u32>(PixelFormat::MaxPixelFormats);
+	constexpr PixelData pdatas[max_formats] = {
+		[ENUM_INT(PixelFormat::GREYSCALE)] = pixel_data(
+			GL_R8, GL_RED, GL_UNSIGNED_BYTE, SWIZZLE_RRR1
+		),
+
+		[ENUM_INT(PixelFormat::RGB8)] = pixel_data(
+			GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, SWIZZLE_RGB1
+		),
+
+		[ENUM_INT(PixelFormat::RGBA8)] = pixel_data(
+			GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, SWIZZLE_RGBA
+		),
+
+		[ENUM_INT(PixelFormat::RGBA_F16)] = pixel_data(
+			GL_RGBA16F, GL_RGBA, GL_FLOAT, SWIZZLE_RGBA
+		),
+
+		[ENUM_INT(PixelFormat::RGBA_F32)] = pixel_data(
+			GL_RGBA32F, GL_RGBA, GL_FLOAT, SWIZZLE_RGBA
+		),
+
+		[ENUM_INT(PixelFormat::Depth24Stencil8)] = pixel_data(
+			GL_DEPTH24_STENCIL8, GL_DEPTH24_STENCIL8,
+			GL_UNSIGNED_INT_24_8, SWIZZLE_RGBA
+		)
+	};
+
+	bool Texture::pixeldata_from_format(PixelFormat format, PixelData& out_pd)
+	{
+		u32 index = static_cast<u32>(format);
+		if (index >= max_formats) return false;
+
+		out_pd = pdatas[index];
+		return true;
 	}
 }

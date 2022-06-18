@@ -87,30 +87,22 @@ namespace uhero::gfx
 			// draw command here
 			if (QuadType::SDFGlyph == first.type)
 			{
-				// call text code
 				texture->bind_slot(1);
-				// pso.set_float(0, 1);
 				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_GLYPH);
 			}
-			else
+			else if (QuadType::Sprite == first.type)
 			{
-				// call sprite/color code
-				if (texture)
-				{
-					texture->bind_slot(0);
-					pso.set_float(UNIFORM_PROGRAM_MODE, UPM_SPRITE);
-				}
-				else
-				{
-					pso.set_float(UNIFORM_PROGRAM_MODE, UPM_COLOR);
-					// Texture::reset_slot(0);
-				}
+				texture->bind_slot(0);
+				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_SPRITE);
 			}
+			else if (QuadType::Color == first.type)
+			{
+				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_COLOR);
+				Texture::reset_slot(0);
+			}
+
 			usize index_offset = drawn * 6 * sizeof(u16);
 			u32 index_count = count * 6;
-			// glDrawElements(GL_TRIANGLES, index_count,
-			// 	GL_UNSIGNED_SHORT, (void*)index_offset
-			// );
 			pso.draw_elements(GL_TRIANGLES, index_count, (void*)index_offset);
 
 			drawn += count;
@@ -120,7 +112,7 @@ namespace uhero::gfx
 	}
 
 	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
-		const Texture& texture, glm::vec4 src, float scale, float angle,
+		const Texture& texture, glm::vec4 src, float angle,
 		float blend_factor,
 		Color32 color_key
 	)
@@ -129,9 +121,7 @@ namespace uhero::gfx
 		quad.type = QuadType::Sprite;
 		quad.texture = &texture;
 
-		quad.rect = glm::vec4(pos.x, pos.y,
-			size.x * scale, size.y * scale
-		);
+		quad.rect = glm::vec4(pos.x, pos.y, size.x, size.y);
 		quad.clip = glm::vec4(
 			texture.normalized_x(src.x),
 			texture.normalized_y(src.y),

@@ -7,6 +7,7 @@
 #include "input.hpp"
 #include "gfx/gfx.hpp"
 #include "gfx/font.hpp"
+#include "sfx/sfx.hpp"
 #include "application.hpp"
 #include "time.hpp"
 
@@ -23,6 +24,8 @@ namespace uhero
 		Window main_window;
 		Input input;
 		gfx::Context gfx;
+
+		sfx::Context audio;
 
 		Clock main_clock;
 		IApplication* app;

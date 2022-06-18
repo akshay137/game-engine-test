@@ -9,6 +9,8 @@
 #define UHAPI extern
 #define UHINLINE static inline
 
+#define ENUM_INT(e) static_cast<u32>(e)
+
 namespace uhero
 {
 	using u8 = uint8_t;

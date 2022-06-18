@@ -18,6 +18,7 @@ namespace uhero::gfx
 				GL_COLOR_ATTACHMENT0 + i,
 				color[i].gl_id, 0
 			);
+			glNamedFramebufferDrawBuffer(gl_id, GL_COLOR_ATTACHMENT0 + i);
 		}
 
 		depth.create(w, h, PixelFormat::Depth24Stencil8);
@@ -62,10 +63,6 @@ namespace uhero::gfx
 
 	void FrameBuffer::make_current()
 	{
-		for (u32 i = 0; i < descriptor.color_attachments; i++)
-		{
-			glNamedFramebufferDrawBuffer(gl_id, GL_COLOR_ATTACHMENT0 + i);
-		}
 		glBindFramebuffer(GL_FRAMEBUFFER, gl_id);
 
 		// clear buffers

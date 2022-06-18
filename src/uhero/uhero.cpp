@@ -43,6 +43,8 @@ namespace uhero
 			return ctx;
 		}
 
+		res = ctx.audio.create();
+
 		ctx.should_exit = false;
 		ctx.app = nullptr;
 		ctx.main_clock.reset();
@@ -68,6 +70,7 @@ namespace uhero
 			app->clear();
 		Config::write_config(config, UHERO_CONFIG_FILE);
 
+		audio.clear();
 		gfx.clear();
 		main_window.close();
 
@@ -153,9 +156,9 @@ namespace uhero
 		input.mouse.y = y;
 
 
+		float color[4] = { 0, 0, 0, 0 };
 		gfx::Context::reset_stats();
 		gfx.update_render_state(main_window.width, main_window.height);
-		float color[4] = { .1, .1, .1, 0 };
 		gfx.clear_buffer(color, 1.0f, 0);
 		
 		if (app)

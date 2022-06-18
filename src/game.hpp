@@ -29,7 +29,13 @@ namespace game
 		void update(float delta) override;
 		void render() override;
 
-		glm::vec2 screen_to_world(glm::vec2 pos);
+		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen);
+
+		glm::vec4 get_spritesheet_source(int x, int y, int size)
+		{
+			glm::vec4 src(x * size, y * size, size, size);
+			return src;
+		}
 
 		// for video
 

@@ -8,6 +8,39 @@
 
 namespace uhero::gfx
 {
+	struct VertexAttribData
+	{
+		u32 count;
+		u32 gl_type;
+		GLboolean normalized;
+		u32 byte_size;
+
+		VertexAttribData() = default;
+
+		constexpr VertexAttribData(u32 count, u32 gl_type, bool normalized, u32 byte_size)
+			: count{count}, gl_type{gl_type}, normalized{normalized},
+				byte_size{byte_size}
+		{}
+	};
+
+	constexpr auto max_vdatas = static_cast<u32>(VertexAttribute::MaxVertexAttributes);
+	constexpr VertexAttribData vdata[max_vdatas] = {
+		[ENUM_INT(VertexAttribute::Float)] = VertexAttribData(1, GL_FLOAT, GL_FALSE, sizeof(float)),
+		[ENUM_INT(VertexAttribute::Vec2)] = VertexAttribData(2, GL_FLOAT, GL_FALSE, sizeof(float) * 2),
+		[ENUM_INT(VertexAttribute::Vec3)] = VertexAttribData(3, GL_FLOAT, GL_FALSE, sizeof(float) * 3),
+		[ENUM_INT(VertexAttribute::Vec4)] = VertexAttribData(4, GL_FLOAT, GL_FALSE, sizeof(float) * 4),
+		[ENUM_INT(VertexAttribute::ByteNVec4)] = VertexAttribData(4, GL_UNSIGNED_BYTE, GL_TRUE, 4)
+	};
+
+	bool vertex_data_from_attribute(VertexAttribute attrib, VertexAttribData& out)
+	{
+		u32 index = static_cast<u32>(attrib);
+		if (index > max_vdatas) return false;
+
+		out = vdata[index];
+		return true;
+	}
+
 	u32 Utils::create_vao_from_layout(const VertexLayout& layout)
 	{
 		u32 vao = 0;
@@ -20,74 +53,20 @@ namespace uhero::gfx
 		u32 relative_offset = 0;
 		for (usize i = 0; i < layout.attrib_count; i++)
 		{
-			u32 count = 0;
-			u32 gl_type = GL_FLOAT;
-			u32 offset = relative_offset;
-			GLboolean normalized = GL_FALSE;
-
-			switch (layout.attributes[i])
+			VertexAttribData data;
+			if (!vertex_data_from_attribute(layout.attributes[i], data))
 			{
-				case VertexAttribute::Float:
-				{
-					count = 1;
-					gl_type = GL_FLOAT;
-					offset = relative_offset;
-					normalized = GL_FALSE;
-					relative_offset += sizeof(float);
-				}
-					break;
-				
-				case VertexAttribute::Vec2:
-				{
-					count = 2;
-					gl_type = GL_FLOAT;
-					offset = relative_offset;
-					normalized = GL_FALSE;
-					relative_offset += (sizeof(float) * 2);
-				}
-					break;
-				
-				case VertexAttribute::Vec3:
-				{
-					count = 3;
-					gl_type = GL_FLOAT;
-					offset = relative_offset;
-					normalized = GL_FALSE;
-					relative_offset += (sizeof(float) * 3);
-				}
-					break;
-				
-				case VertexAttribute::Vec4:
-				{
-					count = 4;
-					gl_type = GL_FLOAT;
-					offset = relative_offset;
-					normalized = GL_FALSE;
-					relative_offset += (sizeof(float) * 2);
-				}
-					break;
-				
-				case VertexAttribute::ByteNVec4:
-				{
-					count = 4;
-					gl_type = GL_UNSIGNED_BYTE;
-					offset = relative_offset;
-					normalized = GL_TRUE;
-					relative_offset += 4;
-				}
-					break;
-				
-				default:
-				{
-					UH_ERROR("Invalid VertexAttribute: %u\n",
-						layout.attributes[i]);
-				}
-					break;
+				UH_ERROR("Invalid VertexAttribute: %u\n", layout.attributes[i]);
+				assert(false);
 			}
 
-			glVertexArrayAttribFormat(vao, i, count, gl_type, normalized, offset);
+			glVertexArrayAttribFormat(vao, i,
+				data.count, data.gl_type, data.normalized, relative_offset
+			);
 			glVertexArrayAttribBinding(vao, i, 0);
 			glEnableVertexArrayAttrib(vao, i);
+
+			relative_offset += data.byte_size;
 		}
 
 		return vao;
@@ -103,12 +82,10 @@ namespace uhero::gfx
 			return Result::ExternalLibraryError;
 		}
 
-		File sfile;
-		sfile.open(file, FileMode::FRead | FileMode::FBinary);
-		usize size = sfile.size;
-		char* source = UH_STACK_ALLOCATE_TYPE(char, size + 1);
-		usize bread = sfile.read(source, size);
-		source[bread] = 0;
+		auto source_size = Memory::kilobytes_to_bytes(8);
+		char* source = UH_STACK_ALLOCATE_TYPE(char, source_size);
+		auto bytes_read = File::read_full(file, source, source_size);
+		source[bytes_read] = 0;
 
 		const GLchar* sources[] = { source };
 		glShaderSource(shader, 1, sources, nullptr);

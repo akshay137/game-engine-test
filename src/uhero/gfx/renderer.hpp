@@ -111,7 +111,7 @@ namespace uhero::gfx
 		void flush();
 
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			glm::vec4 src, float scale=1.0f, float angle=0.0f,
+			glm::vec4 src, float angle=0.0f,
 			float blend_factor=0.0f,
 			Color32 color_key=Color32(255, 255, 255, 255)
 		);
@@ -139,19 +139,19 @@ namespace uhero::gfx
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			glm::vec2 size(src.z, src.w);
-			draw_texture(pos, size, texture, src, scale, angle,
+			glm::vec2 size(src.z * scale, src.w * scale);
+			draw_texture(pos, size, texture, src, angle,
 				blend_factor, color_key
 			);
 		}
 
 		void draw_sprite(glm::vec2 pos, glm::vec2 size, const Sprite& sprite,
-			float scale=1.0f, float angle=0.0f,
+			float angle=0.0f,
 			float blend_factor=0.0f,
 			Color32 color_key=Color32(255, 255, 255, 255)
 		)
 		{
-			draw_texture(pos, size, sprite.texture, sprite.src, scale, angle,
+			draw_texture(pos, size, sprite.texture, sprite.src, angle,
 				blend_factor, color_key
 			);
 		}

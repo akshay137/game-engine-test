@@ -11,12 +11,14 @@ namespace uhero::gfx
 	
 	enum VertexAttribute : u16
 	{
-		Float = 1,
+		Float = 0,
 		Vec2,
 		Vec3,
 		Vec4,
 
 		ByteNVec4,
+
+		MaxVertexAttributes,
 	};
 
 	struct VertexLayout

@@ -42,7 +42,7 @@ namespace uhero::gfx
 		void update_render_state(float width, float height);
 
 		void use_framebuffer(FrameBuffer& fbo);
-		void use_default_framebuffer();
+		void use_default_framebuffer(const Window& window);
 
 		static inline GPUStats gpu_stats;
 		static void reset_stats() { gpu_stats.reset(); }

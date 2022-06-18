@@ -30,7 +30,7 @@ namespace game
 		gfx::FBDescriptor desc {};
 		desc.add_color_attachment(gfx::PixelFormat::RGBA_F32);
 		desc.set_depth_attachment(gfx::PixelFormat::Depth24Stencil8);
-		res = fbo.create(desc, ctx.main_window.width, ctx.main_window.height);
+		res = fbo.create(desc, 640, 360);
 		if (Result::Success != res)
 		{
 			return res;
@@ -57,28 +57,43 @@ namespace game
 
 	void Game::render()
 	{
-		float card_size = 256 + 64;
-		glm::vec2 pos = glm::vec2(1);
-
 		ctx.gfx.use_framebuffer(fbo);
 
 		i32 SIZE = 16;
 		glm::vec2 bsize(SIZE);
-		glm::vec4 button_src(5 * SIZE, 0, SIZE, SIZE);
 
-		uber.draw_color(screen_to_world(glm::vec2(1200, 0)), glm::vec2(64, -64),
-			gfx::Color32::from_rgba(1, 1, 0)
-		);
-		auto size = show_image_card(pos, card_size, spritesheet, "spritesheet");
-		uber.draw_texture(screen_to_world(glm::vec2(512, 128)), bsize, spritesheet,
-			button_src, 4
-		);
-		uber.write_format(screen_to_world(size), font, style, "blending test: %d", 1);
+		glm::vec2 action_center = glm::vec2(fbo.width / 2, fbo.height / 2);
+		glm::vec2 BUTTONS[4] = {
+			glm::vec2(0, 1), // A
+			glm::vec2(1, 0), // B
+			glm::vec2(-1, 0), // X
+			glm::vec2(0, -1), // Y
+		};
+
+		glm::vec2 screen(fbo.width, fbo.height);
+
+		action_center.x -= bsize.x * 3.0f;
+		for (auto i = 0; i < 4; i++)
+		{
+			auto pos = screen_to_world(action_center + BUTTONS[i] * bsize.x, screen);
+			uber.draw_texture(pos, bsize, spritesheet,
+				get_spritesheet_source(i, 0, SIZE)
+			);
+		}
+
+		action_center.x += bsize.x * 3.0f;
+		for (auto i = 0; i < 4; i++)
+		{
+			auto pos = screen_to_world(action_center + BUTTONS[i] * bsize.x, screen);
+			uber.draw_texture(pos, bsize, spritesheet,
+				get_spritesheet_source(4 + i, 0, SIZE)
+			);
+		}
 
 		uber.flush();
 
 		// final render
-		ctx.gfx.use_default_framebuffer();
+		ctx.gfx.use_default_framebuffer(ctx.main_window);
 		uber.draw_texture(glm::vec2(0),
 			glm::vec2(ctx.main_window.width, ctx.main_window.height),
 			fbo.color[0], glm::vec4(0, fbo.height, fbo.width, -fbo.height)
@@ -88,9 +103,9 @@ namespace game
 		show_debug_info();
 	}
 
-	glm::vec2 Game::screen_to_world(glm::vec2 pos)
+	glm::vec2 Game::screen_to_world(glm::vec2 pos, glm::vec2 screen)
 	{
-		glm::vec2 res(pos.x, ctx.main_window.height - pos.y);
+		glm::vec2 res(pos.x, screen.y - pos.y);
 		return res;
 	}
 
@@ -101,6 +116,7 @@ namespace game
 	{
 		const auto& _font = firacode;
 		float scale = size / texture.width;
+		glm::vec2 screen(ctx.main_window.width, ctx.main_window.height);
 
 		glm::vec2 s(0);
 		auto _style = gfx::FontStyle(16);
@@ -123,24 +139,24 @@ namespace game
 		);
 
 		glm::vec2 cpos(pos.x, pos.y + quad.y);
-		uber.draw_color(screen_to_world(cpos), quad, gfx::Color32::from_rgba(0, 1, 1));
+		uber.draw_color(screen_to_world(cpos, screen), quad, gfx::Color32::from_rgba(0, 1, 1));
 
-		uber.draw_color(screen_to_world(glm::vec2(pos.x + 3, pos.y + text_height)), box,
+		uber.draw_color(screen_to_world(glm::vec2(pos.x + 3, pos.y + text_height), screen), box,
 			gfx::Color32::from_rgba(1, 1, 1)
 		);
 		
 		glm::vec2 tpos(pos.x + 3, pos.y);
-		auto pen = uber.write(screen_to_world(tpos), _font, _style, title.size(), title.data());
+		auto pen = uber.write(screen_to_world(tpos, screen), _font, _style, title.size(), title.data());
 
 		pen.x = pos.x + 3;
 		pen.y = pos.y + text_height;
 		pen.y += texture.height * scale + 2;
 		glm::vec4 flipped_src(0, texture.height, texture.width, -texture.height);
-		glm::vec2 tex_size(texture.width, texture.height);
+		glm::vec2 tex_size(texture.width * scale, texture.height * scale);
 		if (y_flipped)
-			uber.draw_texture(screen_to_world(pen), tex_size, texture, flipped_src, scale);
+			uber.draw_texture(screen_to_world(pen, screen), tex_size, texture, flipped_src);
 		else
-			uber.draw_texture(screen_to_world(pen), texture, scale);
+			uber.draw_texture(screen_to_world(pen, screen), texture, scale);
 
 		return quad;
 	}

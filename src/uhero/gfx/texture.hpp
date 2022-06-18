@@ -15,16 +15,20 @@ namespace uhero::gfx
 		RGBA_F16,
 		RGBA_F32,
 		Depth24Stencil8,
+
+		MaxPixelFormats,
 	};
 
 	enum SwizzleMask : i32
 	{
-		Red,
+		Red = 0,
 		Green,
 		Blue,
 		Alpha,
 		Zero,
 		One,
+
+		MaxSwizzleMask,
 	};
 
 	struct Swizzle
@@ -44,13 +48,9 @@ namespace uhero::gfx
 			alpha = mask;
 		}
 
-		Swizzle(SwizzleMask r, SwizzleMask g, SwizzleMask b, SwizzleMask a)
-		{
-			red = r;
-			green = g;
-			blue = b;
-			alpha = a;
-		}
+		constexpr Swizzle(SwizzleMask r, SwizzleMask g, SwizzleMask b, SwizzleMask a)
+			: red{r}, green{g}, blue{b}, alpha{a}
+		{}
 	};
 
 	struct PixelData
@@ -102,9 +102,14 @@ namespace uhero::gfx
 		float normalized_x(float x) const { return x / width; }
 		float normalized_y(float y) const { return y / height; }
 
-		static PixelData pixeldata_from_format(PixelFormat format);
+		static bool pixeldata_from_format(PixelFormat format, PixelData& out_pd);
 		static i32 swizzle_mask_to_glenum(SwizzleMask mask);
 	};
+
+	// some constants
+	constexpr Swizzle SWIZZLE_RRR1(SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::One);
+	constexpr Swizzle SWIZZLE_RGB1(SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue, SwizzleMask::One);
+	constexpr Swizzle SWIZZLE_RGBA(SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue, SwizzleMask::Alpha);
 }
 
 #endif

@@ -7,7 +7,8 @@ namespace uhero
 {
 	Result uhero_init_dependencies()
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		auto systems = SDL_INIT_VIDEO | SDL_INIT_AUDIO;
+		if (SDL_Init(systems) < 0)
 		{
 			UHSDL_ERROR(SDL_Init);
 			return Result::ExternalLibraryError;

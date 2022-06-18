@@ -78,16 +78,19 @@ namespace uhero::gfx
 		render_state.resize(width, height);
 		rsbuffer.update(&render_state);
 		rsbuffer.bind_base(BufferBase::Uniform, 0);
+		glViewport(0, 0, width, height);
 	}
 
 	void Context::use_framebuffer(FrameBuffer& fbo)
 	{
 		fbo.make_current();
+		update_render_state(fbo.width, fbo.height);
 	}
 
-	void Context::use_default_framebuffer()
+	void Context::use_default_framebuffer(const Window& window)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		update_render_state(window.width, window.height);
 	}
 
 	void uh_gldebug_callback(GLenum source,
@@ -105,15 +108,15 @@ namespace uhero::gfx
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
 			UH_ERROR("%.*s", length, message);
-			// assert(false);
+			assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{
-			UH_WARN("%*s", length, message);
+			UH_WARN("%.*s", length, message);
 		}
 		else
 		{
-			UH_INFO("%s", message);
+			UH_INFO("%.*s", length, message);
 		}
 	}
 }
