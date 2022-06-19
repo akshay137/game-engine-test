@@ -10,8 +10,9 @@ namespace uhero
 {
 	static bool dependencies_loaded = false;
 
-	Context Context::create_context(i32 argc, char** args)
+	Result Context::create_context(i32 argc, char** args)
 	{
+		UH_STACK_INIT(Memory::megabytes_to_bytes(128));
 		if (!dependencies_loaded)
 		{
 			auto res = uhero_init_dependencies();
@@ -19,40 +20,38 @@ namespace uhero
 				return {};
 			dependencies_loaded = true;
 		}
-		UH_STACK_INIT(Memory::megabytes_to_bytes(128));
 
-		Context ctx {};
-
-		ctx.config = Config::read_config(UHERO_CONFIG_FILE);
-		Result res = ctx.parse_cmd(argc, args);
+		config = Config::read_config(UHERO_CONFIG_FILE);
+		Result res = parse_cmd(argc, args);
 		if (Result::Success != res)
 		{
 			UH_WARN("Some invalid arguments were passed through command line\n");
 		}
 
 		res = Window::setup_opengl_properties();
-		res = ctx.main_window.create_window(ctx.config.app_name,
-			ctx.config.window_width, ctx.config.window_height,
-			ctx.config.display_index,
-			WindowFlags::Default | WindowFlags::Borderless
+		res = main_window.create_window(config.app_name,
+			config.window_width, config.window_height,
+			config.display_index,
+			WindowFlags::Default
 		);
 
-		res = ctx.gfx.create(ctx.main_window, ctx.config.gl_debug);
+		res = gfx.create(main_window, config.gl_debug);
 		if (Result::Success != res)
 		{
-			return ctx;
+			return res;
 		}
 
-		res = ctx.audio.create();
+		res = audio.create();
 
-		ctx.should_exit = false;
-		ctx.app = nullptr;
-		ctx.main_clock.reset();
+		should_exit = false;
+		app = nullptr;
+		main_clock.reset();
 
-		DUMPI(ctx.config.display_index);
-		DUMPI(ctx.config.window_width);
-		DUMPI(ctx.config.window_height);
-		return ctx;
+		DUMPI(config.display_index);
+		DUMPI(config.window_width);
+		DUMPI(config.window_height);
+		
+		return Result::Success;
 	}
 
 	Result Context::parse_cmd(i32 argc, char** args)

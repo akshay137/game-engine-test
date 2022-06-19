@@ -3,7 +3,8 @@
 
 int main(int argc, char** args)
 {
-	uhero::Context engine = uhero::Context::create_context(argc, args);
+	uhero::Context engine {};
+	engine.create_context(argc, args);
 
 	game::Game game{engine};
 	engine.set_application(&game);

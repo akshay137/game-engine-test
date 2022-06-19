@@ -15,6 +15,10 @@ namespace uhero
 		{
 			sdl_flags |= SDL_WINDOW_FULLSCREEN;
 		}
+		if (WindowFlags::Borderless & flags)
+		{
+			sdl_flags |= SDL_WINDOW_BORDERLESS;
+		}
 
 		handle = SDL_CreateWindow(title,
 			pos, pos, w, h,

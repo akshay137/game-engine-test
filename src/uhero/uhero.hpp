@@ -34,6 +34,7 @@ namespace uhero
 
 		Result parse_cmd(i32 argc, char** args);
 
+		Result create_context(i32 argc, char** args);
 		void shutdown();
 
 		// check if everything is initialized ok
@@ -46,7 +47,6 @@ namespace uhero
 
 		float tick();
 
-		static Context create_context(i32 argc, char** args);
 		static struct SystemAllocator& system_allocator();
 		static struct StackAllocator& stack_allocator();
 	};

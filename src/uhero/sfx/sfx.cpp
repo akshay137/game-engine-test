@@ -6,11 +6,50 @@
 
 namespace uhero::sfx
 {
-	void default_audio_callback(void*, u8* stream, i32 size)
+	float time = 0;
+
+	void default_audio_callback(void* userdata, u8* stream, i32 size)
 	{
+		Context* ctx = reinterpret_cast<Context*>(userdata);
 		SDL_memset(stream, 0, size); // silence
-		float* samples = reinterpret_cast<float*>(stream);
-		i32 length = size / sizeof(float);
+
+		sample_type* samples = reinterpret_cast<sample_type*>(stream);
+		i32 length = size / sizeof(sample_type);
+
+		float sample_count = ctx->samples;
+		float timeframe = length / sample_count;
+
+		for (i32 i = 0; i < length; i++)
+		{
+			float timestep = time + (i / sample_count);
+			sample_type sample = 0;
+
+			i32 _sc = 0;
+			for (i32 c = 0; c < MAX_AUDIO_CHANNELS; c++)
+			{
+				Channel& channel = ctx->channels[c];
+				if (0 == channel.status) continue;
+
+				AudioBuffer& buffer = channel.buffer;
+				sample += buffer.get_sample(i) * channel.volume;
+				++_sc;
+			}
+			// if (_sc) sample /= (float)_sc;
+
+			samples[i] = sample;
+		}
+		for (i32 c = 0; c < MAX_AUDIO_CHANNELS; c++)
+		{
+			Channel& channel = ctx->channels[c];
+			if (channel.status)
+			{
+				auto ended = channel.buffer.add_offset(sample_count);
+				if (ended) ctx->stop_buffer(c);
+			}
+		}
+
+
+		time += timeframe;
 	}
 
 	Result Context::create(AudioCallback callback)
@@ -33,6 +72,7 @@ namespace uhero::sfx
 		required_spec.samples = 1024;
 		required_spec.channels = 1;
 		required_spec.callback = callback;
+		required_spec.userdata = this;
 
 		SDL_AudioSpec obtained_spec {};
 		device_id = SDL_OpenAudioDevice(nullptr, 0,
@@ -54,9 +94,20 @@ namespace uhero::sfx
 
 		UH_INFO("Device Info:\n"
 			"\tFrequency: %d\n"
-			"\tSamples: %d\n",
-			obtained_spec.freq, obtained_spec.samples
+			"\tSamples: %d\n"
+			"\tChannels: %d\n",
+			obtained_spec.freq,
+			obtained_spec.samples,
+			obtained_spec.channels
 		);
+		this->frequency = obtained_spec.freq;
+		this->samples = obtained_spec.samples;
+
+		for (i32 i = 0; i < MAX_AUDIO_CHANNELS; i++)
+		{
+			channels[i].volume = 1.0f;
+			channels[i].status = 0;
+		}
 
 		this->pause(false);
 		return Result::Success;
@@ -64,11 +115,35 @@ namespace uhero::sfx
 
 	void Context::clear()
 	{
+		SDL_PauseAudioDevice(device_id, 1);
 		SDL_CloseAudioDevice(device_id);
 	}
 
 	void Context::pause(bool status)
 	{
 		SDL_PauseAudioDevice(device_id, status);
+	}
+
+	i32 Context::play_buffer(const AudioBuffer& buffer, float volume)
+	{
+		for (i32 i = 0; i < MAX_AUDIO_CHANNELS; i++)
+		{
+			if (0 == channels[i].status)
+			{
+				channels[i].buffer = buffer;
+				channels[i].status = 1;
+				channels[i].volume = volume;
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	void Context::stop_buffer(i32 id)
+	{
+		if (id >= MAX_AUDIO_CHANNELS) return;
+		if (id < 0) return;
+		
+		channels[id].status = 0;
 	}
 }
