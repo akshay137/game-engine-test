@@ -28,6 +28,8 @@ namespace uhero
 		AllocationInfo allocations[MAX_ALLOCATIONS];
 		usize current_allocations;
 
+		usize total_allocated = 0;
+
 		[[nodiscard]]
 		void* allocate(usize bytes, const char* source=nullptr, isize line=0);
 		void release(void* ptr);

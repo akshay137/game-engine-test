@@ -17,11 +17,18 @@ namespace game
 	gfx::FrameBuffer fbo;
 	sfx::AudioBuffer hit;
 	sfx::AudioBuffer item;
+	sfx::AudioBuffer bgm;
+
 	i32 hit_channel = 0;
 	i32 item_channel = 0;
+	i32 bgm_channel = 0;
+
+	float volume = 1.0f;
 
 	sfx::AudioBuffer load_audio(const char* file)
 	{
+		UH_INFO("Loading sound: %s\n", file);
+
 		SDL_AudioSpec spec;
 		u8* wbuff;
 		u32 size;
@@ -32,25 +39,23 @@ namespace game
 			assert(false);
 		}
 
-		UH_INFO("Format: %x\n", spec.format);
-		UH_INFO("BitSize: %d | Float: %s | Endian: %s | Signed: %s\n",
+		UH_VERB("Format: %x\n", spec.format);
+		UH_VERB("BitSize: %d | Float: %s | Endian: %s | Signed: %s\n",
 			SDL_AUDIO_BITSIZE(spec.format),
 			SDL_AUDIO_ISFLOAT(spec.format) ? "yes" : "no",
 			SDL_AUDIO_ISBIGENDIAN(spec.format) ? "big" : "little",
 			SDL_AUDIO_ISSIGNED(spec.format) ? "true" : "false"
 		);
-		UH_INFO("Frequency: %d\n", spec.freq);
-		UH_INFO("SampleRate: %d\n", spec.samples);
-		UH_INFO("Channels: %d\n", spec.channels);
+		UH_VERB("Frequency: %d\n", spec.freq);
+		UH_VERB("SampleRate: %d\n", spec.samples);
+		UH_VERB("Channels: %d\n", spec.channels);
 
 		i32 sample_length = size / (sizeof(i16) * spec.channels);
-		UH_INFO("samples: %d | size: %d\n", sample_length, size);
+		UH_VERB("samples: %d | size: %d\n", sample_length, size);
 
 		sfx::AudioBuffer buffer {};
 		buffer.buffer = UH_ALLOCATE_TYPE(sfx::sample_type, sample_length);
 		buffer.size = sample_length;
-		buffer.offset = 0;
-		buffer.loop = false;
 
 		constexpr float MAX_SIGNED = 0x7fff;
 		for (i32 i = 0; i < buffer.size; i++)
@@ -91,8 +96,13 @@ namespace game
 			return res;
 		}
 
-		hit = load_audio("assets/sample1.wav");
-		item = load_audio("assets/sample.wav");
+		ctx.audio.set_global_volume(volume);
+
+		hit = load_audio("assets/hit.wav");
+		item = load_audio("assets/item.wav");
+		bgm = load_audio("assets/bgm.wav");
+		bgm_channel = ctx.audio.play_buffer(bgm, .75, true);
+		UH_INFO("Playing BGM on channel: %d\n", bgm_channel);
 
 		return Result::Success;
 	}
@@ -106,8 +116,9 @@ namespace game
 		font.clear();
 		firacode.clear();
 		fbo.clear();
-		UH_FREE(hit.buffer);
-		UH_FREE(item.buffer);
+		hit.clear();
+		item.clear();
+		bgm.clear();
 	}
 
 	void Game::update(float)
@@ -120,12 +131,17 @@ namespace game
 		
 		if (ip.is_key_released(KeyCode::A)) // attack
 		{
-			UH_INFO("Attacking\n");
 			hit_channel = audio.play_buffer(hit, .5);
 		}
 		if (ip.is_key_released(KeyCode::S)) // item
 		{
-			item_channel = audio.play_buffer(item, 0.25);
+			item_channel = audio.play_buffer(item, 0.1);
+		}
+
+		if (ip.is_key_released(KeyCode::P)) // toggle BGM
+		{
+			UH_INFO("Toggling BGM Playback\n");
+			audio.toggle_channel(bgm_channel);
 		}
 	}
 
@@ -243,12 +259,24 @@ namespace game
 		auto triangles = stats.triangle_count;
 		auto switches = stats.texture_switch;
 
+		auto time = ctx.main_clock.nanoseconds();
+		i32 ms = time / 1000000;
+		i32 seconds = ms / 1000;
+		i32 minutes = seconds / 60;
+		i32 hours = minutes / 60;
+
+		minutes %= 60;
+		seconds %= 60;
+		ms %= 1000;
+
 		auto pen = glm::vec2(8, 64 + 32 + 24);
 		auto _style = style;
 		_style.size = 15.0 * gfx::PT_TO_PIXEL;
 		_style.border_size = 0.005;
 		uber.draw_color(glm::vec2(4), glm::vec2(256, pen.y), gfx::Color32::from_rgba(0, 1, 0));
-		pen = uber.write_format(pen, font, _style, "time: %.3f\n", ctx.main_clock.seconds());
+		pen = uber.write_format(pen, font, _style, "time: %d:%d:%d:%d\n",
+			hours, minutes, seconds, ms / 100
+		);
 		pen = uber.write_format(pen, font, _style, "delta: %f\n", ctx.main_clock.delta());
 		pen = uber.write_format(pen, font, _style,
 			"Draw calls: %u\nTriangles: %u\nTextureSwitch: %u",

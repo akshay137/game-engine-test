@@ -18,6 +18,7 @@ namespace uhero
 
 		AllocationInfo info(res, bytes, source, line);
 		allocations[current_allocations++] = info;
+		total_allocated += bytes;
 
 		return res;
 	}
@@ -51,7 +52,8 @@ namespace uhero
 	void SystemAllocator::dump_current_allocations() const
 	{
 		UH_INFO("Current Allocations: %lu\n", current_allocations);
-		// for (const auto& info : allocations)
+		UH_INFO("Total memory allocated: %lu\n", total_allocated);
+		
 		for (usize i = 0; i < current_allocations; i++)
 		{
 			const auto& info = allocations[i];

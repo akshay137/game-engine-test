@@ -29,7 +29,8 @@ namespace uhero::gfx
 			);
 		}
 
-		this->set_swizzle(data.swizzle);
+		if (PixelFormat::Depth24Stencil8 != format)
+			this->set_swizzle(data.swizzle);
 		if (pixels && mipmaps > 0)
 			this->generate_mipmaps();
 

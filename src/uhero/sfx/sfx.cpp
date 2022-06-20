@@ -6,50 +6,50 @@
 
 namespace uhero::sfx
 {
-	float time = 0;
+	struct SDLAudioScopeLock
+	{
+		i32 device;
+
+		SDLAudioScopeLock(i32 id)
+			: device{id}
+		{
+			SDL_LockAudioDevice(device);
+		}
+
+		~SDLAudioScopeLock()
+		{
+			SDL_UnlockAudioDevice(device);
+		}
+	};
 
 	void default_audio_callback(void* userdata, u8* stream, i32 size)
 	{
 		Context* ctx = reinterpret_cast<Context*>(userdata);
-		SDL_memset(stream, 0, size); // silence
-
 		sample_type* samples = reinterpret_cast<sample_type*>(stream);
 		i32 length = size / sizeof(sample_type);
+		SDL_memset(stream, 0, size); // silence
 
-		float sample_count = ctx->samples;
-		float timeframe = length / sample_count;
+		float global_volume = ctx->global_volume;
 
-		for (i32 i = 0; i < length; i++)
+		for (i32 i = 0; i < MAX_AUDIO_CHANNELS; i++)
 		{
-			float timestep = time + (i / sample_count);
-			sample_type sample = 0;
+			Channel& channel = ctx->channels[i];
+			if (!channel.is_playing())
+				continue;
+			
+			i32 mix_length = std::min(length, channel.remaining());
+			i32 offset = channel.offset;
+			float final_volume = global_volume * channel.volume;
 
-			i32 _sc = 0;
-			for (i32 c = 0; c < MAX_AUDIO_CHANNELS; c++)
+			for (i32 j = 0; j < mix_length; j++)
 			{
-				Channel& channel = ctx->channels[c];
-				if (0 == channel.status) continue;
-
-				AudioBuffer& buffer = channel.buffer;
-				sample += buffer.get_sample(i) * channel.volume;
-				++_sc;
+				sample_type sample = channel.get_sample(offset + j);
+				samples[j] += sample * final_volume;
 			}
-			// if (_sc) sample /= (float)_sc;
 
-			samples[i] = sample;
+			if (channel.consume(mix_length))
+				channel.stop();
 		}
-		for (i32 c = 0; c < MAX_AUDIO_CHANNELS; c++)
-		{
-			Channel& channel = ctx->channels[c];
-			if (channel.status)
-			{
-				auto ended = channel.buffer.add_offset(sample_count);
-				if (ended) ctx->stop_buffer(c);
-			}
-		}
-
-
-		time += timeframe;
 	}
 
 	Result Context::create(AudioCallback callback)
@@ -95,20 +95,22 @@ namespace uhero::sfx
 		UH_INFO("Device Info:\n"
 			"\tFrequency: %d\n"
 			"\tSamples: %d\n"
-			"\tChannels: %d\n",
+			"\tChannels: %d\n"
+			"\tFormat: %x\n",
 			obtained_spec.freq,
 			obtained_spec.samples,
-			obtained_spec.channels
+			obtained_spec.channels,
+			obtained_spec.format
 		);
 		this->frequency = obtained_spec.freq;
 		this->samples = obtained_spec.samples;
 
 		for (i32 i = 0; i < MAX_AUDIO_CHANNELS; i++)
 		{
-			channels[i].volume = 1.0f;
-			channels[i].status = 0;
+			channels[i].reset();
 		}
 
+		this->set_global_volume(1.0f);
 		this->pause(false);
 		return Result::Success;
 	}
@@ -124,18 +126,30 @@ namespace uhero::sfx
 		SDL_PauseAudioDevice(device_id, status);
 	}
 
-	i32 Context::play_buffer(const AudioBuffer& buffer, float volume)
+	i32 Context::play_buffer(const AudioBuffer& buffer, float volume, bool loop)
 	{
+		Channel new_channel {};
+		new_channel.buffer = buffer;
+		new_channel.volume = volume;
+		new_channel.loop = loop;
+		new_channel.offset = 0;
+		new_channel.status = ChannelStatus::Playing;
+
+		SDLAudioScopeLock lock(device_id);
+
+		// SDL_LockAudioDevice(device_id);
 		for (i32 i = 0; i < MAX_AUDIO_CHANNELS; i++)
 		{
-			if (0 == channels[i].status)
+			Channel& channel = channels[i];
+			if (channel.is_stopped())
 			{
-				channels[i].buffer = buffer;
-				channels[i].status = 1;
-				channels[i].volume = volume;
+				channel = new_channel;
+				// SDL_UnlockAudioDevice(device_id);
 				return i;
 			}
 		}
+
+		// SDL_UnlockAudioDevice(device_id);
 		return -1;
 	}
 
@@ -144,6 +158,42 @@ namespace uhero::sfx
 		if (id >= MAX_AUDIO_CHANNELS) return;
 		if (id < 0) return;
 		
-		channels[id].status = 0;
+		SDLAudioScopeLock lock(device_id);
+		channels[id].stop();
+	}
+
+	void Context::pause_channel(i32 id, bool should_pause)
+	{
+		if (id < 0) return;
+		if (id >= MAX_AUDIO_CHANNELS) return;
+
+		SDLAudioScopeLock lock(device_id);
+		if (channels[id].is_stopped()) return;
+
+		if (should_pause)
+			channels[id].pause();
+		else
+			channels[id].play();
+	}
+
+	void Context::toggle_channel(i32 id)
+	{
+		if (id < 0) return;
+		if (id >= MAX_AUDIO_CHANNELS) return;
+
+		SDLAudioScopeLock lock(device_id);
+		if (channels[id].is_playing())
+			channels[id].pause();
+		else
+			channels[id].play();
+	}
+
+	void Context::set_channel_volume(i32 id, float volume)
+	{
+		if (id < 0) return;
+		if (id >= MAX_AUDIO_CHANNELS) return;
+
+		SDLAudioScopeLock lock(device_id);
+		channels[id].volume = volume;
 	}
 }
