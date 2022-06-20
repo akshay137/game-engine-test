@@ -82,10 +82,12 @@ namespace game
 		if (Result::Success != res)
 			return res;
 
-		font = res::load_font("assets/cascadia.atlas");
-		firacode = res::load_font("assets/firacode.atlas");
+		// font = res::load_font("assets/cascadia.atlas");
+		// font = res::load_font("assets/entercommand.atlas");
+		font = res::load_font("assets/firacode.atlas");
 		style = gfx::FontStyle(16);
-		style.border_size = 0;
+		style.border_size = 0.1;
+		style.border_color = gfx::Color32::from_rgba(1, 0, 0);
 
 		gfx::FBDescriptor desc {};
 		desc.add_color_attachment(gfx::PixelFormat::RGBA_F32);
@@ -114,7 +116,6 @@ namespace game
 		uber.clear();
 		spritesheet.clear();
 		font.clear();
-		firacode.clear();
 		fbo.clear();
 		hit.clear();
 		item.clear();
@@ -148,6 +149,7 @@ namespace game
 	void Game::render()
 	{
 		ctx.gfx.use_framebuffer(fbo);
+		glm::vec2 screen(fbo.width, fbo.height);
 
 		i32 SIZE = 16;
 		glm::vec2 bsize(SIZE);
@@ -159,8 +161,6 @@ namespace game
 			glm::vec2(-1, 0), // X
 			glm::vec2(0, -1), // Y
 		};
-
-		glm::vec2 screen(fbo.width, fbo.height);
 
 		action_center.x -= bsize.x * 3.0f;
 		for (auto i = 0; i < 4; i++)
@@ -184,8 +184,9 @@ namespace game
 
 		// final render
 		ctx.gfx.use_default_framebuffer(ctx.main_window);
-		uber.draw_texture(glm::vec2(0),
-			glm::vec2(ctx.main_window.width, ctx.main_window.height),
+		screen = glm::vec2(ctx.main_window.width, ctx.main_window.height);
+
+		uber.draw_texture(glm::vec2(0), screen,
 			fbo.color[0], glm::vec4(0, fbo.height, fbo.width, -fbo.height)
 		);
 		uber.flush();
@@ -204,7 +205,7 @@ namespace game
 		std::string_view title, bool y_flipped
 	)
 	{
-		const auto& _font = firacode;
+		const auto& _font = font;
 		float scale = size / texture.width;
 		glm::vec2 screen(ctx.main_window.width, ctx.main_window.height);
 
@@ -272,12 +273,13 @@ namespace game
 		auto pen = glm::vec2(8, 64 + 32 + 24);
 		auto _style = style;
 		_style.size = 15.0 * gfx::PT_TO_PIXEL;
-		_style.border_size = 0.005;
+		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
+		_style.border_size = 0.1;
 		uber.draw_color(glm::vec2(4), glm::vec2(256, pen.y), gfx::Color32::from_rgba(0, 1, 0));
-		pen = uber.write_format(pen, font, _style, "time: %d:%d:%d:%d\n",
+		pen = uber.write_format(pen, font, _style, "Time: %d:%d:%d:%d\n",
 			hours, minutes, seconds, ms / 100
 		);
-		pen = uber.write_format(pen, font, _style, "delta: %f\n", ctx.main_clock.delta());
+		pen = uber.write_format(pen, font, _style, "Delta: %f\n", ctx.main_clock.delta());
 		pen = uber.write_format(pen, font, _style,
 			"Draw calls: %u\nTriangles: %u\nTextureSwitch: %u",
 			drawcalls, triangles, switches

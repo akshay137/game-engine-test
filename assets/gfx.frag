@@ -50,17 +50,15 @@ void main()
 			const float tedge = glyph.edges.x;
 			const float bedge = glyph.edges.y;
 
-			float a = 1.0f - smoothstep(twidth, twidth + tedge, dist);
-			vec4 text_color = glyph.text_color * a;
+			float alpha = 1.0f - smoothstep(twidth, twidth + tedge, dist);
+			vec4 text_color = glyph.text_color;// * alpha;
 
-			float ba = 1.0f - smoothstep(bwidth, bwidth + bedge, dist);
-			vec4 border_color = glyph.outline_color * ba;
+			float border_alpha = 1.0f - smoothstep(bwidth, bwidth + bedge, dist);
+			vec4 border_color = glyph.outline_color;// * border_alpha;
 
-			float final_alpha = a + (1.0f - a) * ba;
+			vec4 final_color = mix(border_color, text_color, alpha);
 
-			vec4 final_color = mix(border_color, text_color, final_alpha);
-
-			color = vec4(final_color.rgb, final_alpha);
+			color = vec4(final_color.rgb, border_alpha);
 			break;
 	}
 }

@@ -40,6 +40,7 @@ if '__main__' == __name__:
 	base = opts.i.replace(os.path.basename(opts.i), '')
 	print(base)
 	img = atlas['image']
+	img = os.path.join(base, img)
 	print(img)
 	image = Image.open(img)
 

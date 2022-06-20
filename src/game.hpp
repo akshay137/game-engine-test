@@ -15,7 +15,6 @@ namespace game
 		uhero::Context& ctx;
 		uhero::gfx::Renderer uber;
 		uhero::gfx::Font font;
-		uhero::gfx::Font firacode;
 		uhero::gfx::FontStyle style;
 
 		uhero::gfx::Texture spritesheet;
