@@ -6,6 +6,7 @@
 #include "uhero/res/texture.hpp"
 #include "uhero/res/font_atlas.hpp"
 #include "uhero/sfx/sfx.hpp"
+#include "uhero/res/audio.hpp"
 
 #include <string_view>
 #include <SDL2/SDL_audio.h>
@@ -14,64 +15,10 @@ namespace game
 {
 	using namespace uhero;
 
-	gfx::FrameBuffer fbo;
 	sfx::AudioBuffer hit;
 	sfx::AudioBuffer item;
 	sfx::AudioBuffer bgm;
-
-	i32 hit_channel = 0;
-	i32 item_channel = 0;
 	i32 bgm_channel = 0;
-
-	float volume = 1.0f;
-
-	sfx::AudioBuffer load_audio(const char* file)
-	{
-		UH_INFO("Loading sound: %s\n", file);
-
-		SDL_AudioSpec spec;
-		u8* wbuff;
-		u32 size;
-		auto* res = SDL_LoadWAV(file, &spec, &wbuff, &size);
-		if (!res)
-		{
-			UHSDL_ERROR(SDL_LoadWAV);
-			assert(false);
-		}
-
-		UH_VERB("Format: %x\n", spec.format);
-		UH_VERB("BitSize: %d | Float: %s | Endian: %s | Signed: %s\n",
-			SDL_AUDIO_BITSIZE(spec.format),
-			SDL_AUDIO_ISFLOAT(spec.format) ? "yes" : "no",
-			SDL_AUDIO_ISBIGENDIAN(spec.format) ? "big" : "little",
-			SDL_AUDIO_ISSIGNED(spec.format) ? "true" : "false"
-		);
-		UH_VERB("Frequency: %d\n", spec.freq);
-		UH_VERB("SampleRate: %d\n", spec.samples);
-		UH_VERB("Channels: %d\n", spec.channels);
-
-		i32 sample_length = size / (sizeof(i16) * spec.channels);
-		UH_VERB("samples: %d | size: %d\n", sample_length, size);
-
-		sfx::AudioBuffer buffer {};
-		buffer.buffer = UH_ALLOCATE_TYPE(sfx::sample_type, sample_length);
-		buffer.size = sample_length;
-
-		constexpr float MAX_SIGNED = 0x7fff;
-		for (i32 i = 0; i < buffer.size; i++)
-		{
-			const i16* audio_buffer = reinterpret_cast<i16*>(wbuff);
-			float sample = 0;
-			i16 L = audio_buffer[i * spec.channels + 0];
-
-			sample = L / MAX_SIGNED;
-
-			buffer.buffer[i] = sample;
-		}
-
-		SDL_FreeWAV(wbuff);
-		return buffer;
-	}
 
 	uhero::Result Game::load(uhero::Context&)
 	{
@@ -82,27 +29,14 @@ namespace game
 		if (Result::Success != res)
 			return res;
 
-		// font = res::load_font("assets/cascadia.atlas");
-		// font = res::load_font("assets/entercommand.atlas");
 		font = res::load_font("assets/firacode.atlas");
 		style = gfx::FontStyle(16);
 		style.border_size = 0.1;
 		style.border_color = gfx::Color32::from_rgba(1, 0, 0);
 
-		gfx::FBDescriptor desc {};
-		desc.add_color_attachment(gfx::PixelFormat::RGBA_F32);
-		desc.set_depth_attachment(gfx::PixelFormat::Depth24Stencil8);
-		res = fbo.create(desc, 640, 360);
-		if (Result::Success != res)
-		{
-			return res;
-		}
-
-		ctx.audio.set_global_volume(volume);
-
-		hit = load_audio("assets/hit.wav");
-		item = load_audio("assets/item.wav");
-		bgm = load_audio("assets/bgm.wav");
+		hit = res::load_audio("assets/hit.wav");
+		item = res::load_audio("assets/item.wav");
+		bgm = res::load_audio("assets/bgm.wav");
 		bgm_channel = ctx.audio.play_buffer(bgm, .75, true);
 		UH_INFO("Playing BGM on channel: %d\n", bgm_channel);
 
@@ -116,7 +50,6 @@ namespace game
 		uber.clear();
 		spritesheet.clear();
 		font.clear();
-		fbo.clear();
 		hit.clear();
 		item.clear();
 		bgm.clear();
@@ -132,11 +65,11 @@ namespace game
 		
 		if (ip.is_key_released(KeyCode::A)) // attack
 		{
-			hit_channel = audio.play_buffer(hit, .5);
+			audio.play_buffer(hit, .5);
 		}
 		if (ip.is_key_released(KeyCode::S)) // item
 		{
-			item_channel = audio.play_buffer(item, 0.1);
+			audio.play_buffer(item, 0.1);
 		}
 
 		if (ip.is_key_released(KeyCode::P)) // toggle BGM
@@ -148,13 +81,11 @@ namespace game
 
 	void Game::render()
 	{
-		ctx.gfx.use_framebuffer(fbo);
-		glm::vec2 screen(fbo.width, fbo.height);
-
+		glm::vec2 screen(ctx.main_window.width, ctx.main_window.height);
 		i32 SIZE = 16;
-		glm::vec2 bsize(SIZE);
+		glm::vec2 bsize(SIZE * 4);
 
-		glm::vec2 action_center = glm::vec2(fbo.width / 2, fbo.height / 2);
+		glm::vec2 action_center = glm::vec2(screen.x / 2, screen.y / 2);
 		glm::vec2 BUTTONS[4] = {
 			glm::vec2(0, 1), // A
 			glm::vec2(1, 0), // B
@@ -181,16 +112,6 @@ namespace game
 		}
 
 		uber.flush();
-
-		// final render
-		ctx.gfx.use_default_framebuffer(ctx.main_window);
-		screen = glm::vec2(ctx.main_window.width, ctx.main_window.height);
-
-		uber.draw_texture(glm::vec2(0), screen,
-			fbo.color[0], glm::vec4(0, fbo.height, fbo.width, -fbo.height)
-		);
-		uber.flush();
-
 		show_debug_info();
 	}
 
