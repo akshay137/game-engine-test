@@ -13,24 +13,11 @@
 namespace game
 {
 	using namespace uhero;
-
-	template <typename T>
-	T lerp(const T& from, const T& to, float time)
-	{
-		T temp = from + (to - from) * time;
-		return temp;
-	}
-
+	
 	template <typename T>
 	T clamp(const T& v, const T& lower, const T& upper)
 	{
 		return std::min(upper, std::max(v, lower));
-	}
-
-	float snap_to(const float v, const float inc)
-	{
-		auto div = v / inc;
-		return round(div) * inc;
 	}
 
 	uhero::Result Game::load(uhero::Context&)
@@ -55,7 +42,11 @@ namespace game
 		tx_tiles = res::load_texture("assets/tiles.png");
 		tx_tiles.set_filter(gfx::TextureFilter::Linear);
 
-		map.load_from_file("assets/test.map");
+		res = map.load_from_file("assets/test.map");
+		if (Result::Success != res)
+		{
+			return res;
+		}
 
 		map_camera = glm::vec4(0, 0,
 			GAME_SIZE.x / map.tileset.tile_size,
@@ -99,8 +90,8 @@ namespace game
 			map_camera.y -= CAM_SPEED * delta;
 
 		glm::vec2 half_size = { map_camera.z / 2, map_camera.w / 2 };
-		map_camera.x = clamp(map_camera.x, half_size.x - 1, map.width - half_size.x + 1);
-		map_camera.y = clamp(map_camera.y, half_size.y + 1, map.height - half_size.y + 1);
+		map_camera.x = clamp(map_camera.x, half_size.x, map.width - half_size.x);
+		map_camera.y = clamp(map_camera.y, half_size.y, map.height - half_size.y);
 	}
 
 	void Game::render()
@@ -115,17 +106,29 @@ namespace game
 		// present game
 		ctx.gfx.use_default_framebuffer(ctx.main_window);
 		glm::vec2 screen(ctx.main_window.width, ctx.main_window.height);
-		glm::vec2 fpos(0);
-		glm::vec2 size(screen);
-		float game_aspect = GAME_SIZE.y / GAME_SIZE.x;
-		float game_to_screen_ratio = screen.y / GAME_SIZE.y;
-		size.x = GAME_SIZE.x * game_to_screen_ratio;
-		fpos.x += (screen.x - size.x) / 2;
-		uber.draw_texture(fpos, size, game_fbo.color[0],
+		glm::vec2 pos = screen * .5f;
+		glm::vec2 size(game_fbo.width, game_fbo.height);
+		float game_aspect = GAME_SIZE.x / GAME_SIZE.y;
+		float height_ratio = screen.y / GAME_SIZE.y;
+		size.y = GAME_SIZE.y * height_ratio;
+		size.x = size.y * game_aspect;
+
+		if (size.x > screen.x)
+		{
+			float width_ratio = screen.x / size.x;
+			size.x *= width_ratio;
+			size.y = size.x * (GAME_SIZE.y / GAME_SIZE.x);
+		}
+		uber.draw_texture(pos, size, game_fbo.color[0],
 			glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
 		);
+		uber.flush();
+
 
 		// game debug info
+		if (debug_info_enabled)
+			show_debug_info();
+		
 		auto pen = screen_to_world(glm::vec2(0), screen);
 		pen = uber.write_format(pen, font, style, "cam: [%dx%d]{%dx%d}\n",
 			(int)map_camera.x, (int)map_camera.y,
@@ -133,8 +136,6 @@ namespace game
 		);
 
 		uber.flush();
-		if (debug_info_enabled)
-			show_debug_info();
 	}
 
 	void Game::draw_tile_map(const TileMap& tmap, glm::vec4 camera)
@@ -153,12 +154,16 @@ namespace game
 
 			glm::vec2 pos = { tile.x, tmap.height - tile.y };
 			auto view_pos = (pos - cam_offset) * size;
-			view_pos.x = snap_to(view_pos.x, map.tileset.tile_size);
-			view_pos.y = snap_to(view_pos.y, map.tileset.tile_size);
-			if (view_pos.x < 0) continue;
-			if (view_pos.x > GAME_SIZE.x) continue;
-			if (view_pos.y < 0) continue;
-			if (view_pos.y > GAME_SIZE.y) continue;
+			view_pos.x += size.x / 2;
+			view_pos.y -= size.y / 2;
+			if (view_pos.x + size.x * .5 < 0) continue;
+			if (view_pos.x > GAME_SIZE.x + size.x * .5) continue;
+			if (view_pos.y + size.y * .5 < 0) continue;
+			if (view_pos.y > GAME_SIZE.y + size.y * .5) continue;
+
+			// snap to pixel grid, removes some sprite artifacts
+			view_pos.x = round(view_pos.x);
+			view_pos.y = round(view_pos.y);
 			uber.draw_texture(view_pos, size, tset.atlas, src);
 
 			// // debug view
@@ -200,12 +205,12 @@ namespace game
 		seconds %= 60;
 		ms %= 1000;
 
-		auto pen = glm::vec2(8, 64 + 32 + 24);
+		auto pen = glm::vec2(8, 64 + 32 + 16);
 		auto _style = style;
 		_style.size = 15.0 * gfx::PT_TO_PIXEL;
 		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
 		_style.border_size = 0.1;
-		uber.draw_color(glm::vec2(4), glm::vec2(256, pen.y), gfx::Color32::from_rgba(0, 1, 0));
+		uber.draw_color(glm::vec2(104, 60), glm::vec2(200, 108), gfx::Color32::from_rgba(0, 1, 0));
 		pen = uber.write_format(pen, font, _style, "Time: %d:%d:%d:%d\n",
 			hours, minutes, seconds, ms / 100
 		);

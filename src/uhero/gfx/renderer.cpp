@@ -37,6 +37,10 @@ namespace uhero::gfx
 
 		u32 index_count = max_quads * 6;
 		u16* indices = UH_FRAME_STACK_ALLOCATE_TYPE(u16, index_count);
+		/*
+			0 1
+			2 3
+		*/
 		constexpr u16 QUADI[] = { 0, 1, 2, 2, 1, 3 };
 		for (u32 i = 0; i < index_count; i++)
 		{
@@ -256,6 +260,12 @@ namespace uhero::gfx
 			this->flush();
 	}
 
+	glm::vec2 transform_vertex(const glm::mat4& trans, const glm::vec2& vertex)
+	{
+		auto res = trans * glm::vec4(vertex, 0.0f, 1.0f);
+		return glm::vec2(res.x, res.y);
+	}
+
 	void Renderer::update_vertex_buffer()
 	{
 		if (0 == current_quads) return;
@@ -264,51 +274,51 @@ namespace uhero::gfx
 		for (u32 i = 0; i < current_quads; i++)
 		{
 			const Quad& quad = quads[i];
-			const glm::vec4 clip = quad.clip;
-			const glm::vec4 rect = quad.rect;
+			constexpr glm::vec2 sprite_positions[4] = {
+				{ -.5f, .5f }, // top left
+				{ .5f, .5f }, // top right
+				{ -.5f, -.5f }, // bottom left
+				{ .5f, -.5f }, // bottom right
+			};
+			constexpr glm::vec2 glyph_positions[4] = {
+				{ 0, 1 }, // top left
+				{ 1, 1 }, // top right
+				{ 0, 0 }, // bottom left
+				{ 1, 0 }, // bottom right
+			};
+			constexpr glm::vec2 coords[4] = {
+				{ 0, 0 },
+				{ 1, 0 },
+				{ 0, 1 },
+				{ 1, 1 },
+			};
+			const glm::vec2* positions = sprite_positions;
+
 			Vertex temp;
+			glm::mat4 uv = glm::mat4(1);
+			uv = glm::translate(uv, glm::vec3(quad.clip.x, quad.clip.y, 0.0f));
+			uv = glm::scale(uv, glm::vec3(quad.clip.z, quad.clip.w, 1.0f));
+			
+			glm::mat4 model = glm::mat4(1);
+			model = glm::translate(model, glm::vec3(quad.rect.x, quad.rect.y, .0f));
+			model = glm::scale(model, glm::vec3(quad.rect.z, quad.rect.w, 1.0f));
+			
 			if (QuadType::SDFGlyph == quad.type)
+			{
+				positions = glyph_positions;
 				temp = glyph_vertex(quad);
+			}
 			else
+			{
 				temp = sprite_vertex(quad);
+				model = glm::rotate(model, quad.sprite.angle, glm::vec3(0, 0, 1));
+			}
 			
 			Vertex v[4] = { temp, temp, temp, temp };
-
-			v[0].position = glm::vec2(rect.x, rect.y);
-			v[0].uv = glm::vec2(clip.x, clip.y + clip.w);
-
-			v[1].position = glm::vec2(rect.x + rect.z, rect.y);
-			v[1].uv = glm::vec2(clip.x + clip.z, clip.y + clip.w);
-
-			v[2].position = glm::vec2(rect.x, rect.y + rect.w);
-			v[2].uv = glm::vec2(clip.x, clip.y);
-
-			v[3].position = glm::vec2(rect.x + rect.z, rect.y + rect.w);
-			v[3].uv = glm::vec2(clip.x + clip.z, clip.y);
-
-			// rotate quad here
-			if ((QuadType::Color == quad.type)
-				|| (QuadType::Sprite == quad.type)
-			)
+			for (auto i = 0; i < 4; i++)
 			{
-				// add 180 degrees to angle | 3.14 radians
-				constexpr auto PI = 22.0f / 7.0f;
-				const float angle = quad.sprite.angle - PI;
-				glm::vec2 center(quad.rect.x + quad.center.x,
-					quad.rect.y + quad.center.y
-				);
-
-				// TODO: remove use of glm::rotate
-				auto mat = glm::rotate(glm::mat4(1), angle, glm::vec3(0, 0, 1));
-				for (i32 i = 0; i < 4; i++)
-				{
-					glm::vec2 local = center - v[i].position;
-					auto res = mat * glm::vec4(local.x, local.y, 0.0f, 1.0f);
-					v[i].position = glm::vec2(res.x + center.x, res.y + center.y);
-				}
-
-				// std::swap(v[0].uv, v[3].uv);
-				// std::swap(v[1].uv, v[2].uv);
+				v[i].position = transform_vertex(model, positions[i]);
+				v[i].uv = transform_vertex(uv, coords[i]);
 			}
 
 			u32 vindex = i * 4;

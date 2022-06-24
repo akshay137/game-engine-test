@@ -27,7 +27,8 @@ namespace game
 
 		bool debug_info_enabled = true;
 
-		constexpr static glm::vec2 GAME_SIZE = { 18 * 32, 18 * 16 };
+		// constexpr static glm::vec2 GAME_SIZE = { 18 * 32, 18 * 16 };
+		constexpr static glm::vec2 GAME_SIZE = { 480, 480 * (9 / 16.0) };
 
 		Game(uhero::Context& ctx)
 			: ctx{ctx}

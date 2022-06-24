@@ -141,6 +141,12 @@ namespace uhero::gfx
 			glm::vec2 size(src.z, src.w);
 			draw_texture(pos, size, texture, src, 0, glm::vec2(0), 1, Color32(255));
 		}
+		// draws complete texture with 1:1 scale
+		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture)
+		{
+			glm::vec4 src(0, 0, texture.width, texture.height);
+			draw_texture(pos, size, texture, src, 0, glm::vec2(0), 1, Color32(255));
+		}
 		// draws a region of texture with given size
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src
