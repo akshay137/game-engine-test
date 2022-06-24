@@ -67,10 +67,15 @@ namespace uhero::gfx
 
 		// clear buffers
 		float clear_color[4] = { 0, 0, 0, 0 };
+		clear_buffers(clear_color, 1.0f, 0);
+	}
+
+	void FrameBuffer::clear_buffers(const float* clear_color, float depth, i32 stencil)
+	{
 		for (u32 i = 0; i < descriptor.color_attachments; i++)
 		{
 			glClearNamedFramebufferfv(gl_id, GL_COLOR, i, clear_color);
 		}
-		glClearNamedFramebufferfi(gl_id, GL_DEPTH_STENCIL, 0, 1.0f, 0);
+		glClearNamedFramebufferfi(gl_id, GL_DEPTH_STENCIL, 0, depth, stencil);
 	}
 }

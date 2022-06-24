@@ -45,8 +45,8 @@ namespace uhero::res
 
 		// read image
 		usize image_size = w * h;
-		UH_STACK_GROUP();
-		void* image = UH_STACK_ALLOCATE(image_size);
+		UH_FRAME_STACK_GROUP();
+		void* image = UH_FRAME_STACK_ALLOCATE(image_size);
 
 		file.read(image, image_size);
 

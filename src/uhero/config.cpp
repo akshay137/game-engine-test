@@ -11,7 +11,7 @@ namespace uhero
 {
 	Config Config::read_config(const char* config_file)
 	{
-		UH_STACK_GROUP();
+		UH_FRAME_STACK_GROUP();
 
 		Config config {};
 

@@ -11,7 +11,7 @@ namespace uhero::res
 {
 	gfx::Texture load_texture(const char* file, i32 mipmaps)
 	{
-		UH_STACK_GROUP();
+		UH_FRAME_STACK_GROUP();
 
 		i32 x, y, n;
 		u8* pixeldata = stbi_load(file, &x, &y, &n, 0);
@@ -32,7 +32,7 @@ namespace uhero::res
 			u32 aligned_pitch = pitch + pad;
 			u32 new_size = y * aligned_pitch;
 
-			aligned_pixels = UH_STACK_ALLOCATE_TYPE(u8, new_size);
+			aligned_pixels = UH_FRAME_STACK_ALLOCATE_TYPE(u8, new_size);
 
 			for (i32 i = 0; i < y; i++)
 			{

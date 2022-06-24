@@ -34,6 +34,7 @@ namespace uhero::gfx
 			QuadType type;
 			const Texture* texture;
 			glm::vec4 rect;
+			glm::vec2 center;
 			glm::vec4 clip;
 			union {
 				struct {
@@ -86,7 +87,7 @@ namespace uhero::gfx
 			};
 		}; // struct vertex
 
-		static_assert(sizeof(Vertex) == 7 * sizeof(f32), "malformed Vertex");
+		static_assert(sizeof(Vertex) == 7 * sizeof(f32), "malformed vertex");
 
 		constexpr static u32 UNIFORM_PROGRAM_MODE = 0;
 		constexpr static u32 UPM_COLOR = 0;
@@ -110,13 +111,14 @@ namespace uhero::gfx
 
 		void flush();
 
-		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			glm::vec4 src, float angle=0.0f,
-			float blend_factor=0.0f,
-			Color32 color_key=Color32(255, 255, 255, 255)
+		// main draw texture function
+		void draw_texture(glm::vec2 pos, glm::vec2 size,
+			const Texture& texture, glm::vec4 src,
+			float angle, glm::vec2 center,
+			float blend_factor, Color32 color_key
 		);
 		void draw_color(glm::vec2 pos, glm::vec2 size,
-			Color32 color, float angle=0.0f
+			Color32 color, float angle=0.0f, glm::vec2 center=glm::vec2(0)
 		);
 
 		void draw_glyph(const Glyph& glyph, glm::vec2 pos,
@@ -132,26 +134,57 @@ namespace uhero::gfx
 		);
 		void submit_quad(const Quad& quad);
 
-		void draw_texture(glm::vec2 pos, const Texture& texture,
-			float scale=1.0f, float angle=0.0f,
-			float blend_factor=0.0f,
-			Color32 color_key=Color32(255, 255, 255, 255)
+		// draws complete texture with 1:1 scale
+		void draw_texture(glm::vec2 pos, const Texture& texture)
+		{
+			glm::vec4 src(0, 0, texture.width, texture.height);
+			glm::vec2 size(src.z, src.w);
+			draw_texture(pos, size, texture, src, 0, glm::vec2(0), 1, Color32(255));
+		}
+		// draws a region of texture with given size
+		void draw_texture(glm::vec2 pos, glm::vec2 size,
+			const Texture& texture, glm::vec4 src
+		)
+		{
+			draw_texture(pos, size, texture, src, 0, glm::vec2(0), 1, Color32(255));
+		}
+
+		// draws a rotated texture
+		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
+			float angle, glm::vec2 center
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			glm::vec2 size(src.z * scale, src.w * scale);
-			draw_texture(pos, size, texture, src, angle,
+			draw_texture(pos, size, texture, src, angle, center, 1, Color32(255));
+		}
+
+		// draws region of texture in rotated quad
+		void draw_texture(glm::vec2 pos, glm::vec2 size,
+			const Texture& texture, glm::vec4 src,
+			float angle, glm::vec2 center
+		)
+		{
+			draw_texture(pos, size, texture, src, angle, center, 1, Color32(255));
+		}
+
+		// draws a color multiplied texture
+		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
+			float blend_factor, Color32 color_key
+		)
+		{
+			glm::vec4 src(0, 0, texture.width, texture.height);
+			draw_texture(pos, size, texture, src, 0, glm::vec2(0),
 				blend_factor, color_key
 			);
 		}
 
-		void draw_sprite(glm::vec2 pos, glm::vec2 size, const Sprite& sprite,
-			float angle=0.0f,
-			float blend_factor=0.0f,
-			Color32 color_key=Color32(255, 255, 255, 255)
+		// draws a region of texture with color multiplied
+		void draw_texture(glm::vec2 pos, glm::vec2 size,
+			const Texture& texture, glm::vec4 src,
+			float blend_factor, Color32 color_key
 		)
 		{
-			draw_texture(pos, size, sprite.texture, sprite.src, angle,
+			draw_texture(pos, size, texture, src, 0, glm::vec2(0),
 				blend_factor, color_key
 			);
 		}

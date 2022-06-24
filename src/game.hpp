@@ -4,8 +4,9 @@
 #include "uhero/application.hpp"
 #include "uhero/gfx/renderer.hpp"
 #include "uhero/gfx/font.hpp"
+#include "uhero/gfx/framebuffer.hpp"
+#include "tilemap.hpp"
 
-#include <string_view>
 #include <glm/vec2.hpp>
 
 namespace game
@@ -16,8 +17,17 @@ namespace game
 		uhero::gfx::Renderer uber;
 		uhero::gfx::Font font;
 		uhero::gfx::FontStyle style;
+		uhero::gfx::FrameBuffer game_fbo;
 
-		uhero::gfx::Texture spritesheet;
+		uhero::gfx::Texture tx_characters;
+		uhero::gfx::Texture tx_tiles;
+
+		TileMap map;
+		glm::vec4 map_camera;
+
+		bool debug_info_enabled = true;
+
+		constexpr static glm::vec2 GAME_SIZE = { 18 * 32, 18 * 16 };
 
 		Game(uhero::Context& ctx)
 			: ctx{ctx}
@@ -28,6 +38,8 @@ namespace game
 		void update(float delta) override;
 		void render() override;
 
+		void draw_tile_map(const TileMap& tmap, glm::vec4 camera);
+
 		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen);
 
 		glm::vec4 get_spritesheet_source(int x, int y, int size)
@@ -36,15 +48,7 @@ namespace game
 			return src;
 		}
 
-		// for video
-
-		// displays image card in screen space coordinates
-		// returns size of the card
-		glm::vec2 show_image_card(glm::vec2 pos, float size,
-			const uhero::gfx::Texture& texture,
-			std::string_view title, bool y_flipped=false
-		);
-
+		// debug
 		void show_debug_info();
 	};
 }

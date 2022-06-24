@@ -107,16 +107,23 @@ namespace uhero::gfx
 
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
-			UH_ERROR("%.*s", length, message);
+			UH_ERROR("%s", message);
 			assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{
-			UH_WARN("%.*s", length, message);
+			UH_WARN("%s", message);
 		}
 		else
 		{
-			UH_INFO("%.*s", length, message);
+			UH_INFO("%s", message);
 		}
+	}
+
+	void GPUStats::dump_stats() const
+	{
+		UH_INFO("Textures: {created: %d| deleted: %d}\n", textures.created, textures.deleted);
+		UH_INFO("Buffers: {created: %d| deleted: %d}\n", buffers.created, buffers.deleted);
+		UH_INFO("Shaders: {created: %d| deleted: %d}\n", shaders.created, shaders.deleted);
 	}
 }

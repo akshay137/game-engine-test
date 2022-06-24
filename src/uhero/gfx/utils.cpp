@@ -1,5 +1,6 @@
 #include "utils.hpp"
 #include "pso.hpp"
+#include "gfx.hpp"
 #include "../memory/memory.hpp"
 #include "../file.hpp"
 #include "../logger.hpp"
@@ -83,7 +84,7 @@ namespace uhero::gfx
 		}
 
 		auto source_size = Memory::kilobytes_to_bytes(8);
-		char* source = UH_STACK_ALLOCATE_TYPE(char, source_size);
+		char* source = UH_FRAME_STACK_ALLOCATE_TYPE(char, source_size);
 		auto bytes_read = File::read_full(file, source, source_size);
 		source[bytes_read] = 0;
 
@@ -100,6 +101,7 @@ namespace uhero::gfx
 			return 0;
 		}
 
+		Context::created_shader();
 		return shader;
 	}
 
@@ -132,7 +134,9 @@ namespace uhero::gfx
 		glDetachShader(program, vshader);
 		glDetachShader(program, fshader);
 		glDeleteShader(vshader);
+		Context::deleted_shader();
 		glDeleteShader(fshader);
+		Context::deleted_shader();
 
 		GLint status = GL_TRUE;
 		glGetProgramiv(program, GL_LINK_STATUS, &status);
@@ -143,6 +147,7 @@ namespace uhero::gfx
 			return Result::ExternalLibraryError;
 		}
 
+		Context::created_shader();
 		return program;
 	}
 }

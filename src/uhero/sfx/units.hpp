@@ -11,6 +11,13 @@ namespace uhero::sfx
 		static i32 khz_to_hz(float khz) { return khz * 1000; }
 		static i32 mhz_to_hz(float mhz) { return mhz * 1000 * 1000; }
 
+		static i32 samples_per_milliseconds(i32 frequency, i32 milliseconds)
+		{
+			f32 seconds = milliseconds / 1000.0f;
+			i32 samples = frequency * seconds;
+			return samples;
+		}
+
 		static float to_decible(float sample)
 		{
 			float l = log10f32(sample);

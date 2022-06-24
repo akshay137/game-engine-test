@@ -3,7 +3,10 @@
 #include "../logger.hpp"
 
 #include <cstdarg>
+#include <cmath>
 #include <glad/glad.h>
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace uhero::gfx
 {
@@ -11,7 +14,7 @@ namespace uhero::gfx
 		const char* vs, const char* fs
 	)
 	{
-		UH_STACK_GROUP();
+		UH_FRAME_STACK_GROUP();
 
 		if (nullptr == vs) vs = REN_VERTEX_SHADER;
 		if (nullptr == fs) fs = REN_FRAGMENT_SHADER;
@@ -33,7 +36,7 @@ namespace uhero::gfx
 		vertices = UH_ALLOCATE_TYPE(Vertex, max_quads * 4);
 
 		u32 index_count = max_quads * 6;
-		u16* indices = UH_STACK_ALLOCATE_TYPE(u16, index_count);
+		u16* indices = UH_FRAME_STACK_ALLOCATE_TYPE(u16, index_count);
 		constexpr u16 QUADI[] = { 0, 1, 2, 2, 1, 3 };
 		for (u32 i = 0; i < index_count; i++)
 		{
@@ -112,9 +115,9 @@ namespace uhero::gfx
 	}
 
 	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
-		const Texture& texture, glm::vec4 src, float angle,
-		float blend_factor,
-		Color32 color_key
+		const Texture& texture, glm::vec4 src,
+		float angle, glm::vec2 center,
+		float blend_factor, Color32 color_key
 	)
 	{
 		Quad quad {};
@@ -128,6 +131,7 @@ namespace uhero::gfx
 			texture.normalized_x(src.z),
 			texture.normalized_y(src.w)
 		);
+		quad.center = center;
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
@@ -136,7 +140,7 @@ namespace uhero::gfx
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle
+		Color32 color, float angle, glm::vec2 center
 	)
 	{
 		Quad quad {};
@@ -145,6 +149,7 @@ namespace uhero::gfx
 
 		quad.rect = glm::vec4(pos.x, pos.y, size.x, size.y);
 		quad.clip = glm::vec4(0);
+		quad.center = center;
 		quad.sprite.color = color;
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
@@ -233,9 +238,9 @@ namespace uhero::gfx
 		const char* fmt, ...
 	)
 	{
-		UH_STACK_GROUP();
+		UH_FRAME_STACK_GROUP();
 		usize buffer_size = Memory::kilobytes_to_bytes(512);
-		char* buffer = UH_STACK_ALLOCATE_TYPE(char, buffer_size);
+		char* buffer = UH_FRAME_STACK_ALLOCATE_TYPE(char, buffer_size);
 		va_list args;
 		va_start(args, fmt);
 		i32 count = vsnprintf(buffer, buffer_size, fmt, args);
@@ -280,6 +285,31 @@ namespace uhero::gfx
 
 			v[3].position = glm::vec2(rect.x + rect.z, rect.y + rect.w);
 			v[3].uv = glm::vec2(clip.x + clip.z, clip.y);
+
+			// rotate quad here
+			if ((QuadType::Color == quad.type)
+				|| (QuadType::Sprite == quad.type)
+			)
+			{
+				// add 180 degrees to angle | 3.14 radians
+				constexpr auto PI = 22.0f / 7.0f;
+				const float angle = quad.sprite.angle - PI;
+				glm::vec2 center(quad.rect.x + quad.center.x,
+					quad.rect.y + quad.center.y
+				);
+
+				// TODO: remove use of glm::rotate
+				auto mat = glm::rotate(glm::mat4(1), angle, glm::vec3(0, 0, 1));
+				for (i32 i = 0; i < 4; i++)
+				{
+					glm::vec2 local = center - v[i].position;
+					auto res = mat * glm::vec4(local.x, local.y, 0.0f, 1.0f);
+					v[i].position = glm::vec2(res.x + center.x, res.y + center.y);
+				}
+
+				// std::swap(v[0].uv, v[3].uv);
+				// std::swap(v[1].uv, v[2].uv);
+			}
 
 			u32 vindex = i * 4;
 			vertices[vindex + 0] = v[0];

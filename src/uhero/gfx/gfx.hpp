@@ -14,11 +14,26 @@ namespace uhero
 
 namespace uhero::gfx
 {
+	struct GPURes
+	{
+		i32 created = 0;
+		i32 deleted = 0;
+
+		void create() { ++created; }
+		void free() { ++deleted; }
+
+		bool match() const { return created == deleted; }
+	};
+
 	struct GPUStats
 	{
 		u32 draw_calls;
 		u32 triangle_count;
 		u32 texture_switch;
+
+		GPURes textures;
+		GPURes buffers;
+		GPURes shaders;
 
 		void reset()
 		{
@@ -26,6 +41,8 @@ namespace uhero::gfx
 			triangle_count = 0;
 			texture_switch = 0;
 		}
+
+		void dump_stats() const;
 	};
 
 	struct Context
@@ -44,8 +61,16 @@ namespace uhero::gfx
 		void use_framebuffer(FrameBuffer& fbo);
 		void use_default_framebuffer(const Window& window);
 
+// debug
 		static inline GPUStats gpu_stats;
 		static void reset_stats() { gpu_stats.reset(); }
+
+		static void created_texture() { gpu_stats.textures.create(); }
+		static void deleted_texture() { gpu_stats.textures.free(); }
+		static void created_buffer() { gpu_stats.buffers.create(); }
+		static void deleted_buffer() { gpu_stats.buffers.free(); }
+		static void created_shader() { gpu_stats.shaders.create(); }
+		static void deleted_shader() { gpu_stats.shaders.free(); }
 	};
 }
 

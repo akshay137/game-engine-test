@@ -12,7 +12,7 @@ namespace uhero
 
 	Result Context::create_context(i32 argc, char** args)
 	{
-		UH_STACK_INIT(Memory::megabytes_to_bytes(128));
+		UH_FRAME_STACK_INIT(Memory::megabytes_to_bytes(128));
 		if (!dependencies_loaded)
 		{
 			auto res = uhero_init_dependencies();
@@ -77,9 +77,10 @@ namespace uhero
 		if (dependencies_loaded)
 			uhero_clear_dependencies();
 		
-		UH_STACK_CLEAR();
+		UH_FRAME_STACK_CLEAR();
 		UH_DUMP_ALL_ALLOCATIONS();
 		global_allocator.free_all();
+		gfx::Context::gpu_stats.dump_stats();
 	}
 
 	bool Context::is_ok() const
@@ -102,10 +103,11 @@ namespace uhero
 
 	float Context::tick()
 	{
-		UH_STACK_RESET();
+		UH_FRAME_STACK_RESET();
 
 		main_clock.tick();
 		float delta = main_clock.delta();
+		if (delta > .033) delta = .033;
 
 		input.reset();
 		SDL_Event event {};

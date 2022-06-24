@@ -69,7 +69,7 @@ namespace uhero::sfx
 		SDL_AudioSpec required_spec {};
 		required_spec.freq = Units::khz_to_hz(44.1);
 		required_spec.format = AUDIO_F32;
-		required_spec.samples = 1024;
+		required_spec.samples = Units::samples_per_milliseconds(required_spec.freq, 4);
 		required_spec.channels = 1;
 		required_spec.callback = callback;
 		required_spec.userdata = this;
@@ -96,11 +96,14 @@ namespace uhero::sfx
 			"\tFrequency: %d\n"
 			"\tSamples: %d\n"
 			"\tChannels: %d\n"
-			"\tFormat: %x\n",
+			"\tFormat: { Signed: %s | Float: %s | Endian: %s | Bits: %d }\n",
 			obtained_spec.freq,
 			obtained_spec.samples,
 			obtained_spec.channels,
-			obtained_spec.format
+			SDL_AUDIO_ISSIGNED(obtained_spec.format) ? "Yes" : "No",
+			SDL_AUDIO_ISFLOAT(obtained_spec.format) ? "Yes" : "No",
+			SDL_AUDIO_ISBIGENDIAN(obtained_spec.format) ? "Big" : "Little",
+			SDL_AUDIO_BITSIZE(obtained_spec.format)
 		);
 		this->frequency = obtained_spec.freq;
 		this->samples = obtained_spec.samples;

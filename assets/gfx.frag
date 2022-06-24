@@ -33,15 +33,22 @@ void main()
 	switch (int(program_mode))
 	{
 		case UPM_COLOR:
+		{
 			color = sprite.color;
+		}
 			break;
 		
 		case UPM_SPRITE:
+		{
 			vec4 tcolor = texture(sprite_texture, sprite.uv);
-			color = mix(tcolor, sprite.color, sprite.blend);
+			vec3 blend_color = sprite.color.rgb * sprite.blend;
+			float alpha = tcolor.a * sprite.color.a;
+			color = vec4(tcolor.rgb * blend_color, alpha);
+		}
 			break;
 
 		case UPM_GLYPH:
+		{
 			vec4 level = texture(font_texture, glyph.uv);
 			float dist = 1.0f - level.r;
 
@@ -59,6 +66,7 @@ void main()
 			vec4 final_color = mix(border_color, text_color, alpha);
 
 			color = vec4(final_color.rgb, border_alpha);
+		}
 			break;
 	}
 }

@@ -9,6 +9,7 @@ namespace uhero
 	enum KeyCode : u16
 	{
 		Escape = SDL_SCANCODE_ESCAPE,
+		Tilde = SDL_SCANCODE_GRAVE,
 
 		A = SDL_SCANCODE_A,
 		B = SDL_SCANCODE_B,

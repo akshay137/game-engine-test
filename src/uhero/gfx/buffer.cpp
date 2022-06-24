@@ -1,4 +1,5 @@
 #include "buffer.hpp"
+#include "gfx.hpp"
 #include "../logger.hpp"
 
 #include <glad/glad.h>
@@ -15,6 +16,7 @@ namespace uhero::gfx
 		this->size = size;
 
 		UH_VERB("Created buffer: %u[%ub]\n", gl_id, size);
+		Context::created_buffer();
 
 		return Result::Success;
 	}
@@ -23,6 +25,7 @@ namespace uhero::gfx
 	{
 		UH_VERB("Deleting buffer: %u\n", gl_id);
 		glDeleteBuffers(1, &gl_id);
+		Context::deleted_buffer();
 	}
 
 	void Buffer::update_range(u32 offset, u32 length, const void* data)

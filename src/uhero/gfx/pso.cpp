@@ -29,6 +29,8 @@ namespace uhero::gfx
 		glDeleteVertexArrays(1, &vao);
 		glDeleteProgram(program);
 
+		Context::deleted_shader();
+
 		vao = 0;
 		program = 0;
 	}

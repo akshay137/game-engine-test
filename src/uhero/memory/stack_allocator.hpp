@@ -66,16 +66,16 @@ namespace uhero
 	extern StackAllocator global_stack;
 }
 
-#define UH_STACK_ALLOCATE(size) uhero::global_stack.allocate(size)
-#define UH_STACK_ALLOCATE_TYPE(type, size) uhero::global_stack.allocate_type<type>(size)
-#define UH_STACK_RESET() uhero::global_stack.reset()
+#define UH_FRAME_STACK_ALLOCATE(size) uhero::global_stack.allocate(size)
+#define UH_FRAME_STACK_ALLOCATE_TYPE(type, size) uhero::global_stack.allocate_type<type>(size)
+#define UH_FRAME_STACK_RESET() uhero::global_stack.reset()
 
-#define UH_STACK_INIT(size) uhero::global_stack.create(size)
-#define UH_STACK_CLEAR() uhero::global_stack.clear()
+#define UH_FRAME_STACK_INIT(size) uhero::global_stack.create(size)
+#define UH_FRAME_STACK_CLEAR() uhero::global_stack.clear()
 
-#define UH_STACK_GROUP_BEGIN() uhero::global_stack.begin_group()
-#define UH_STACK_GROUP_END(g) uhero::global_stack.end_group(g)
+#define UH_FRAME_STACK_GROUP_BEGIN() uhero::global_stack.begin_group()
+#define UH_FRAME_STACK_GROUP_END(g) uhero::global_stack.end_group(g)
 
-#define UH_STACK_GROUP() auto __group = uhero::global_stack.group();
+#define UH_FRAME_STACK_GROUP() auto __group = uhero::global_stack.group();
 
 #endif

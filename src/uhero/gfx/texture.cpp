@@ -39,6 +39,9 @@ namespace uhero::gfx
 		this->pixel_format = format;
 		this->mipmaps = mipmaps;
 
+		UH_VERB("Created Texture: %u [%dx%d]\n", gl_id, width, height);
+		Context::created_texture();
+
 		return Result::Success;
 	}
 
@@ -50,6 +53,7 @@ namespace uhero::gfx
 
 		glDeleteTextures(1, &gl_id);
 		gl_id = 0;
+		Context::deleted_texture();
 	}
 
 	void Texture::update_region(i32 level, i32 x, i32 y, i32 width, i32 height,
