@@ -1,4 +1,5 @@
 #include "file.hpp"
+#include "memory/memory.hpp"
 #include "logger.hpp"
 
 #include <SDL2/SDL_rwops.h>
@@ -102,5 +103,20 @@ namespace uhero
 
 		u32 num = SDL_ReadLE32(handle);
 		return num;
+	}
+
+	void* File::read_full_framestack(const char* filename, isize& size)
+	{
+		File _f;
+		auto res = _f.open(filename, FileMode::FRead | FileMode::FBinary);
+		if (Result::Success != res)
+			return nullptr;
+		auto buffer_size = _f.size;
+		u8* buffer = UH_FRAME_STACK_ALLOCATE_TYPE(u8, buffer_size + 1);
+		_f.read(buffer, buffer_size);
+		buffer[buffer_size] = 0;
+
+		size = buffer_size + 1;
+		return (void*)buffer;
 	}
 }

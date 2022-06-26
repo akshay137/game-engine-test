@@ -72,6 +72,9 @@ namespace uhero
 			usize br = _f.read(buffer, to_read);
 			return br;
 		}
+
+		// read file into stack buffer
+		static void* read_full_framestack(const char* filename, isize& size);
 	};
 }
 

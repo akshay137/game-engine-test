@@ -11,6 +11,13 @@
 
 namespace game
 {
+	struct Character
+	{
+		glm::vec2 position;
+		glm::vec2 velocity;
+		glm::ivec2 sprite_id;
+	};
+
 	struct Game : public uhero::IApplication
 	{
 		uhero::Context& ctx;
@@ -23,7 +30,11 @@ namespace game
 		uhero::gfx::Texture tx_tiles;
 
 		TileMap map;
-		glm::vec4 map_camera;
+		glm::vec4 camera;
+
+		int CHAR_SIZE = 24;
+		Character player;
+		float damp = 10;
 
 		bool debug_info_enabled = true;
 
@@ -42,6 +53,15 @@ namespace game
 		void draw_tile_map(const TileMap& tmap, glm::vec4 camera);
 
 		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen);
+
+		glm::vec2 get_camera_offset() const
+		{
+			glm::vec2 offset = {
+				camera.x - camera.z / 2,
+				camera.y - camera.w / 2
+			};
+			return offset;
+		}
 
 		glm::vec4 get_spritesheet_source(int x, int y, int size)
 		{

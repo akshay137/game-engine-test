@@ -83,10 +83,8 @@ namespace uhero::gfx
 			return Result::ExternalLibraryError;
 		}
 
-		auto source_size = Memory::kilobytes_to_bytes(8);
-		char* source = UH_FRAME_STACK_ALLOCATE_TYPE(char, source_size);
-		auto bytes_read = File::read_full(file, source, source_size);
-		source[bytes_read] = 0;
+		isize source_size = 0;
+		char* source = (char*)File::read_full_framestack(file, source_size);
 
 		const GLchar* sources[] = { source };
 		glShaderSource(shader, 1, sources, nullptr);

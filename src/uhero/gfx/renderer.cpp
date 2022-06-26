@@ -87,8 +87,8 @@ namespace uhero::gfx
 			u32 count = 1;
 			while (first.can_batch_together(quads[drawn + count]))
 			{
-				count += 1;
 				if (current_quads <= (drawn + count)) break;
+				count += 1;
 			}
 
 			// draw command here

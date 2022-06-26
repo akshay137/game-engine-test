@@ -63,6 +63,7 @@ namespace game
 		this->tileset.atlas.create(width, height,
 			uhero::gfx::PixelFormat::RGBA8, pixels
 		);
+		this->tileset.atlas.set_filter(uhero::gfx::TextureFilter::Linear);
 
 		file.close();
 		return uhero::Result::Success;
