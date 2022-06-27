@@ -16,6 +16,7 @@ workspace "uhero"
 		files { "ext/**.c" }
 
 		libdirs { "libs/" }
+		links { "Box2D" }
 
 		-- glm defines
 		defines { "GLM_FORCE_RADIANS" }

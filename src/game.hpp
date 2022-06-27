@@ -7,39 +7,24 @@
 #include "uhero/gfx/framebuffer.hpp"
 #include "tilemap.hpp"
 
+#include <Box2D/Box2D.h>
 #include <glm/vec2.hpp>
 
 namespace game
 {
-	struct Character
-	{
-		glm::vec2 position;
-		glm::vec2 velocity;
-		glm::ivec2 sprite_id;
-	};
-
 	struct Game : public uhero::IApplication
 	{
 		uhero::Context& ctx;
 		uhero::gfx::Renderer uber;
 		uhero::gfx::Font font;
 		uhero::gfx::FontStyle style;
-		uhero::gfx::FrameBuffer game_fbo;
 
-		uhero::gfx::Texture tx_characters;
-		uhero::gfx::Texture tx_tiles;
-
-		TileMap map;
-		glm::vec4 camera;
-
-		int CHAR_SIZE = 24;
-		Character player;
-		float damp = 10;
+		float s2v_ratio = 50;
+		b2World* world;
+		b2Body* ground;
+		b2Body* ball;
 
 		bool debug_info_enabled = true;
-
-		// constexpr static glm::vec2 GAME_SIZE = { 18 * 32, 18 * 16 };
-		constexpr static glm::vec2 GAME_SIZE = { 480, 480 * (9 / 16.0) };
 
 		Game(uhero::Context& ctx)
 			: ctx{ctx}
@@ -50,23 +35,9 @@ namespace game
 		void update(float delta) override;
 		void render() override;
 
-		void draw_tile_map(const TileMap& tmap, glm::vec4 camera);
-
-		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen);
-
-		glm::vec2 get_camera_offset() const
+		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen)
 		{
-			glm::vec2 offset = {
-				camera.x - camera.z / 2,
-				camera.y - camera.w / 2
-			};
-			return offset;
-		}
-
-		glm::vec4 get_spritesheet_source(int x, int y, int size)
-		{
-			glm::vec4 src(x * size, y * size, size, size);
-			return src;
+			return glm::vec2(pos.x, screen.y - pos.y);
 		}
 
 		// debug
