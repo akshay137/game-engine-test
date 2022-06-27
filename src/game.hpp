@@ -5,9 +5,8 @@
 #include "uhero/gfx/renderer.hpp"
 #include "uhero/gfx/font.hpp"
 #include "uhero/gfx/framebuffer.hpp"
-#include "tilemap.hpp"
+#include "minigame.hpp"
 
-#include <Box2D/Box2D.h>
 #include <glm/vec2.hpp>
 
 namespace game
@@ -19,10 +18,7 @@ namespace game
 		uhero::gfx::Font font;
 		uhero::gfx::FontStyle style;
 
-		float s2v_ratio = 50;
-		b2World* world;
-		b2Body* ground;
-		b2Body* ball;
+		MiniGame* current_game;
 
 		bool debug_info_enabled = true;
 
@@ -34,6 +30,8 @@ namespace game
 		void clear() override;
 		void update(float delta) override;
 		void render() override;
+
+		bool set_minigame(MiniGame* mgame);
 
 		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen)
 		{
