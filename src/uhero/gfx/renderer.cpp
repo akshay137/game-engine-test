@@ -20,8 +20,9 @@ namespace uhero::gfx
 		if (nullptr == fs) fs = REN_FRAGMENT_SHADER;
 
 		VertexLayout layout;
-		layout.add_attribute(VertexAttribute::Vec2);
-		layout.add_attribute(VertexAttribute::Vec2);
+		layout.add_attribute(VertexAttribute::Vec2); // position
+		layout.add_attribute(VertexAttribute::Vec2); // tex coords
+		layout.add_attribute(VertexAttribute::Vec2); // normalized coords
 		layout.add_attribute(VertexAttribute::ByteNVec4); // color
 		layout.add_attribute(VertexAttribute::ByteNVec4); // blend | text data
 		layout.add_attribute(VertexAttribute::ByteNVec4); // border color
@@ -95,16 +96,16 @@ namespace uhero::gfx
 			if (QuadType::SDFGlyph == first.type)
 			{
 				texture->bind_slot(1);
-				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_GLYPH);
+				pso.set_int(UNIFORM_PROGRAM_MODE, UPM_GLYPH);
 			}
 			else if (QuadType::Sprite == first.type)
 			{
 				texture->bind_slot(0);
-				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_SPRITE);
+				pso.set_int(UNIFORM_PROGRAM_MODE, UPM_SPRITE);
 			}
 			else if (QuadType::Color == first.type)
 			{
-				pso.set_float(UNIFORM_PROGRAM_MODE, UPM_COLOR);
+				pso.set_int(UNIFORM_PROGRAM_MODE, UPM_COLOR);
 				Texture::reset_slot(0);
 			}
 
@@ -121,7 +122,8 @@ namespace uhero::gfx
 	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
 		const Texture& texture, glm::vec4 src,
 		float angle, glm::vec2 center,
-		float blend_factor, Color32 color_key
+		float blend_factor, Color32 color_key,
+		float circle
 	)
 	{
 		Quad quad {};
@@ -139,12 +141,14 @@ namespace uhero::gfx
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
+		quad.sprite.circle = circle;
 
 		this->submit_quad(quad);
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle, glm::vec2 center
+		Color32 color, float angle, glm::vec2 center,
+		float circle
 	)
 	{
 		Quad quad {};
@@ -157,6 +161,7 @@ namespace uhero::gfx
 		quad.sprite.color = color;
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
+		quad.sprite.circle = circle;
 
 		this->submit_quad(quad);
 	}
@@ -319,6 +324,7 @@ namespace uhero::gfx
 			{
 				v[i].position = transform_vertex(model, positions[i]);
 				v[i].uv = transform_vertex(uv, coords[i]);
+				v[i].quad_uv = coords[i];
 			}
 
 			u32 vindex = i * 4;
@@ -352,6 +358,7 @@ namespace uhero::gfx
 		Vertex v {};
 		v.color = quad.sprite.color;
 		v.sprite.blend = quad.sprite.blend;
+		v.sprite.circle = quad.sprite.circle;
 		return v;
 	}
 }

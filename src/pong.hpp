@@ -2,46 +2,15 @@
 #define GAME_PONG_H__ 1
 
 #include "minigame.hpp"
+#include "ball.hpp"
 #include <glm/vec2.hpp>
 
 namespace game
 {
-	struct Pad
-	{
-		glm::vec2 position;
-		glm::vec2 size;
-		glm::vec2 velocity;
-
-		float& x() { return position.x; }
-		float& y() { return position.y; }
-		float& width() { return size.x; }
-		float& height() { return size.y; }
-
-		float left() const { return position.x - size.x * .5; }
-		float right() const { return position.x + size.x * .5; }
-		float top() const { return position.y + size.y * .5; }
-		float bottom() const { return position.y - size.y * .5; }
-	};
-
-	struct Ball
-	{
-		glm::vec2 position;
-		float radius;
-		glm::vec2 velocity;
-
-		float& x() { return position.x; }
-		float& y() { return position.y; }
-		float& size() { return radius; }
-
-		float left() const { return position.x - radius; }
-		float right() const { return position.x + radius; }
-		float top() const { return position.y + radius; }
-		float bottom() const { return position.y - radius; }
-	};
-
 	struct Pong : public MiniGame
 	{
-		Pad player, comp;
+		Circle ground;
+		Ball player, comp;
 		Ball ball;
 		int game_width, game_height;
 
@@ -51,11 +20,10 @@ namespace game
 		float damp;
 
 		int score;
+		int score_multiplier;
 
-		bool check_ball_collision(const Pad& pad) const;
-		// return value to be added to score
+		void displace_ball(Ball& ball, const Ball& rhs, float delta);
 		int move_ball(float);
-		void move_comp(float);
 
 		bool setup(Game&, int, int) override;
 		void update(Game&, float) override;

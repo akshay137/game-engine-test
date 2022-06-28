@@ -58,6 +58,11 @@ namespace uhero::gfx
 		glProgramUniform1f(program, index, value);
 	}
 
+	void PSO::set_int(i32 index, i32 value)
+	{
+		glProgramUniform1i(program, index, value);
+	}
+
 	void PSO::draw_elements(u32 primitive, u32 count, const void* offset)
 	{
 		glDrawElements(primitive, count, GL_UNSIGNED_SHORT, offset);

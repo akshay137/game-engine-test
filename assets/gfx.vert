@@ -2,17 +2,19 @@
 
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 uv;
-layout (location = 2) in vec4 color;
+layout (location = 2) in vec2 quad_uv;
+layout (location = 3) in vec4 color;
 
 // sprite
-layout (location = 3) in float blend;
+layout (location = 4) in float blend;
+layout (location = 4, component = 1) in float circle;
 
 // glyph
-layout (location = 3) in float width;
-layout (location = 3, component = 1) in float edge;
-layout (location = 3, component = 2) in float border_width;
-layout (location = 3, component = 3) in float border_edge;
-layout (location = 4) in vec4 outline_color;
+layout (location = 4) in float width;
+layout (location = 4, component = 1) in float edge;
+layout (location = 4, component = 2) in float border_width;
+layout (location = 4, component = 3) in float border_edge;
+layout (location = 5) in vec4 outline_color;
 
 layout (std140, binding = 0) uniform rstate
 {
@@ -24,7 +26,9 @@ out VS_SPRITE_OUT
 {
 	vec3 wpos;
 	vec2 uv;
+	vec2 quad_uv;
 	float blend;
+	float circle;
 	vec4 color;
 } sprite;
 
@@ -37,7 +41,7 @@ out VS_GLYPH_OUT
 	vec2 edges;
 } glyph;
 
-layout (location = 0) uniform float program_mode; // 0 if sprite
+layout (location = 0) uniform int program_mode; // 0 if sprite
 
 void main()
 {
@@ -45,20 +49,16 @@ void main()
 	vec4 pos = orthographic * pos4;
 	gl_Position = pos;
 
-	// if (0 == int(program_mode))
-	// {
-		sprite.wpos = pos4.xyz;
-		sprite.uv = uv;
-		sprite.blend = blend;
-		sprite.color = color;
-	// }
-	// else
-	// {
-		glyph.uv = uv;
-		glyph.text_color = color;
-		glyph.outline_color = outline_color;
-		glyph.widths = vec2(width, border_width);
-		glyph.edges = vec2(edge, border_edge);
-	// }
-
+	sprite.wpos = pos4.xyz;
+	sprite.uv = uv;
+	sprite.quad_uv = quad_uv;
+	sprite.blend = blend;
+	sprite.color = color;
+	sprite.circle = circle;
+	
+	glyph.uv = uv;
+	glyph.text_color = color;
+	glyph.outline_color = outline_color;
+	glyph.widths = vec2(width, border_width);
+	glyph.edges = vec2(edge, border_edge);
 }

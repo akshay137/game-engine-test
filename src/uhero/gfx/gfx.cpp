@@ -107,16 +107,16 @@ namespace uhero::gfx
 
 		if (GL_DEBUG_TYPE_ERROR == type)
 		{
-			UH_ERROR("%s", message);
+			UH_ERROR("%s\n", message);
 			assert(false);
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{
-			UH_WARN("%s", message);
+			UH_ERROR("%s\n", message);
 		}
 		else
 		{
-			UH_INFO("%s", message);
+			UH_ERROR("%s\n", message);
 		}
 	}
 

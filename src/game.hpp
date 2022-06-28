@@ -23,7 +23,7 @@ namespace game
 		bool debug_info_enabled = true;
 
 		Game(uhero::Context& ctx)
-			: ctx{ctx}
+			: ctx{ctx}, current_game{nullptr}
 		{}
 
 		uhero::Result load(uhero::Context& ctx) override;

@@ -178,6 +178,10 @@ namespace uhero::gfx
 			GL_R8, GL_RED, GL_UNSIGNED_BYTE, SWIZZLE_RRR1
 		),
 
+		[ENUM_INT(PixelFormat::GREYSCALE_ALPHA)] = pixel_data(
+			GL_RG8, GL_RG, GL_UNSIGNED_BYTE, SWIZZLE_RA
+		),
+
 		[ENUM_INT(PixelFormat::RGB8)] = pixel_data(
 			GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE, SWIZZLE_RGB1
 		),

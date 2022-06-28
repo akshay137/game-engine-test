@@ -44,6 +44,7 @@ namespace uhero::res
 
 		gfx::PixelFormat format;
 		if (1 == n) format = gfx::PixelFormat::GREYSCALE;
+		else if (2 == n) format = gfx::PixelFormat::GREYSCALE_ALPHA;
 		else if (3 == n) format = gfx::PixelFormat::RGB8;
 		else if (4 == n) format = gfx::PixelFormat::RGBA8;
 		else

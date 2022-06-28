@@ -8,6 +8,7 @@ namespace uhero::gfx
 	enum PixelFormat : u32
 	{
 		GREYSCALE = 0,
+		GREYSCALE_ALPHA,
 		RGB8,
 		RGBA8,
 
@@ -108,6 +109,7 @@ namespace uhero::gfx
 
 	// some constants
 	constexpr Swizzle SWIZZLE_RRR1(SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::One);
+	constexpr Swizzle SWIZZLE_RA(SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::Red, SwizzleMask::Green);
 	constexpr Swizzle SWIZZLE_RGB1(SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue, SwizzleMask::One);
 	constexpr Swizzle SWIZZLE_RGBA(SwizzleMask::Red, SwizzleMask::Green, SwizzleMask::Blue, SwizzleMask::Alpha);
 }

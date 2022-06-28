@@ -56,6 +56,7 @@ namespace uhero::gfx
 		void set_index_buffer(const Buffer& ibuffer);
 
 		void set_float(i32 index, f32 value);
+		void set_int(i32 index, i32 value);
 
 		// draw commands
 		void draw_elements(u32 primitive, u32 count, const void* offset);

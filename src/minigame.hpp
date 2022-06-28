@@ -11,7 +11,7 @@ namespace game
 	{
 		virtual ~MiniGame() {}
 
-		virtual bool setup(Game&, int, int) {}
+		virtual bool setup(Game&, int, int) { return true; }
 		virtual void update(Game&, float) {}
 		virtual void draw(Game&) {}
 
