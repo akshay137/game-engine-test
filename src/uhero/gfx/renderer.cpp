@@ -299,24 +299,26 @@ namespace uhero::gfx
 			};
 			const glm::vec2* positions = sprite_positions;
 
-			Vertex temp;
 			glm::mat4 uv = glm::mat4(1);
 			uv = glm::translate(uv, glm::vec3(quad.clip.x, quad.clip.y, 0.0f));
 			uv = glm::scale(uv, glm::vec3(quad.clip.z, quad.clip.w, 1.0f));
 			
 			glm::mat4 model = glm::mat4(1);
-			model = glm::translate(model, glm::vec3(quad.rect.x, quad.rect.y, .0f));
-			model = glm::scale(model, glm::vec3(quad.rect.z, quad.rect.w, 1.0f));
 			
+			Vertex temp;
 			if (QuadType::SDFGlyph == quad.type)
 			{
 				positions = glyph_positions;
 				temp = glyph_vertex(quad);
+				model = glm::translate(model, glm::vec3(quad.rect.x, quad.rect.y, .0f));
+				model = glm::scale(model, glm::vec3(quad.rect.z, quad.rect.w, 1.0f));
 			}
 			else
 			{
 				temp = sprite_vertex(quad);
+				model = glm::translate(model, glm::vec3(quad.rect.x, quad.rect.y, .0f));
 				model = glm::rotate(model, quad.sprite.angle, glm::vec3(0, 0, 1));
+				model = glm::scale(model, glm::vec3(quad.rect.z, quad.rect.w, 1.0f));
 			}
 			
 			Vertex v[4] = { temp, temp, temp, temp };

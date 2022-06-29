@@ -26,10 +26,10 @@ workspace "uhero"
 		vectorextensions "sse3"
 
 		filter { "system:linux" }
-			defines { "PLT_LINUX" }
+			defines { "OS_LINUX=1" }
 			links { "m", "SDL2", "dl", "GL" }
 		filter { "system:Windows" }
-			defines { "PLT_WINDOWS" }
+			defines { "OS_WINDOWS=2" }
 			links { "SDL2main", "SDL2", "opengl32" }
 		
 		filter { "configurations:debug" }

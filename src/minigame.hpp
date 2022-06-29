@@ -11,11 +11,20 @@ namespace game
 	{
 		virtual ~MiniGame() {}
 
-		virtual bool setup(Game&, int, int) { return true; }
+		virtual bool load(Game&, int, int) { return true; }
+		virtual void cleanup() {}
+
+		virtual void reset(Game&, int, int) {}
 		virtual void update(Game&, float) {}
 		virtual void draw(Game&) {}
 
-		virtual void cleanup() {}
+		// one time convinience function
+		bool setup(Game& game, int w, int h)
+		{
+			if (!load(game, w, h)) return false;
+			reset(game, w, h);
+			return true;
+		}
 	};
 }
 

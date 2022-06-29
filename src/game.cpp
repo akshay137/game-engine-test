@@ -25,6 +25,11 @@ namespace game
 		return current_game->setup(*this, ctx.main_window.width, ctx.main_window.height);
 	}
 
+	glm::vec2 Game::get_window_size() const
+	{
+		return glm::vec2(ctx.main_window.width, ctx.main_window.height);
+	}
+
 	uhero::Result Game::load(uhero::Context&)
 	{
 		auto res = uber.create(1024);

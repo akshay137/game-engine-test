@@ -42,6 +42,15 @@ namespace uhero::gfx
 			a = alpha / 255.0f;
 		}
 
+		u32 to_rgba_u32() const
+		{
+			u32 temp = red;
+			temp = (temp << 8) | green;
+			temp = (temp << 8) | blue;
+			temp = (temp << 8) | alpha;
+			return temp ;
+		}
+
 		static Color32 from_rgba(f32 r, f32 g, f32 b, f32 a = 1.0f)
 		{
 			Color32 color;

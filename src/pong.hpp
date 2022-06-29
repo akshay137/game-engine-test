@@ -25,11 +25,12 @@ namespace game
 		void displace_ball(Ball& ball, const Ball& rhs, float delta);
 		int move_ball(float);
 
-		bool setup(Game&, int, int) override;
+		bool load(Game&, int, int) override;
+		void cleanup() override;
+
+		void reset(Game&, int, int) override;
 		void update(Game&, float) override;
 		void draw(Game&) override;
-
-		void cleanup() override;
 	};
 }
 

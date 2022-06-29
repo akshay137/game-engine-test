@@ -1,5 +1,6 @@
 #include "pong.hpp"
 #include "game.hpp"
+#include "utils.hpp"
 #include "uhero/res/texture.hpp"
 #include "uhero/uhero.hpp"
 
@@ -17,24 +18,7 @@ namespace game
 	glm::vec4 clip = { 12 * 16, 0, 16, 16 };
 	gfx::Texture tx_circle;
 
-	glm::vec2 snap_to_pixel(const glm::vec2& pos)
-	{
-		return { round(pos.x), round(pos.y) };
-	}
-
-	template <typename T>
-	T lerp(const T& from, const T& to, float time)
-	{
-		return from + (to - from) * time;
-	}
-
-	template <typename T>
-	T clamp(const T& value, const T& lower, const T& upper)
-	{
-		return std::min(upper, std::max(value, lower));
-	}
-
-	bool Pong::setup(Game& game, int width, int height)
+	bool Pong::load(Game&, int width, int height)
 	{
 		game_width = width;
 		game_height = height;
@@ -42,6 +26,16 @@ namespace game
 		tx_circle = res::load_texture("assets/logo.png");
 		tx_circle.set_filter(gfx::TextureFilter::Nearest);
 
+		return true;
+	}
+
+	void Pong::cleanup()
+	{
+		tx_circle.clear();
+	}
+
+	void Pong::reset(Game&, int width, int height)
+	{
 		MAX_BALL_SPEED = 100;
 		bat_speed = 200;
 		ball_speed = 250;
@@ -56,13 +50,6 @@ namespace game
 		player = { Circle(glm::vec2(margin, height / 2), size), glm::vec2(0) };
 		comp = { Circle(glm::vec2(width - margin, height / 2), size), glm::vec2(0) };
 		ball = { Circle(ground.origin, size * .5f), glm::vec2(ball_speed) };
-
-		return true;
-	}
-
-	void Pong::cleanup()
-	{
-		tx_circle.clear();
 	}
 
 	void Pong::displace_ball(Ball& ball, const Ball& rhs, float delta)
@@ -109,10 +96,10 @@ namespace game
 		float lower = player.size().y * .5;
 		
 		auto pvelocity = direction * bat_speed;
-		player.velocity = lerp(player.velocity + pvelocity, glm::vec2(0), damp * delta);
+		player.velocity = glm::mix(player.velocity + pvelocity, glm::vec2(0), damp * delta);
 
 		player.circle.origin += player.velocity * delta;
-		player.circle.origin.y = clamp(player.position().y, lower, upper);
+		player.circle.origin.y = glm::clamp(player.position().y, lower, upper);
 
 		auto tmp = move_ball(delta);
 		score += tmp * score_multiplier;
@@ -122,33 +109,27 @@ namespace game
 	{
 		auto& uber = game.uber;
 
-		// uber.draw_texture(snap_to_pixel(ground.origin), ground.quad_size(),
-		// 	tx_circle, 1, gfx::Color32(255)
-		// );
-		// uber.draw_texture(snap_to_pixel(player.position()),
-		// 	player.size(), tx_circle, 1, COLOR_RED
-		// );
-		// uber.draw_texture(snap_to_pixel(comp.position()),
-		// 	comp.size(), tx_circle, 1, COLOR_GREEN
-		// );
+		auto direction = glm::normalize(ball.position() - player.position());
+		float angle = glm::atan(direction.y, direction.x);
 
-		uber.draw_texture(snap_to_pixel(ground.origin),
-			ground.quad_size(), tx_circle, 1
+		uber.draw_texture(Utils::snap_to_pixel(ground.origin),
+			ground.quad_size(), tx_circle, angle, {0, 0}, 1
 		);
-		uber.draw_circle(snap_to_pixel(player.position()), player.radius(), COLOR_RED);
-		uber.draw_circle(snap_to_pixel(comp.position()), comp.radius(), COLOR_GREEN);
+		uber.draw_circle(Utils::snap_to_pixel(player.position()), player.radius(), COLOR_RED);
+		uber.draw_circle(Utils::snap_to_pixel(comp.position()), comp.radius(), COLOR_GREEN);
 
 		auto color = COLOR_BLUE;
 		if (ball.collides(ground))
 			color = gfx::Color32(255, 255, 0, 255);
 		if (ball.inside(ground))
 			color = gfx::Color32(0, 255, 255, 255);
-		uber.draw_circle(snap_to_pixel(ball.position()), ball.radius(), color);
+		uber.draw_circle(Utils::snap_to_pixel(ball.position()), ball.radius(), color);
 
 		auto pen = game.screen_to_world( {0, 0}, { game_width, game_height });
 		pen = uber.write_format(pen, game.font, game.style, "player: [%.2f, %.2f]\n", player.position().x, player.position().y);
 		pen = uber.write_format(pen, game.font, game.style, "comp: [%.2f, %.2f]\n", comp.position().x, comp.position().y);
 		pen = uber.write_format(pen, game.font, game.style, "ball: [%.2f, %.2f]\n", ball.position().x, ball.position().y);
 		pen = uber.write_format(pen, game.font, game.style, "score: %d (x%d)\n", score, score_multiplier);
+		pen = uber.write_format(pen, game.font, game.style, "angle: %f\n", glm::degrees(angle));
 	}
 }

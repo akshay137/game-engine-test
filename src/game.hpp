@@ -38,6 +38,8 @@ namespace game
 			return glm::vec2(pos.x, screen.y - pos.y);
 		}
 
+		glm::vec2 get_window_size() const;
+
 		// debug
 		void show_debug_info();
 	};
