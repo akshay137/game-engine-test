@@ -19,8 +19,7 @@ namespace game
 
 	void ColorSwitch::reset_ball()
 	{
-		ball.circle.origin = game_size * .5f;
-		ball.velocity = { 0, 0 };
+		ball = { Circle(game_size * .5f, 24), {0, 0}};
 	}
 
 	bool ColorSwitch::check_ball_pad_collision()
@@ -38,16 +37,27 @@ namespace game
 		pad.first_color = index;
 		index = rand() % pad.segment_count;
 		ball_color_index = (pad.first_color + index) % MAX_COLORS;
+
+		auto half = MAX_COLORS / 2;
+		for (auto i = 0; i < MAX_COLORS / 2; i++)
+		{
+			auto src = rand() % half;
+			auto dst = half + rand() % half;
+			// if (src == dst)
+			// 	dst = (dst + 1) % MAX_COLORS;
+			std::swap(colors[src], colors[dst]);
+		}
 	}
 
-	void ColorSwitch::reset(Game&, int width, int height)
+	void ColorSwitch::reset(Game& game, int width, int height)
 	{
+		srand(game.ctx.main_clock.nanoseconds());
 		game_size = { width, height };
 
 		score = 0;
 
-		ball = { Circle({ width / 2, height / 2 }, 24), glm::vec2(0) };
-		pad = ColorPad(glm::vec2(width / 2, 128), ball.radius() * 6);
+		reset_ball();
+		pad = ColorPad(glm::vec2(width / 2, 128), ball.radius() * 7);
 		pad.resegment(3);
 		pad.first_color = 1;
 
@@ -61,41 +71,39 @@ namespace game
 		colors[7] = gfx::Color32::from_rgba(.1, .1, .1);
 
 		gravity = glm::vec2(0.0f, -9.8f * 50);
-
-		ball_color_index = pad.first_color + pad.segment_count / 2;
+		switch_color();
 	}
 
 	void ColorSwitch::update(Game& game, float delta)
 	{
 		auto& ip = game.ctx.input;
 
-		if (ip.is_key_released(KeyCode::NP_PLUS))
-		{
-			pad.resegment(pad.segment_count + 1);
-		}
-		if (ip.is_key_released(KeyCode::NP_MINUS))
-		{
-			pad.resegment(pad.segment_count - 1);
-		}
-
-		float MOVE_SPEED = 200;
+		constexpr float MOVE_SPEED = 200;
+		int direction = 0;
 		if (ip.is_key_down(KeyCode::A)) // left
-		{
-			pad.velocity.x -= MOVE_SPEED;
-		}
+			direction = -1;
 		if (ip.is_key_down(KeyCode::D)) // right
-		{
-			pad.velocity.x += MOVE_SPEED;
-		}
+			direction = 1;
+		
+		auto size = pad.segment_size();
+		glm::vec2 tmp = glm::vec2(direction, 0) * MOVE_SPEED;
+		pad.velocity = glm::mix(pad.velocity + tmp, glm::vec2(0), 5 * delta);
 		pad.rect.position += pad.velocity * delta;
-		pad.velocity = glm::mix(pad.velocity, glm::vec2(0), 5 * delta);
+
+		// prevent pad from going out of bounds
+		float lim = size.x * .5f * -(pad.segment_count - 1) + size.x * .5;
+		pad.rect.position.x = glm::clamp(pad.rect.position.x,
+			lim, game_size.x - lim
+		);
 
 		ball.velocity += gravity * delta;
 		ball.circle.origin += ball.velocity * delta;
+		if (ball.left() < 0 || ball.right() > game_size.x)
+			ball.velocity.x *= -1.0f;
 
 		if (ball.bottom() < 0)
 		{
-			reset_ball();
+			reset(game, game_size.x, game_size.y);
 		}
 
 		if (check_ball_pad_collision())
@@ -104,13 +112,20 @@ namespace game
 			if (index == ball_color_index)
 			{
 				++score;
-				ball.velocity = gravity * -1.25f;
+				glm::vec2 tmp(pad.velocity.x + gravity.x, gravity.y * -1.25f);
+				ball.velocity = tmp;
+				float limit = 128;
+				ball.velocity.x = glm::clamp(ball.velocity.x, -limit, limit);
+				if (0 == rand() % 2)
+				{
+					auto seg = rand() % (MAX_COLORS - 1);
+					pad.resegment(seg + 2);
+				}
 				switch_color();
 			}
 			else
 			{
-				// reset(game, game_size.x, game_size.y);
-				reset_ball();
+				reset(game, game_size.x, game_size.y);
 				return;
 			}
 		}
@@ -132,12 +147,15 @@ namespace game
 			float angle = 0.0f;
 			uber.draw_color(pos, size, colors[color_index], angle);
 		}
+		
+		auto pen = game.screen_to_world(glm::vec2(0), game.get_window_size());
+		gfx::FontStyle _style(32);
+		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
+
 
 		// debug
 		auto& font = game.font;
 		auto& style = game.style;
-		auto pen = game.screen_to_world(glm::vec2(0), game.get_window_size());
-		pen = uber.write_format(pen, font,style, "Score: %d\n", score);
 		pen = uber.write_format(pen, font, style,
 			"ball: [%.2f, %.2f] | c: %d\n",
 			ball.position().x, ball.position().y,
@@ -148,9 +166,10 @@ namespace game
 			"color: %d\n", cindex
 		);
 		pen = uber.write_format(pen, font, style,
-			"cpad: [%.2f, %.2f] { %.2f, %.2f } | s: %d | f: %d\n",
+			"cpad: [%.2f, %.2f] { %.2f, %.2f } | <%.2f, %.2f> | s: %d | f: %d\n",
 			pad.rect.position.x, pad.rect.position.y,
 			pad.rect.size.x, pad.rect.size.y,
+			pad.left(), pad.right(),
 			pad.segment_count, pad.first_color
 		);
 		for (auto i = 0; i < pad.segment_count; i++)
