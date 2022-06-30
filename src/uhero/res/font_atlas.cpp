@@ -21,13 +21,13 @@ namespace uhero::res
 		gfx::Font font {};
 		auto id = file.read_leu32();
 
-		font.glyph_count = file.read_leu32();
+		auto glyph_count = file.read_leu32();
 		font.line_height = file.read_le32();
 		i32 w = file.read_le32(); // width
 		i32 h = file.read_le32(); // height
 
-		font.glyphs = UH_ALLOCATE_TYPE(gfx::Glyph, font.glyph_count);
-		for (u32 i = 0; i < font.glyph_count; i++)
+		// font.glyphs = UH_ALLOCATE_TYPE(gfx::Glyph, font.glyph_count);
+		for (u32 i = 0; i < glyph_count; i++)
 		{
 			gfx::Glyph g{};
 
@@ -40,7 +40,7 @@ namespace uhero::res
 			g.bearing_y = file.read_le32();
 			g.advance_x = file.read_leu32();
 
-			font.glyphs[i] = g;
+			font.glyphs[g.code] = g;
 		}
 
 		// read image
@@ -57,7 +57,7 @@ namespace uhero::res
 
 		UH_VERB("FONT_ATLAS: %s: [GC: %u | <%dx%d> | HxW: <%dx%d>]\n",
 			filename,
-			font.glyph_count, w, h,
+			glyph_count, w, h,
 			font.line_height, font.space
 		);
 		file.close();

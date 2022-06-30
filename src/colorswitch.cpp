@@ -124,9 +124,13 @@ namespace game
 				ball.velocity = tmp;
 				float limit = 128;
 				ball.velocity.x = glm::clamp(ball.velocity.x, -limit, limit);
-				auto seg = random_generator.range(2, MAX_COLORS);
-				pad.resegment(seg);
+				if (0 == score % 5)
+				{
+					auto seg = random_generator.range(2, MAX_COLORS);
+					pad.resegment(seg);
+				}
 				switch_color();
+				ball.circle.origin.y = pad.top() + ball.radius();
 			}
 			else
 			{
@@ -153,41 +157,41 @@ namespace game
 			uber.draw_color(pos, size, colors[color_index], angle);
 		}
 		
-		auto pen = game.screen_to_world(glm::vec2(0), game.get_window_size());
+		auto pen = game.screen_to_world(glm::vec2(64), game.get_window_size());
 		gfx::FontStyle _style(32);
 		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
 
 
 		// debug
-		auto& font = game.font;
-		auto& style = game.style;
-		pen = uber.write_format(pen, font, style,
-			"ball: [%.2f, %.2f] | c: %d\n",
-			ball.position().x, ball.position().y,
-			ball_color_index
-		);
-		auto cindex = pad.get_color_index_at(ball.position());
-		pen = uber.write_format(pen, font, style,
-			"color: %d\n", cindex
-		);
-		pen = uber.write_format(pen, font, style,
-			"cpad: [%.2f, %.2f] { %.2f, %.2f } | <%.2f, %.2f> | s: %d | f: %d\n",
-			pad.rect.position.x, pad.rect.position.y,
-			pad.rect.size.x, pad.rect.size.y,
-			pad.left(), pad.right(),
-			pad.segment_count, pad.first_color
-		);
-		for (auto i = 0; i < pad.segment_count; i++)
-		{
-			glm::vec2 pos = pad.segment_position(i);
-			glm::vec2 size = pad.segment_size();
-			int color_index = pad.segment_color_index(i) % MAX_COLORS;
+		// auto& font = game.font;
+		// auto& style = game.style;
+		// pen = uber.write_format(pen, font, style,
+		// 	"ball: [%.2f, %.2f] | c: %d\n",
+		// 	ball.position().x, ball.position().y,
+		// 	ball_color_index
+		// );
+		// auto cindex = pad.get_color_index_at(ball.position());
+		// pen = uber.write_format(pen, font, style,
+		// 	"color: %d\n", cindex
+		// );
+		// pen = uber.write_format(pen, font, style,
+		// 	"cpad: [%.2f, %.2f] { %.2f, %.2f } | <%.2f, %.2f> | s: %d | f: %d\n",
+		// 	pad.rect.position.x, pad.rect.position.y,
+		// 	pad.rect.size.x, pad.rect.size.y,
+		// 	pad.left(), pad.right(),
+		// 	pad.segment_count, pad.first_color
+		// );
+		// for (auto i = 0; i < pad.segment_count; i++)
+		// {
+		// 	glm::vec2 pos = pad.segment_position(i);
+		// 	glm::vec2 size = pad.segment_size();
+		// 	int color_index = pad.segment_color_index(i) % MAX_COLORS;
 
-			pen = uber.write_format(pen, font, style,
-				"-segment_%d: [%.2f, %.2f] { %.2f, %.2f } | color: %8X\n",
-				i, pos.x, pos.y, size.x, size.y,
-				colors[color_index].to_rgba_u32()
-			);
-		}
+		// 	pen = uber.write_format(pen, font, style,
+		// 		"-segment_%d: [%.2f, %.2f] { %.2f, %.2f } | color: %8X\n",
+		// 		i, pos.x, pos.y, size.x, size.y,
+		// 		colors[color_index].to_rgba_u32()
+		// 	);
+		// }
 	}
 }

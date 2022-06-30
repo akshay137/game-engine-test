@@ -342,8 +342,10 @@ namespace uhero::gfx
 	Renderer::Vertex Renderer::glyph_vertex(const Quad& quad)
 	{
 		// TODO: calculate this based on size of text
+		// TODO: remove magic numbers from calculation
+		const auto height = quad.rect.w;
 		float width = 0.5f;
-		float edge = 0.1f;
+		float edge = 1 / (10 * ceil(height / 48));
 
 		Vertex v {};
 		v.color = quad.glyph.text_color;

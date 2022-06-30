@@ -1,4 +1,5 @@
 #include "colorpad.hpp"
+#include <glm/glm.hpp>
 
 namespace game
 {
@@ -31,6 +32,8 @@ namespace game
 	{
 		auto width = position.x - rect.left();
 		auto size = segment_size();
-		return first_color + width / size.x;
+		int id = first_color + width / size.x;
+		id = glm::clamp(id, first_color, first_color + segment_count - 1);
+		return id;
 	}
 }

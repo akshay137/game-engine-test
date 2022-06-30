@@ -130,6 +130,12 @@ namespace uhero
 			keys[index] |= static_cast<u8>(state);
 		}
 
+		void set_mbuttonstate(u32 button, KeyState state)
+		{
+			u16 index = static_cast<u16>(button);
+			mouse.buttons[index] |= static_cast<u8>(state);
+		}
+
 		bool is_key_down(KeyCode key) const
 		{
 			return keys[key] & KeyState::Down;

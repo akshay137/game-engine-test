@@ -135,11 +135,13 @@ namespace uhero
 			else if (SDL_MOUSEBUTTONDOWN == event.type) // mouse pressed
 			{
 				auto button = event.button.button;
+				input.set_mbuttonstate(button, KeyState::Pressed);
 				// input.keys[button] &= KeyState::Pressed;
 			}
 			else if (SDL_MOUSEBUTTONUP == event.type) // mouse released
 			{
-				auto button = event.button.button;
+				auto button = event.button.button - 1;
+				input.set_mbuttonstate(button, KeyState::Released);
 				// input.keys[button] &= KeyState::Released;
 			}
 		}
@@ -152,9 +154,11 @@ namespace uhero
 		}
 
 		i32 x, y;
-		SDL_GetMouseState(&x, &y);
+		auto button = SDL_GetMouseState(&x, &y);
 		input.mouse.x = x;
 		input.mouse.y = y;
+		if (SDL_BUTTON(button) == SDL_BUTTON_LEFT)
+			input.set_mbuttonstate(MouseKey::Left, KeyState::Down);
 
 
 		float color[4] = { 0, 0, 0, 0 };
