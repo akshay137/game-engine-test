@@ -9,9 +9,14 @@ namespace uhero::gfx
 	constexpr u32 MAX_FB_COLOR_ATTACHMENTS = 8;
 	struct FBDescriptor
 	{
-		u32 color_attachments = 0;
+		u32 color_attachments;
 		PixelFormat attachments[MAX_FB_COLOR_ATTACHMENTS];
 		PixelFormat depth_attachment;
+
+		FBDescriptor()
+			: color_attachments{0},
+				depth_attachment{PixelFormat::Depth24Stencil8}
+		{}
 
 		void add_color_attachment(PixelFormat format)
 		{

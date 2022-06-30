@@ -59,7 +59,6 @@ namespace uhero::gfx
 		float size_scale(u32 size) const { return size / (float)line_height; }
 
 		// text fitting functions
-
 		float fit_size(usize count, const char* buffer, float size) const;
 
 		void get_box_size(usize count, const char* buffer, const FontStyle& style,

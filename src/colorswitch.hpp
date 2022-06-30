@@ -5,6 +5,7 @@
 #include "ball.hpp"
 #include "colorpad.hpp"
 #include "uhero/gfx/color.hpp"
+#include "uhero/math/random.hpp"
 
 namespace game
 {
@@ -20,6 +21,7 @@ namespace game
 		ColorPad pad;
 
 		glm::vec2 gravity;
+		uhero::math::Random random_generator;
 
 		void reset_ball();
 		bool check_ball_pad_collision();

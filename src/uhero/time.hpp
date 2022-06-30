@@ -43,6 +43,11 @@ namespace uhero
 			return elapsed_seconds.count();
 		}
 
+		i64 milliseconds() const
+		{
+			return elapsed_nanoseconds.count() / 1000000;
+		}
+
 		i64 nanoseconds() const
 		{
 			return elapsed_nanoseconds.count();

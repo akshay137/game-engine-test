@@ -33,25 +33,24 @@ namespace game
 
 	void ColorSwitch::switch_color()
 	{
-		auto index = rand() % MAX_COLORS;
+		auto index = random_generator.range(0, MAX_COLORS);
 		pad.first_color = index;
-		index = rand() % pad.segment_count;
+		index = random_generator.range(0, pad.segment_count);
 		ball_color_index = (pad.first_color + index) % MAX_COLORS;
 
+		// shuffle color list
 		auto half = MAX_COLORS / 2;
 		for (auto i = 0; i < MAX_COLORS / 2; i++)
 		{
-			auto src = rand() % half;
-			auto dst = half + rand() % half;
-			// if (src == dst)
-			// 	dst = (dst + 1) % MAX_COLORS;
+			auto src = random_generator.range(0, half);
+			auto dst = random_generator.range(half, MAX_COLORS);
 			std::swap(colors[src], colors[dst]);
 		}
 	}
 
 	void ColorSwitch::reset(Game& game, int width, int height)
 	{
-		srand(game.ctx.main_clock.nanoseconds());
+		random_generator = math::Random(game.time());
 		game_size = { width, height };
 
 		score = 0;
@@ -77,6 +76,11 @@ namespace game
 	void ColorSwitch::update(Game& game, float delta)
 	{
 		auto& ip = game.ctx.input;
+		if (ip.is_key_pressed(KeyCode::Escape))
+		{
+			game.pause_game(true);
+			return;
+		}
 
 		constexpr float MOVE_SPEED = 200;
 		int direction = 0;
@@ -103,7 +107,8 @@ namespace game
 
 		if (ball.bottom() < 0)
 		{
-			reset(game, game_size.x, game_size.y);
+			game.game_over(score);
+			return;
 		}
 
 		if (check_ball_pad_collision())
@@ -112,20 +117,20 @@ namespace game
 			if (index == ball_color_index)
 			{
 				++score;
-				glm::vec2 tmp(pad.velocity.x + gravity.x, gravity.y * -1.25f);
+				glm::vec2 tmp = {
+					pad.velocity.x + ball.velocity.x,
+					gravity.y * -1.25f
+				};
 				ball.velocity = tmp;
 				float limit = 128;
 				ball.velocity.x = glm::clamp(ball.velocity.x, -limit, limit);
-				if (0 == rand() % 2)
-				{
-					auto seg = rand() % (MAX_COLORS - 1);
-					pad.resegment(seg + 2);
-				}
+				auto seg = random_generator.range(2, MAX_COLORS);
+				pad.resegment(seg);
 				switch_color();
 			}
 			else
 			{
-				reset(game, game_size.x, game_size.y);
+				game.game_over(score);
 				return;
 			}
 		}
