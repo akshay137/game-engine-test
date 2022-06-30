@@ -85,6 +85,11 @@ namespace game
 	void Pong::update(Game& game, float delta)
 	{
 		auto& ip = game.ctx.input;
+		if (ip.is_key_pressed(KeyCode::Escape))
+		{
+			game.pause_game();
+			return;
+		}
 
 		glm::vec2 direction(0);
 		if (ip.is_key_down(KeyCode::W))

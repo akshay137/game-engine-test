@@ -6,7 +6,11 @@
 #include "uhero/gfx/font.hpp"
 #include "uhero/gfx/framebuffer.hpp"
 #include "minigame.hpp"
+#include "rectangle.hpp"
+#include "colorswitch.hpp"
+#include "pong.hpp"
 
+#include <string_view>
 #include <glm/vec2.hpp>
 
 namespace game
@@ -19,6 +23,18 @@ namespace game
 		Pause, // pause menu
 	};
 
+	// standard button
+	struct Button
+	{
+		Rectangle rect;
+		std::string_view title;
+
+		bool is_over(glm::vec2 mouse) const
+		{
+			return rect.is_point_inside(mouse);
+		}
+	};
+
 	struct Game : public uhero::IApplication
 	{
 		uhero::Context& ctx;
@@ -26,6 +42,17 @@ namespace game
 		uhero::gfx::Font font;
 		uhero::gfx::FontStyle style;
 		uhero::gfx::FrameBuffer game_fbo;
+
+		ColorSwitch color_switch;
+		Pong pong;
+		
+		// main_menu
+		Button btn_games[2];
+		Button btn_exit;
+
+		Button btn_resume; // pause
+		Button btn_restart; // endgame
+		Button btn_menu; // pause | endgame
 
 		GameState state;
 		MiniGame* current_game;
@@ -50,6 +77,8 @@ namespace game
 		void show_menu();
 		void show_endgame();
 		void show_pausemenu();
+
+		void draw_button(const Button& button);
 
 		glm::vec2 screen_to_world(glm::vec2 pos, glm::vec2 screen)
 		{

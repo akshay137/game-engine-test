@@ -20,7 +20,7 @@ namespace uhero::gfx
 		{}
 
 		Color32(u8 r, u8 g, u8 b)
-			: red{r}, green{g}, blue{b}, alpha{1}
+			: red{r}, green{g}, blue{b}, alpha{255}
 		{}
 
 		Color32(u8 r, u8 g, u8 b, u8 a)

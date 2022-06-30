@@ -11,7 +11,7 @@ namespace uhero::gfx
 
 	struct Glyph
 	{
-		codepoint code;
+		codepoint code = 0;
 		i32 pos_x;
 		i32 pos_y;
 		i32 size_x;
@@ -36,30 +36,36 @@ namespace uhero::gfx
 		{
 			wrap_width = 0;
 			border_size = 0;
-			line_spacing = this->size * 0.1f;
+			line_spacing = 1;
 			text_color = Color32(255);
 			border_color = Color32(0, 0, 0, 255);
+		}
+
+		void set_size(i32 pt)
+		{
+			size = pt * PT_TO_PIXEL;
+			line_spacing = 1;
 		}
 	};
 
 	struct Font
 	{
+		constexpr static int MAX_GLYPHS = 128;
 		Texture atlas;
 		i32 line_height;
 		i32 space;
 		i32 tab_spaces;
-		u32 glyph_count;
-		Glyph* glyphs;
+		Glyph glyphs[MAX_GLYPHS]; // only ASCII support
 
-		Result create(Texture& atlas, u32 count, Glyph* glyphs, i32 lh, i32 sp);
-		void clear(bool free_glyphs = true);
+		Result create(Texture& atlas, Glyph* glyphs, i32 lh, i32 sp);
+		void clear();
 
 		Glyph find_glyph(codepoint code) const;
 
 		float size_scale(u32 size) const { return size / (float)line_height; }
 
 		// text fitting functions
-		float fit_size(usize count, const char* buffer, float size) const;
+		float fit_size(usize count, const char* buffer, float box_width) const;
 
 		void get_box_size(usize count, const char* buffer, const FontStyle& style,
 			float& width, float& height

@@ -26,6 +26,15 @@ namespace game
 		float top() const { return position.y + size.y * .5f; }
 		float bottom() const { return position.y - size.y * .5f; }
 
+		bool is_point_inside(glm::vec2 point) const
+		{
+			if (point.x < left()) return false;
+			if (point.x > right()) return false;
+			if (point.y > top()) return false;
+			if (point.y < bottom()) return false;
+			return true;
+		}
+		
 		bool is_verticle() const
 		{
 			return size.x < size.y;
