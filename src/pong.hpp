@@ -22,7 +22,7 @@ namespace game
 		int score;
 		int score_multiplier;
 
-		void displace_ball(Ball& ball, const Ball& rhs, float delta);
+		void displace_ball(Ball& ball, const Ball& rhs);
 		int move_ball(float);
 
 		bool load(Game&, int, int) override;

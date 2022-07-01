@@ -3,6 +3,7 @@
 
 #include "../common.hpp"
 #include "texture.hpp"
+#include "color.hpp"
 
 namespace uhero::gfx
 {
@@ -43,7 +44,7 @@ namespace uhero::gfx
 		Result create(FBDescriptor descriptor, i32 w, i32 h);
 		void clear();
 
-		void clear_buffers(const float* clear_color, float depth, i32 stencil);
+		void clear_buffers(const Color32 clear_color, float depth, i32 stencil);
 
 		bool is_ready() const;
 		void make_current();

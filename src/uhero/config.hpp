@@ -10,7 +10,7 @@ namespace uhero
 	{
 		Version version = Version(0, 1, 0);
 
-		const char* app_name = "uhero::pong";
+		const char* app_name = "uhero";
 		i32 display_index = 0;
 		i32 window_width = 1280;
 		i32 window_height = 720;

@@ -20,6 +20,12 @@ namespace uhero::res
 
 		gfx::Font font {};
 		auto id = file.read_leu32();
+		if (0x00aabb00 != id)
+		{
+			UH_ERROR("%s is not a font atlas file\n", filename);
+			file.close();
+			return {};
+		}
 
 		auto glyph_count = file.read_leu32();
 		font.line_height = file.read_le32();

@@ -61,6 +61,10 @@ namespace uhero::gfx
 		// draw commands
 		void draw_elements(u32 primitive, u32 count, const void* offset);
 		void draw_arrays(u32 primitive, u32 first, u32 count);
+
+		// small optimization
+		static inline u32 current_vao = 0;
+		static inline u32 current_program = 0;
 	};
 }
 

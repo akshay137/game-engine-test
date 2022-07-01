@@ -161,10 +161,9 @@ namespace uhero
 			input.set_mbuttonstate(MouseKey::Left, KeyState::Down);
 
 
-		float color[4] = { 0, 0, 0, 0 };
 		gfx::Context::reset_stats();
 		gfx.update_render_state(main_window.width, main_window.height);
-		gfx.clear_buffer(color, 1.0f, 0);
+		gfx.clear_buffer(gfx::Color32(0), 1.0f, 0);
 		
 		if (app)
 		{

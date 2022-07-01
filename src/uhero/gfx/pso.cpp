@@ -37,8 +37,13 @@ namespace uhero::gfx
 
 	void PSO::make_current()
 	{
-		glUseProgram(program);
-		glBindVertexArray(vao);
+		if (current_program != program)
+			glUseProgram(program);
+		if (current_vao != vao)
+			glBindVertexArray(vao);
+		
+		current_program = program;
+		current_vao = vao;
 	}
 
 	void PSO::set_vertex_buffer(const Buffer& vbuffer, u32 index,

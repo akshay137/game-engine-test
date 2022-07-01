@@ -42,6 +42,7 @@ namespace uhero
 		IOError,
 		NotEnoughArguments,
 		InvalidArgument,
+		InvalidResource,
 	};
 
 	constexpr i32 OPENGL_MAJOR_VERSION = 4;

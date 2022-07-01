@@ -16,7 +16,11 @@ namespace uhero::gfx
 		Color32() = default;
 
 		Color32(u8 v)
-			: red{v}, green{v}, blue{v}, alpha{v}
+			: red{v}, green{v}, blue{v}, alpha{255}
+		{}
+
+		Color32(u8 v, u8 a)
+			: red{v}, green{v}, blue{v}, alpha{a}
 		{}
 
 		Color32(u8 r, u8 g, u8 b)

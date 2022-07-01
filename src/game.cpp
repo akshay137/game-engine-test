@@ -45,9 +45,25 @@ namespace game
 
 	void Game::show_menu()
 	{
+		auto size = get_window_size();
+		uber.draw_color(size * .5f, size, gfx::Color32(32));
+
 		draw_button(btn_games[0]);
 		draw_button(btn_games[1]);
 		draw_button(btn_exit);
+
+		auto pen = screen_to_world(glm::vec2(128, 64), size);
+		auto _style = style;
+		_style.text_color = gfx::Color32(255, 74, 92);
+		_style.border_color = gfx::Color32(0, 255, 255);
+		_style.border_size = .05;
+		_style.set_size(128);
+		pen = uber.write_format(pen, font, _style, "unsignedHERO\n");
+
+		_style.set_size(128 - 32);
+		_style.text_color = gfx::Color32(255);
+		_style.border_size = 0;
+		pen = uber.write_format(pen, font, _style, "game engine\n");
 	}
 
 	void Game::show_endgame()
@@ -69,6 +85,7 @@ namespace game
 
 		_style.set_size(64);
 		_style.text_color = gfx::Color32::from_rgba(0, 1, 0);
+		_style.border_size = .05;
 		pen.x += 256;
 		pen = uber.write_format(pen, font, _style, "Score: %d\n", score);
 	}
@@ -85,7 +102,6 @@ namespace game
 		pen.x -= (256 + 32);
 		pen.y += 256;
 		pen = uber.write_format(pen, font, _style, "Game paused\n");
-
 	}
 
 	void Game::draw_button(const Button& button)
@@ -93,14 +109,15 @@ namespace game
 		auto pos = button.rect.position;
 		auto size = button.rect.size;
 		uber.draw_color(pos, size, gfx::Color32::from_rgba(1, .4, .5));
-		size -= glm::vec2(8, 12);
-		uber.draw_color(pos, size, gfx::Color32::from_rgba(0, 0, 0));
-		size -= glm::vec2(4, 6);
-		uber.draw_color(pos, size, gfx::Color32(20, 60, 92, 128));
+		size -= glm::vec2(8);
+		uber.draw_color(pos, size, gfx::Color32(255));
+		size -= glm::vec2(4);
+		uber.draw_color(pos, size, gfx::Color32(0));
 
 		auto _style = style;
-		_style.border_color = gfx::Color32::from_rgba(1, .4, .5);
-		_style.border_size = .025;
+		_style.border_color = gfx::Color32(31);
+		_style.text_color = gfx::Color32(255);
+		_style.border_size = .1;
 		glm::vec2 box;
 		font.get_box_size(button.title.size(), button.title.data(),
 			style, box.x, box.y
@@ -135,7 +152,7 @@ namespace game
 		return ctx.main_clock.seconds();
 	}
 
-	uhero::Result Game::load(uhero::Context& ctx)
+	uhero::Result Game::load(uhero::Context&)
 	{
 		auto res = uber.create(1024);
 		if (Result::Success != res)
@@ -148,11 +165,12 @@ namespace game
 
 		gfx::FBDescriptor descriptor {};
 		descriptor.add_color_attachment(gfx::PixelFormat::RGBA8);
-		game_fbo.create(descriptor, ctx.main_window.width, ctx.main_window.height);
+		game_fbo.create(descriptor, 1600, 900);
 
 		auto screen = get_window_size();
 		auto pos = screen * .5f;
 		glm::vec2 btn_size = { 512, 64 + 32 };
+		
 		pos.y = pos.y - btn_size.y * 1.5;
 		btn_games[0] = { Rectangle(pos, btn_size), "Pong [P]" };
 		pos.y -= btn_size.y * 1.2;
@@ -162,6 +180,7 @@ namespace game
 
 		pos = { screen.x / 2, 128 };
 		btn_menu = { Rectangle(pos, btn_size), "Menu [M]" };
+		
 		pos.y += btn_size.y * 1.2;
 		btn_resume = { Rectangle(pos, btn_size), "Resume [R]" };
 		btn_restart = { Rectangle(pos, btn_size), "Restart [R]" };
@@ -185,8 +204,6 @@ namespace game
 		auto& audio = ctx.audio;
 		auto screen = get_window_size();
 
-		// if (ip.is_key_released(KeyCode::Escape))
-		// 	ctx.request_exit();
 		if (ip.is_key_released(KeyCode::Tilde))
 			debug_info_enabled = !debug_info_enabled;
 		
@@ -235,7 +252,7 @@ namespace game
 			
 			case GameState::Pause:
 			{
-				if (ip.is_key_pressed(KeyCode::Escape))
+				if (ip.is_key_pressed(KeyCode::Escape) || ip.is_key_pressed(KeyCode::R))
 					pause_game(false);
 				if (ip.is_key_pressed(KeyCode::M))
 					state = GameState::Menu;
@@ -257,7 +274,7 @@ namespace game
 			{
 				if (ip.is_key_pressed(KeyCode::R))
 					start_game();
-				if (ip.is_key_pressed(KeyCode::M))
+				if (ip.is_key_pressed(KeyCode::M) || ip.is_key_pressed(KeyCode::Escape))
 					state = GameState::Menu;
 				if (ip.is_mbutton_released(MouseKey::Left))
 				{
@@ -287,6 +304,7 @@ namespace game
 		}
 
 		ctx.gfx.use_default_framebuffer(ctx.main_window);
+		ctx.gfx.clear_buffer(gfx::Color32(0), 1, 0);
 		if (GameState::Menu == state)
 		{
 			show_menu();
@@ -296,7 +314,7 @@ namespace game
 			uber.draw_texture(center, screen, game_fbo.color[0],
 				glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
 			);
-			uber.draw_color(center, screen, gfx::Color32::from_rgba(.2, .2, .2, .7));
+			uber.draw_color(center, screen, gfx::Color32(31, 255 - 32));
 			
 			if (GameState::Pause == state)
 				show_pausemenu();
@@ -331,9 +349,8 @@ namespace game
 
 		auto pen = glm::vec2(8, 64 + 32 + 16);
 		auto _style = gfx::FontStyle(15);
-		// _style.size = 15.0 * gfx::PT_TO_PIXEL;
 		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
-		_style.border_size = 0.1;
+		_style.border_size = 0.125;
 		uber.draw_color(glm::vec2(104, 60), glm::vec2(200, 108), gfx::Color32::from_rgba(0, 1, 0));
 		pen = uber.write_format(pen, font, _style, "Time: %d:%d:%d:%d\n",
 			hours, minutes, seconds, ms / 100

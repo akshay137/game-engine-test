@@ -65,11 +65,13 @@ namespace uhero::gfx
 		gl_context = nullptr;
 	}
 
-	void Context::clear_buffer(float* color, float depth, i32 stencil)
+	void Context::clear_buffer(Color32 color, float depth, i32 stencil)
 	{
+		float cc[4];
+		color.to_rgba(cc[0], cc[1], cc[2], cc[3]);
 		auto vp = render_state.viewport;
 		glViewport(vp.x, vp.y, vp.z, vp.w);
-		glClearBufferfv(GL_COLOR, 0, color);
+		glClearBufferfv(GL_COLOR, 0, cc);
 		glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, stencil);
 	}
 

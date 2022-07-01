@@ -52,15 +52,16 @@ namespace game
 		ball = { Circle(ground.origin, size * .5f), glm::vec2(ball_speed) };
 	}
 
-	void Pong::displace_ball(Ball& ball, const Ball& rhs, float delta)
+	void Pong::displace_ball(Ball& ball, const Ball& rhs)
 	{
 		if (!ball.collides(rhs)) return;
-		ball.circle.origin -= ball.velocity * delta;
 		
 		auto inorm = glm::normalize(ball.position() - rhs.position());
 		auto incedent = glm::normalize(ball.velocity);
 		auto direction = glm::reflect(incedent, inorm);
-		ball.velocity = direction * ball_speed;
+		ball.velocity += rhs.velocity + direction * ball_speed;
+		auto temp = inorm * (rhs.radius() + ball.radius());
+		ball.circle.origin = rhs.position() + temp;
 	}
 
 	int Pong::move_ball(float delta)
@@ -68,16 +69,21 @@ namespace game
 		ball.circle.origin += ball.velocity * delta;
 
 		if (ball.top() > game_height)
-			ball.velocity.y = -ball_speed;
+			ball.velocity.y *= -1;
 		else if (ball.bottom() < 0)
-			ball.velocity.y = ball_speed;
+			ball.velocity.y *= -1;
 		if (ball.left() < 0)
-			ball.velocity.x = ball_speed;
+			ball.velocity.x *= -1;
 		if (ball.right() > game_width)
-			ball.velocity.x = -ball_speed;
+			ball.velocity.x *= -1;
 		
-		displace_ball(ball, player, delta);
-		displace_ball(ball, comp, delta);
+		displace_ball(ball, player);
+		displace_ball(ball, comp);
+
+		ball.circle.origin = glm::clamp(ball.position(),
+			glm::vec2(ball.radius()),
+			glm::vec2(game_width, game_height) - ball.radius()
+		);
 
 		return 0;
 	}
@@ -113,12 +119,13 @@ namespace game
 	void Pong::draw(Game& game)
 	{
 		auto& uber = game.uber;
+		game.clear_game_screen(gfx::Color32(32, 32, 32, 255));
 
 		auto direction = glm::normalize(ball.position() - player.position());
 		float angle = glm::atan(direction.y, direction.x);
 
 		uber.draw_texture(Utils::snap_to_pixel(ground.origin),
-			ground.quad_size(), tx_circle, angle, {0, 0}, 1
+			ground.quad_size(), tx_circle, angle, glm::vec2(0), 1
 		);
 		uber.draw_circle(Utils::snap_to_pixel(player.position()), player.radius(), COLOR_RED);
 		uber.draw_circle(Utils::snap_to_pixel(comp.position()), comp.radius(), COLOR_GREEN);
@@ -131,10 +138,14 @@ namespace game
 		uber.draw_circle(Utils::snap_to_pixel(ball.position()), ball.radius(), color);
 
 		auto pen = game.screen_to_world( {0, 0}, { game_width, game_height });
+		pen = uber.write_format(pen, game.font, game.style,
+			"Score: %d (x%d)\n", score, score_multiplier
+		);
+		
+		// debug
 		pen = uber.write_format(pen, game.font, game.style, "player: [%.2f, %.2f]\n", player.position().x, player.position().y);
 		pen = uber.write_format(pen, game.font, game.style, "comp: [%.2f, %.2f]\n", comp.position().x, comp.position().y);
 		pen = uber.write_format(pen, game.font, game.style, "ball: [%.2f, %.2f]\n", ball.position().x, ball.position().y);
-		pen = uber.write_format(pen, game.font, game.style, "score: %d (x%d)\n", score, score_multiplier);
 		pen = uber.write_format(pen, game.font, game.style, "angle: %f\n", glm::degrees(angle));
 	}
 }

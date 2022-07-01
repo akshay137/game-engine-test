@@ -56,16 +56,20 @@ namespace uhero
 	Result Window::setup_opengl_properties()
 	{
 		i32 res = 0;
-		res = SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
+		res += SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
 			SDL_GL_CONTEXT_PROFILE_CORE
 		);
 
-		res = SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,
+		res += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,
 			OPENGL_MAJOR_VERSION
 		);
-		res = SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
+		res += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
 			OPENGL_MINOR_VERSION
 		);
+		if (0 != res)
+		{
+			UHSDL_ERROR(SDL_GL_SetAttribute);
+		}
 
 		return Result::Success;
 	}

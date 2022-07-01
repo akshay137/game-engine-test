@@ -12,6 +12,11 @@ namespace game
 		auto res = file.open(filename,
 			uhero::FileMode::FRead | uhero::FileMode::FBinary
 		);
+		if (uhero::Result::Success != res)
+		{
+			UH_ERROR("Failed to open tilemap: %s\n", filename);
+			return res;
+		}
 
 		auto id = file.read_leu32();
 		UH_VERB("loading tilemap[%u]: %s\n", id, filename);

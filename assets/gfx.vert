@@ -22,26 +22,28 @@ layout (std140, binding = 0) uniform rstate
 	layout (offset = 64) vec4 viewport;
 };
 
-out VS_SPRITE_OUT
+struct Sprite
 {
-	vec3 wpos;
-	vec2 uv;
-	vec2 quad_uv;
 	float blend;
 	float circle;
 	vec4 color;
-} sprite;
+};
 
-out VS_GLYPH_OUT
+struct Glyph
 {
-	vec2 uv;
 	vec4 text_color;
 	vec4 outline_color;
 	vec2 widths;
 	vec2 edges;
-} glyph;
+};
 
-layout (location = 0) uniform int program_mode; // 0 if sprite
+out VS_OUT
+{
+	vec2 uv;
+	vec2 quad_uv;
+	Sprite sprite;
+	Glyph glyph;
+} vs;
 
 void main()
 {
@@ -49,16 +51,15 @@ void main()
 	vec4 pos = orthographic * pos4;
 	gl_Position = pos;
 
-	sprite.wpos = pos4.xyz;
-	sprite.uv = uv;
-	sprite.quad_uv = quad_uv;
-	sprite.blend = blend;
-	sprite.color = color;
-	sprite.circle = circle;
+	vs.uv = uv;
+	vs.quad_uv = quad_uv;
 	
-	glyph.uv = uv;
-	glyph.text_color = color;
-	glyph.outline_color = outline_color;
-	glyph.widths = vec2(width, border_width);
-	glyph.edges = vec2(edge, border_edge);
+	vs.sprite.blend = blend;
+	vs.sprite.color = color;
+	vs.sprite.circle = circle;
+	
+	vs.glyph.text_color = color;
+	vs.glyph.outline_color = outline_color;
+	vs.glyph.widths = vec2(width, border_width);
+	vs.glyph.edges = vec2(edge, border_edge);
 }

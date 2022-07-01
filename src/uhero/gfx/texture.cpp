@@ -76,13 +76,21 @@ namespace uhero::gfx
 	{
 		assert(gl_id);
 
+		if (slots[index] == gl_id)
+			return;
+
 		glBindTextureUnit(index, gl_id);
+		slots[index] = gl_id;
 		++Context::gpu_stats.texture_switch;
 	}
 
 	void Texture::reset_slot(u32 index)
 	{
+		if (0 == slots[index])
+			return;
+		
 		glBindTextureUnit(index, 0);
+		slots[index] = 0;
 		++Context::gpu_stats.texture_switch;
 	}
 

@@ -12,7 +12,7 @@ namespace game
 	struct ColorSwitch : public MiniGame
 	{
 		glm::vec2 game_size;
-		constexpr static int MAX_COLORS = 8;
+		constexpr static int MAX_COLORS = 6;
 		uhero::gfx::Color32 colors[MAX_COLORS];
 
 		int score;

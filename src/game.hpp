@@ -85,6 +85,11 @@ namespace game
 			return glm::vec2(pos.x, screen.y - pos.y);
 		}
 
+		void clear_game_screen(uhero::gfx::Color32 color)
+		{
+			game_fbo.clear_buffers(color, 1, 0);
+		}
+
 		glm::vec2 get_window_size() const;
 		uint32_t time() const;
 		float timef() const;

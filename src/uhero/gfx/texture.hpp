@@ -105,6 +105,10 @@ namespace uhero::gfx
 
 		static bool pixeldata_from_format(PixelFormat format, PixelData& out_pd);
 		static i32 swizzle_mask_to_glenum(SwizzleMask mask);
+
+		// bind optimization
+		constexpr static u32 MAX_SLOTS = 8;
+		static inline u32 slots[MAX_SLOTS];
 	};
 
 	// some constants

@@ -12,7 +12,7 @@ namespace uhero::gfx
 		for (u32 i = 0; i < descriptor.color_attachments; i++)
 		{
 			color[i].create(w, h, descriptor.attachments[i]);
-			color[i].set_filter(TextureFilter::Nearest);
+			color[i].set_filter(TextureFilter::Linear);
 
 			glNamedFramebufferTexture(gl_id,
 				GL_COLOR_ATTACHMENT0 + i,
@@ -22,7 +22,7 @@ namespace uhero::gfx
 		}
 
 		depth.create(w, h, PixelFormat::Depth24Stencil8);
-		depth.set_filter(TextureFilter::Nearest);
+		depth.set_filter(TextureFilter::Linear);
 		glNamedFramebufferTexture(gl_id, GL_DEPTH_STENCIL_ATTACHMENT, depth.gl_id, 0);
 
 		this->descriptor = descriptor;
@@ -64,17 +64,16 @@ namespace uhero::gfx
 	void FrameBuffer::make_current()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, gl_id);
-
-		// clear buffers
-		float clear_color[4] = { 0, 0, 0, 0 };
-		clear_buffers(clear_color, 1.0f, 0);
 	}
 
-	void FrameBuffer::clear_buffers(const float* clear_color, float depth, i32 stencil)
+	void FrameBuffer::clear_buffers(const Color32 clear_color, float depth, i32 stencil)
 	{
+		float cc[4] = {};
+		clear_color.to_rgba(cc[0], cc[1], cc[2], cc[3]);
+
 		for (u32 i = 0; i < descriptor.color_attachments; i++)
 		{
-			glClearNamedFramebufferfv(gl_id, GL_COLOR, i, clear_color);
+			glClearNamedFramebufferfv(gl_id, GL_COLOR, i, cc);
 		}
 		glClearNamedFramebufferfi(gl_id, GL_DEPTH_STENCIL, 0, depth, stencil);
 	}

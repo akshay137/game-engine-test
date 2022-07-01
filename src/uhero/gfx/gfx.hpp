@@ -6,6 +6,7 @@
 #include "render_state.hpp"
 #include "buffer.hpp"
 #include "framebuffer.hpp"
+#include "color.hpp"
 
 namespace uhero
 {
@@ -55,7 +56,7 @@ namespace uhero::gfx
 		Result create(Window& window, bool debug = false);
 		void clear();
 
-		void clear_buffer(float* color, float depth, i32 stencil);
+		void clear_buffer(Color32 color, float depth, i32 stencil);
 		void update_render_state(float width, float height);
 
 		void use_framebuffer(FrameBuffer& fbo);
