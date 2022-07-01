@@ -1,12 +1,17 @@
 # Game Engine [C++17|SDL2|OpenGL4.5]
 
-## features:
+## Features:
   * Open design (no hidden states, no private variables)
-  * SDF text rendering (colored | outlines)
-  * draw circles or quads (textured | colored | rotated | color_key)
-  * batch rendering (2D)
-  * framebuffers
-  * multiple audio playback
+  * graphics
+    * SDF text rendering (colored | outlines)
+    * draw circles or quads (textured | colored | rotated | color_key)
+    * batch rendering (2D)
+    * framebuffers
+  * audio
+    * play, pause, stop, audio playback
+    * play audio in loop
+    * volume control over each audio sample at any time
+    * multiple audio playback (simple mixing)
 
 ## Build instructions:
 * use premake5 to generate build files

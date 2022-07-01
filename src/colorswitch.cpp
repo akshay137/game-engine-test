@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "utils.hpp"
 #include "uhero/uhero.hpp"
+#include "uhero/res/audio.hpp"
 
 #include <glm/glm.hpp>
 
@@ -11,11 +12,15 @@ namespace game
 
 	bool ColorSwitch::load(Game&, int, int)
 	{
+		s_hit = res::load_audio("assets/hit.wav");
+		volume_hit = .3;
 		return true;
 	}
 
 	void ColorSwitch::cleanup()
-	{}
+	{
+		s_hit.clear();
+	}
 
 	void ColorSwitch::reset_ball()
 	{
@@ -87,6 +92,7 @@ namespace game
 
 			if (index == ball_color_index)
 			{
+				game.ctx.audio.play_buffer(s_hit, volume_hit);
 				++score;
 				if (0 == score % 5)
 				{

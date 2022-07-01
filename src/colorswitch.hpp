@@ -6,6 +6,7 @@
 #include "colorpad.hpp"
 #include "uhero/gfx/color.hpp"
 #include "uhero/math/random.hpp"
+#include "uhero/sfx/audio_buffer.hpp"
 
 namespace game
 {
@@ -14,6 +15,9 @@ namespace game
 		glm::vec2 game_size;
 		constexpr static int MAX_COLORS = 6;
 		uhero::gfx::Color32 colors[MAX_COLORS];
+
+		uhero::sfx::AudioBuffer s_hit;
+		float volume_hit;
 
 		int score;
 		int ball_color_index;

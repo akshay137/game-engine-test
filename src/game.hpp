@@ -5,6 +5,7 @@
 #include "uhero/gfx/renderer.hpp"
 #include "uhero/gfx/font.hpp"
 #include "uhero/gfx/framebuffer.hpp"
+#include "uhero/sfx/sfx.hpp"
 #include "minigame.hpp"
 #include "rectangle.hpp"
 #include "colorswitch.hpp"
@@ -42,6 +43,11 @@ namespace game
 		uhero::gfx::Font font;
 		uhero::gfx::FontStyle style;
 		uhero::gfx::FrameBuffer game_fbo;
+
+		uhero::sfx::AudioBuffer s_bgm;
+		uhero::sfx::AudioBuffer s_click;
+		float volume_bgm;
+		float volume_click;
 
 		ColorSwitch color_switch;
 		Pong pong;

@@ -3,6 +3,7 @@
 #include "uhero/logger.hpp"
 #include "uhero/gfx/color.hpp"
 #include "uhero/res/font_atlas.hpp"
+#include "uhero/res/audio.hpp"
 
 #include <cmath>
 
@@ -167,6 +168,11 @@ namespace game
 		descriptor.add_color_attachment(gfx::PixelFormat::RGBA8);
 		game_fbo.create(descriptor, 1600, 900);
 
+		s_bgm = res::load_audio("assets/bgm.wav");
+		s_click = res::load_audio("assets/mouseclick.wav");
+		volume_bgm = .3;
+		volume_click = .1;
+
 		auto screen = get_window_size();
 		auto pos = screen * .5f;
 		glm::vec2 btn_size = { 512, 64 + 32 };
@@ -185,6 +191,8 @@ namespace game
 		btn_resume = { Rectangle(pos, btn_size), "Resume [R]" };
 		btn_restart = { Rectangle(pos, btn_size), "Restart [R]" };
 
+		ctx.audio.play_buffer(s_bgm, volume_bgm, true);
+
 		return Result::Success;
 	}
 
@@ -193,6 +201,9 @@ namespace game
 		ctx.audio.pause();
 		
 		if (current_game) current_game->cleanup();
+
+		s_click.clear();
+		s_bgm.clear();
 		game_fbo.clear();
 		uber.clear();
 		font.clear();
@@ -234,18 +245,23 @@ namespace game
 				{
 					if (btn_games[0].is_over(pointer_world))
 					{
+						audio.play_buffer(s_click, volume_click);
 						set_minigame(&pong);
 						start_game();
 						return;
 					}
 					if (btn_games[1].is_over(pointer_world))
 					{
+						audio.play_buffer(s_click, volume_click);
 						set_minigame(&color_switch);
 						start_game();
 						return;
 					}
 					else if (btn_exit.is_over(pointer_world))
+					{
+						// audio.play_buffer(s_click, volume_click);
 						ctx.request_exit();
+					}
 				}
 			}
 				break;
@@ -259,9 +275,15 @@ namespace game
 				if (ip.is_mbutton_released(MouseKey::Left))
 				{
 					if (btn_resume.is_over(pointer_world))
+					{
+						audio.play_buffer(s_click, volume_click);
 						pause_game(false);
+					}
 					if (btn_menu.is_over(pointer_world))
+					{
+						audio.play_buffer(s_click, volume_click);
 						state = GameState::Menu;
+					}
 				}
 			}
 				break;
@@ -279,9 +301,15 @@ namespace game
 				if (ip.is_mbutton_released(MouseKey::Left))
 				{
 					if (btn_restart.is_over(pointer_world))
+					{
+						audio.play_buffer(s_click, volume_click);
 						start_game();
+					}
 					if (btn_menu.is_over(pointer_world))
+					{
+						audio.play_buffer(s_click, volume_click);
 						state = GameState::Menu;
+					}
 				}
 			}
 				break;
