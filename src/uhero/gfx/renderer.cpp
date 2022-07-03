@@ -14,6 +14,11 @@ namespace uhero::gfx
 		const char* vs, const char* fs
 	)
 	{
+		if ((max_quads * 4) > 0xffffu)
+		{
+			max_quads = 0xffffu / 4;
+			UH_WARN("quads more than %u are not supported at this time\n", max_quads);
+		}
 		UH_FRAME_STACK_GROUP();
 
 		if (nullptr == vs) vs = REN_VERTEX_SHADER;
@@ -86,11 +91,12 @@ namespace uhero::gfx
 			const Texture* texture = first.texture;
 
 			u32 count = 1;
+			constexpr u32 MAX_IND = (u16)~0;
 			while (first.can_batch_together(quads[drawn + count]))
 			{
 				if (current_quads <= (drawn + count)) break;
 				count += 1;
-				// if (count > 128) break;
+				if (count * 4 > MAX_IND) break;
 			}
 
 			// draw command here

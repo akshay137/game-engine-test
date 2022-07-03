@@ -29,6 +29,7 @@ namespace uhero
 		
 		const auto& tgfx = tconf["gfx"];
 		config.gl_debug = tgfx["gl_debug"].value_or(true);
+		config.vsync = tgfx["vsync"].value_or(true);
 
 		// const auto& tsys = tconf["system"];
 
@@ -50,6 +51,7 @@ namespace uhero
 
 		file.write_format("[gfx]\n");
 		file.write_format("\tgl_debug = %s\n", config.gl_debug ? "true" : "false");
+		file.write_format("\tvsync = %s\n", config.vsync ? "true" : "false");
 
 		file.write_format("[system]\n");
 

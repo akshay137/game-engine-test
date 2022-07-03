@@ -16,6 +16,7 @@ namespace uhero
 		i32 window_height = 720;
 
 		bool gl_debug = true;
+		bool vsync = true;
 
 		Config() = default;
 

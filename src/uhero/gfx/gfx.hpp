@@ -56,6 +56,8 @@ namespace uhero::gfx
 		Result create(Window& window, bool debug = false);
 		void clear();
 
+		void set_vsync(bool);
+
 		void clear_buffer(Color32 color, float depth, i32 stencil);
 		void update_render_state(float width, float height);
 

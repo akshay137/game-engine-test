@@ -40,6 +40,7 @@ namespace uhero
 		{
 			return res;
 		}
+		gfx.set_vsync(config.vsync);
 
 		res = audio.create();
 

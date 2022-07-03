@@ -125,7 +125,7 @@ namespace game
 		auto size = pad.segment_size();
 		glm::vec2 tmp = glm::vec2(direction, 0) * MOVE_SPEED;
 		pad.velocity = glm::mix(pad.velocity + tmp, glm::vec2(0), 5 * delta);
-		glm::vec2 max_vel(MOVE_SPEED * 10);
+		glm::vec2 max_vel(MOVE_SPEED * 7);
 		pad.velocity = glm::clamp(pad.velocity, -max_vel, max_vel);
 		pad.rect.position += pad.velocity * delta;
 

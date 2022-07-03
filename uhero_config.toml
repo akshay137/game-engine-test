@@ -4,4 +4,5 @@
 	height = 900
 [gfx]
 	gl_debug = true
+	vsync = true
 [system]

@@ -13,7 +13,7 @@ namespace test
 	{
 		this->ctx = &ctx;
 
-		renderer.create(1024 * 16);
+		renderer.create(1024 * 64);
 		texture = res::load_texture("assets/logo.png");
 
 		font = res::load_font("assets/firacode.atlas");
@@ -61,7 +61,7 @@ namespace test
 	{
 		// draw colored quads
 		glm::vec2 size(64);
-		auto num = 64;
+		auto num = 256;
 		auto len = num * num;
 		for (auto i = 1; i < len; i += 2)
 		{
@@ -75,7 +75,7 @@ namespace test
 			color.blue = math::noise_range(v + 2, num, 0, 255);
 
 			pos = pos - camera;
-			renderer.draw_color(pos, size, color);
+			// renderer.draw_color(pos, size, color);
 			renderer.draw_circle(pos, size.x * .45, color.invert());
 		}
 

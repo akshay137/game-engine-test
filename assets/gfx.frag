@@ -34,13 +34,19 @@ layout (binding = 1) uniform sampler2D font_texture;
 
 layout (location = 0) out vec4 color;
 
+float distance_squared(vec2 from, vec2 to)
+{
+	vec2 res = to - from;
+	res *= res;
+	return res.x + res.y;
+}
+
 float in_circle(float alpha)
 {
 	float dist = distance(vec2(0.5f), vs.quad_uv);
 	float inside = step(dist, 0.5f);
 	float should_round = step(vs.sprite.circle, 0.0f);
 	return mix(inside, alpha, should_round);
-	return inside * should_round + alpha * (1.0f - should_round);
 }
 
 void main()

@@ -41,7 +41,7 @@ namespace uhero::gfx
 			glDebugMessageCallback(uh_gldebug_callback, nullptr);
 		}
 
-		SDL_GL_SetSwapInterval(0);
+		set_vsync(true);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -65,6 +65,11 @@ namespace uhero::gfx
 		rsbuffer.clear();
 		SDL_GL_DeleteContext(gl_context);
 		gl_context = nullptr;
+	}
+
+	void Context::set_vsync(bool status)
+	{
+		SDL_GL_SetSwapInterval(status ? 1 : 0);
 	}
 
 	void Context::clear_buffer(Color32 color, float depth, i32 stencil)
