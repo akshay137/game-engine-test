@@ -107,7 +107,9 @@ namespace game
 		float lower = player.size().y * .5;
 		
 		auto pvelocity = direction * bat_speed;
+		glm::vec2 max_vel(bat_speed * 10);
 		player.velocity = glm::mix(player.velocity + pvelocity, glm::vec2(0), damp * delta);
+		player.velocity = glm::clamp(player.velocity, -max_vel, max_vel);
 
 		player.circle.origin += player.velocity * delta;
 		player.circle.origin.y = glm::clamp(player.position().y, lower, upper);

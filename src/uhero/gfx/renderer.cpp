@@ -90,6 +90,7 @@ namespace uhero::gfx
 			{
 				if (current_quads <= (drawn + count)) break;
 				count += 1;
+				// if (count > 128) break;
 			}
 
 			// draw command here

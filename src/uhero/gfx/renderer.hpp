@@ -54,7 +54,10 @@ namespace uhero::gfx
 			bool can_batch_together(const Quad& other) const
 			{
 				if (type != other.type) return false;
-				if (texture != other.texture) return false;
+				if (QuadType::Color != type)
+				{
+					if (texture != other.texture) return false;
+				}
 
 				return true;
 			}

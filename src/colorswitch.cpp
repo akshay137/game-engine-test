@@ -125,6 +125,8 @@ namespace game
 		auto size = pad.segment_size();
 		glm::vec2 tmp = glm::vec2(direction, 0) * MOVE_SPEED;
 		pad.velocity = glm::mix(pad.velocity + tmp, glm::vec2(0), 5 * delta);
+		glm::vec2 max_vel(MOVE_SPEED * 10);
+		pad.velocity = glm::clamp(pad.velocity, -max_vel, max_vel);
 		pad.rect.position += pad.velocity * delta;
 
 		// prevent pad from going out of bounds
@@ -168,5 +170,9 @@ namespace game
 		_style.border_color = gfx::Color32(255, 0, 0);
 		_style.border_size = .025;
 		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
+
+		pen = uber.write_format(pen, game.font, _style, "vel: [%.2f, %.2f]\n",
+			pad.velocity.x, pad.velocity.y
+		);
 	}
 }

@@ -46,6 +46,12 @@ namespace uhero::gfx
 			a = alpha / 255.0f;
 		}
 
+		Color32 invert() const
+		{
+			Color32 inverse(255 - red, 255 - green, 255 - blue);
+			return inverse;
+		}
+
 		u32 to_rgba_u32() const
 		{
 			u32 temp = red;
