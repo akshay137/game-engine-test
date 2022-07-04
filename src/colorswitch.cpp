@@ -6,9 +6,13 @@
 
 #include <glm/glm.hpp>
 
+float updt;
+
 namespace game
 {
 	using namespace uhero;
+
+	constexpr float SIM_TO_VIEW_RATIO = 50;
 
 	bool ColorSwitch::load(Game&, int, int)
 	{
@@ -72,12 +76,13 @@ namespace game
 		colors[4] = gfx::Color32::from_rgba(1, 0, 1);
 		colors[5] = gfx::Color32::from_rgba(1, 1, 0);
 
-		gravity = glm::vec2(0.0f, -9.8f * 50);
+		gravity = glm::vec2(0.0f, -9.8f * SIM_TO_VIEW_RATIO);
 		switch_color();
 	}
 
 	void ColorSwitch::update(Game& game, float delta)
 	{
+		updt = delta;
 		if (check_ball_pad_collision())
 		{
 			const auto index = pad.get_color_index_at(ball.position()) % MAX_COLORS;
@@ -115,21 +120,20 @@ namespace game
 			return;
 		}
 
-		constexpr float MOVE_SPEED = 200;
+		constexpr float ACCELERATION = 9.8f * 3 * SIM_TO_VIEW_RATIO;
 		int direction = 0;
 		if (ip.is_key_down(KeyCode::A)) // left
 			direction = -1;
 		if (ip.is_key_down(KeyCode::D)) // right
 			direction = 1;
 		
-		auto size = pad.segment_size();
-		glm::vec2 tmp = glm::vec2(direction, 0) * MOVE_SPEED;
-		pad.velocity = glm::mix(pad.velocity + tmp, glm::vec2(0), 5 * delta);
-		glm::vec2 max_vel(MOVE_SPEED * 7);
-		pad.velocity = glm::clamp(pad.velocity, -max_vel, max_vel);
+		pad.velocity = glm::mix(pad.velocity, glm::vec2(0), 2 * delta);
+		glm::vec2 tmp = glm::vec2(direction, 0) * ACCELERATION;
+		pad.velocity += tmp * delta;
 		pad.rect.position += pad.velocity * delta;
 
 		// prevent pad from going out of bounds
+		auto size = pad.segment_size();
 		float lim = pad.rect.width() * .5f - size.x;
 		pad.rect.position.x = glm::clamp(pad.rect.position.x,
 			-lim, game_size.x + lim
@@ -171,8 +175,8 @@ namespace game
 		_style.border_size = .025;
 		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
 
-		pen = uber.write_format(pen, game.font, _style, "vel: [%.2f, %.2f]\n",
-			pad.velocity.x, pad.velocity.y
-		);
+		// pen = uber.write_format(pen, game.font, _style, "%.2f, %.2f {%f}| %f\n",
+		// 	pad.velocity.x, pad.velocity.y, pad.velocity.x * updt, updt
+		// );
 	}
 }

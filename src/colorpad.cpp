@@ -5,7 +5,7 @@ namespace game
 {
 	void ColorPad::resegment(int segments)
 	{
-		if (1 > segments) return;
+		if (segments < 1) return;
 
 		rect.size.x = segments * segment_length;
 		segment_count = segments;

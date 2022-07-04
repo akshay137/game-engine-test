@@ -217,6 +217,10 @@ namespace game
 
 		if (ip.is_key_released(KeyCode::Tilde))
 			debug_info_enabled = !debug_info_enabled;
+		if (ip.is_key_released(KeyCode::V)) // vsync on
+			ctx.gfx.set_vsync(true);
+		if (ip.is_key_released(KeyCode::B)) // vsync off
+			ctx.gfx.set_vsync(false);
 		
 		glm::vec2 mouse = { ip.mouse.x, ip.mouse.y };
 		auto pointer_world = screen_to_world(mouse, screen);
