@@ -14,6 +14,8 @@ namespace test
 		this->ctx = &ctx;
 
 		renderer.create(1024 * 64);
+		renderer.set_clip_size(ctx.main_window.width, ctx.main_window.height);
+		
 		texture = res::load_texture("assets/logo.png");
 
 		font = res::load_font("assets/firacode.atlas");
@@ -61,8 +63,8 @@ namespace test
 	{
 		// draw colored quads
 		glm::vec2 size(64);
-		auto num = 256;
-		auto len = num * num;
+		constexpr int num = 256;
+		constexpr int len = num * num;
 		for (auto i = 1; i < len; i += 2)
 		{
 			auto col = i % num;

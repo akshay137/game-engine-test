@@ -330,6 +330,7 @@ namespace game
 			ctx.gfx.use_framebuffer(game_fbo);
 			if (current_game) current_game->draw(*this);
 			uber.flush();
+			uber.set_clip_size(game_fbo.width, game_fbo.height);
 			uber.draw_texture(center, screen, game_fbo.color[0],
 				glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
 			);
@@ -337,6 +338,7 @@ namespace game
 
 		ctx.gfx.use_default_framebuffer(ctx.main_window);
 		ctx.gfx.clear_buffer(gfx::Color32(0), 1, 0);
+		uber.set_clip_size(screen.x, screen.y);
 		if (GameState::Menu == state)
 		{
 			show_menu();

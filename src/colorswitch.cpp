@@ -174,9 +174,5 @@ namespace game
 		_style.border_color = gfx::Color32(255, 0, 0);
 		_style.border_size = .025;
 		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
-
-		// pen = uber.write_format(pen, game.font, _style, "%.2f, %.2f {%f}| %f\n",
-		// 	pad.velocity.x, pad.velocity.y, pad.velocity.x * updt, updt
-		// );
 	}
 }

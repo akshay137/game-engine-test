@@ -97,7 +97,6 @@ namespace uhero::gfx
 			{
 				if (current_quads <= (drawn + count)) break;
 				count += 1;
-				if (count * 4 > MAX_IND) break;
 			}
 
 			// draw command here
@@ -268,6 +267,12 @@ namespace uhero::gfx
 
 	void Renderer::submit_quad(const Quad& quad)
 	{
+		const auto& rect = quad.rect;
+		if (rect.x + rect.z < 0) return;
+		if (rect.x - rect.z > clip_size.x) return;
+		if (rect.y + rect.w < 0) return;
+		if (rect.y - rect.w > clip_size.y) return;
+
 		quads[current_quads++] = quad;
 		if (current_quads >= max_quads)
 			this->flush();

@@ -102,6 +102,7 @@ namespace uhero::gfx
 
 		u32 max_quads;
 		u32 current_quads;
+		glm::vec2 clip_size; // for out of bounds clipping
 
 		PSO pso;
 		TBuffer<Vertex> vertex_buffer;
@@ -116,6 +117,11 @@ namespace uhero::gfx
 		void clear();
 
 		void flush();
+
+		void set_clip_size(float w, float h)
+		{
+			clip_size = { w, h };
+		}
 
 		// main draw texture function
 		void draw_texture(glm::vec2 pos, glm::vec2 size,

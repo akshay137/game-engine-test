@@ -45,6 +45,14 @@ namespace uhero::gfx
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		UH_VERB("Created OpenGL context: %p\n", gl_context);
+		UH_INFO("OpenGL Info:\n"
+			"\tversion: %s\n"
+			"\tvendor: %s\n"
+			"\trenderer: %s\n",
+			glGetString(GL_VERSION),
+			glGetString(GL_VENDOR),
+			glGetString(GL_RENDERER)
+		);
 		
 		render_state.resize(window.width, window.height);
 		rsbuffer.create(BufferType::Dynaminc, 1, &render_state);
@@ -119,11 +127,11 @@ namespace uhero::gfx
 		}
 		else if (GL_DEBUG_TYPE_PERFORMANCE == type)
 		{
-			UH_ERROR("%s\n", message);
+			UH_WARN("%s\n", message);
 		}
 		else
 		{
-			UH_ERROR("%s\n", message);
+			UH_INFO("%s\n", message);
 		}
 	}
 
