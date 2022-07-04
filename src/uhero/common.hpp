@@ -11,6 +11,10 @@
 
 #define ENUM_INT(e) static_cast<u32>(e)
 
+#define CONCAT_IMPL(a, b) a##b
+#define CONCAT(a, b) CONCAT_IMPL(a, b)
+#define LINE_VAR(v) CONCAT(v, __LINE__)
+
 namespace uhero
 {
 	struct Context;

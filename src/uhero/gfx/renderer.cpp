@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 #include "../memory/memory.hpp"
 #include "../logger.hpp"
+#include "../instrumentation.hpp"
 
 #include <cstdarg>
 #include <cmath>
@@ -280,6 +281,8 @@ namespace uhero::gfx
 
 	void Renderer::update_vertex_buffer()
 	{
+		// UH_PROFILE();
+
 		if (0 == current_quads) return;
 
 		// generate vertices

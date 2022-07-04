@@ -10,16 +10,16 @@ namespace uhero
 {
 	using lib_clock = std::chrono::steady_clock;
 	using time_point = std::chrono::time_point<lib_clock>;
-	using duration_f = std::chrono::duration<double>;
-	using duration_i = std::chrono::duration<i64, std::nano>;
+	using duration_seconds = std::chrono::duration<double>;
+	using duration_nano = std::chrono::duration<i64, std::nano>;
 
 	struct Clock
 	{
 		time_point start;
-		duration_f elapsed_seconds;
-		duration_i elapsed_nanoseconds;
+		duration_seconds elapsed_seconds;
+		duration_nano elapsed_nanoseconds;
 		time_point last_tick;
-		duration_f tick_duration;
+		duration_seconds tick_duration;
 
 		void reset()
 		{
@@ -68,7 +68,7 @@ namespace uhero
 		i64 timestamp_exact() const
 		{
 			auto temp = lib_clock::now();
-			duration_i ts = temp - start;
+			duration_nano ts = temp - start;
 			return ts.count();
 		}
 	};
