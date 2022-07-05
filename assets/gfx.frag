@@ -46,7 +46,7 @@ float in_circle(float alpha)
 	float dist = distance(vec2(0.5f), vs.quad_uv);
 	float inside = step(dist, 0.5f);
 	float should_round = step(vs.sprite.circle, 0.0f);
-	return mix(inside, alpha, should_round);
+	return mix(inside * alpha, alpha, should_round);
 }
 
 void main()

@@ -31,6 +31,11 @@ namespace uhero::gfx
 			: red{r}, green{g}, blue{b}, alpha{a}
 		{}
 
+		Color32 with_alpha(float a) const
+		{
+			return Color32(red, green, blue, alpha * a);
+		}
+
 		void to_rgb(f32& r, f32& g, f32& b) const
 		{
 			r = red / 255.0f;
@@ -81,6 +86,11 @@ namespace uhero::gfx
 			return swapped;
 		}
 	};
+
+	static inline Color32 operator*(const Color32& color, float v)
+	{
+		return Color32(color.red * v, color.green * v, color.blue * v, color.alpha * v);
+	}
 }
 
 #endif

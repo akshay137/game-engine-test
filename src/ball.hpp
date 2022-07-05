@@ -10,6 +10,12 @@ namespace game
 		Circle circle;
 		glm::vec2 velocity;
 
+		Ball() : circle{0}, velocity{0} {}
+		Ball(const Circle& circle): circle{circle}, velocity{0} {}
+		Ball(const Circle& circle, const glm::vec2 v)
+			: circle{circle}, velocity{v}
+		{}
+
 		bool collides(const Ball& rhs) const
 		{
 			return circle.collision(rhs.circle);

@@ -268,10 +268,10 @@ namespace uhero::gfx
 	void Renderer::submit_quad(const Quad& quad)
 	{
 		const auto& rect = quad.rect;
-		if (rect.x + rect.z < 0) return;
-		if (rect.x - rect.z > clip_size.x) return;
-		if (rect.y + rect.w < 0) return;
-		if (rect.y - rect.w > clip_size.y) return;
+		if (rect.x + rect.z * .5 < 0) return;
+		if (rect.x - rect.z * .5 > clip_size.x) return;
+		if (rect.y + rect.w * .5 < 0) return;
+		if (rect.y - rect.w * .5 > clip_size.y) return;
 
 		quads[current_quads++] = quad;
 		if (current_quads >= max_quads)
@@ -359,7 +359,7 @@ namespace uhero::gfx
 		// TODO: calculate this based on size of text
 		// TODO: remove magic numbers from calculation
 		const auto height = quad.rect.w;
-		float width = 0.5f;
+		float width = 0.475f;
 		float edge = 1 / (10 * ceil(height / 48));
 
 		Vertex v {};

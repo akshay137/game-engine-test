@@ -192,6 +192,7 @@ namespace game
 		btn_restart = { Rectangle(pos, btn_size), "Restart [R]" };
 
 		ctx.audio.play_buffer(s_bgm, volume_bgm, true);
+		// ctx.audio.pause();
 
 		return Result::Success;
 	}

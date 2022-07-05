@@ -7,20 +7,22 @@
 
 namespace game
 {
+	constexpr int MAX_SCORE_POINTS = 4;
+	constexpr int MAX_TRAPS = 4;
 	struct Pong : public MiniGame
 	{
-		Circle ground;
-		Ball player, comp;
-		Ball ball;
-		int game_width, game_height;
+		Game* game;
+		glm::vec2 game_size; // rectangular size
+		Circle playground;
+		Ball player, ball;
+		Circle score_points[MAX_SCORE_POINTS];
+		Circle trap_points[MAX_TRAPS];
 
-		float MAX_BALL_SPEED;
-		float bat_speed;
-		float ball_speed;
-		float damp;
-
+		constexpr static float SIM_TO_VIEW = 50;
+		float pad_acceleration;
+		float ball_velocity;
+		
 		int score;
-		int score_multiplier;
 
 		void displace_ball(Ball& ball, const Ball& rhs);
 		int move_ball(float);
