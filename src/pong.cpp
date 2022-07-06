@@ -26,6 +26,9 @@ namespace game
 		tx_circle = res::load_texture("assets/logo.png");
 		tx_circle.set_filter(gfx::TextureFilter::Nearest);
 
+		test_sprite = Sprite(tx_circle);
+		camera = Camera2D(width, height);
+
 		return true;
 	}
 
@@ -146,6 +149,7 @@ namespace game
 		player.circle.origin = glm::clamp(player.circle.origin,
 			glm::vec2(player.radius()), game_size - player.radius()
 		);
+		camera.transform.position = -player.circle.origin;
 	}
 
 	void Pong::draw(Game& game)
@@ -173,6 +177,12 @@ namespace game
 				trap_points[i].radius, COLOR_RED.with_alpha(.6)
 			);
 		}
+
+		auto vtf = camera.view_transform();
+		auto tf = test_sprite.world_transform().apply_transform(vtf);
+		uber.draw_texture(tf.position, test_sprite.size,
+			test_sprite, test_sprite.clip
+		);
 
 		auto pen = game.screen_to_world( {0, 0}, game_size);
 		pen = uber.write_format(pen, game.font, game.style,

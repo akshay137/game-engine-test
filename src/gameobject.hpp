@@ -8,6 +8,8 @@ namespace game
 	// base game object
 	struct GObject
 	{
+		virtual ~GObject() {}
+		
 		uhero::math::Transform2D transform;
 		const GObject* _parent;
 

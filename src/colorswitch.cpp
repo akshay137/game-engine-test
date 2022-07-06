@@ -6,8 +6,6 @@
 
 #include <glm/glm.hpp>
 
-float updt;
-
 namespace game
 {
 	using namespace uhero;
@@ -82,7 +80,6 @@ namespace game
 
 	void ColorSwitch::update(Game& game, float delta)
 	{
-		updt = delta;
 		if (check_ball_pad_collision())
 		{
 			const auto index = pad.get_color_index_at(ball.position()) % MAX_COLORS;
