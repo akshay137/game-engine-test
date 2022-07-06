@@ -27,7 +27,7 @@ namespace uhero::gfx
 			: red{r}, green{g}, blue{b}, alpha{255}
 		{}
 
-		Color32(u8 r, u8 g, u8 b, u8 a)
+		constexpr Color32(u8 r, u8 g, u8 b, u8 a)
 			: red{r}, green{g}, blue{b}, alpha{a}
 		{}
 
@@ -91,6 +91,16 @@ namespace uhero::gfx
 	{
 		return Color32(color.red * v, color.green * v, color.blue * v, color.alpha * v);
 	}
+
+	// constants
+	constexpr Color32 WHITE = { 255, 255, 255, 255 };
+	constexpr Color32 BLACK = { 0, 0, 0,  255 };
+	constexpr Color32 RED = { 255, 0, 0, 255 };
+	constexpr Color32 GREEN = { 0, 255, 0, 255 };
+	constexpr Color32 BLUE = { 0, 0, 255, 255 };
+	constexpr Color32 CYAN = { 0, 255, 255, 255 };
+	constexpr Color32 PINK = { 255, 0, 255, 255 };
+	constexpr Color32 YELLOW = { 255, 255, 0, 255 };
 }
 
 #endif

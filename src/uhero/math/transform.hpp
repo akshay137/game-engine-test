@@ -14,9 +14,10 @@ namespace uhero::math
 		float rotation;
 		glm::vec2 scale;
 
-		Transform2D() = default;
+		Transform2D(): position{0}, rotation{0}, scale{1} {}
 
 		glm::mat4 transform_matrix() const;
+		Transform2D apply_transform(const Transform2D& parent) const;
 	};
 }
 

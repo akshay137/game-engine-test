@@ -20,8 +20,16 @@ namespace test
 
 		font = res::load_font("assets/firacode.atlas");
 
-		camera = { ctx.main_window.width, ctx.main_window.height };
-		camera *= .5f;
+		camera = game::Camera2D(ctx.main_window.width, ctx.main_window.height);
+
+		root.transform.position = { 0, 0 };
+		child_0.transform.position = { 64, 0 };
+		child_1.transform.position = { -64, 0 };
+		child_1_0.transform.position = { -32, 0 };
+
+		child_0.set_parent(root);
+		child_1.set_parent(root);
+		child_1_0.set_parent(child_1);
 		return Result::Success;
 	}
 
@@ -43,54 +51,61 @@ namespace test
 
 		float CAM_SPEED = 500;
 		if (ip.is_key_pressed(KeyCode::R)) // reset camera
-		{
-			camera = { ctx->main_window.width, ctx->main_window.height };
-			camera *= .5f;
-		}
+			camera.transform = {};
 
+		glm::vec2 direction(0);
 		if (ip.is_key_down(KeyCode::W)) // up
-			camera.y += CAM_SPEED * delta;
+			direction.y = 1;
 		if (ip.is_key_down(KeyCode::S))
-			camera.y -= CAM_SPEED * delta;
-		
+			direction.y = -1;
 		if (ip.is_key_down(KeyCode::A))
-			camera.x -= CAM_SPEED * delta;
+			direction.x = -1;
 		if (ip.is_key_down(KeyCode::D))
-			camera.x += CAM_SPEED * delta;
+			direction.x = 1;
+		
+		float ZOOM_SPEED = 10;
+		if (ip.is_key_down(KeyCode::Z)) // zoom in
+			camera.zoom(ZOOM_SPEED * delta);
+		if (ip.is_key_down(KeyCode::X)) // zoom out
+			camera.zoom(-ZOOM_SPEED * delta);
+		
+		camera.move(CAM_SPEED * delta, direction);
+
+		if (ip.is_key_down(KeyCode::NP_PLUS))
+			child_1.transform.rotation += delta;
+		if (ip.is_key_down(KeyCode::NP_MINUS))
+			child_1.transform.rotation -= delta;
+		
+		// root.transform.rotation += delta * .5;
 	}
 
 	void Test::render()
 	{
-		// draw colored quads
-		glm::vec2 size(64);
-		constexpr int num = 256;
-		constexpr int len = num * num;
-		for (auto i = 1; i < len; i += 2)
-		{
-			auto col = i % num;
-			auto row = i / num;
-			glm::vec2 pos = { col * size.x, row * size.y };
-			gfx::Color32 color(255);
-			auto v = i * 3;
-			color.red = math::noise_range(v, num, 0, 255);
-			color.green = math::noise_range(v + 1, num, 0, 255);
-			color.blue = math::noise_range(v + 2, num, 0, 255);
+		auto view = camera.view_transform();
 
-			pos = pos - camera;
-			// renderer.draw_color(pos, size, color);
-			renderer.draw_circle(pos, size.x * .45, color.invert());
+		glm::vec2 size = { 16, 16 };
+		game::GObject* scene[] = { &root, &child_0, &child_1, &child_1_0 };
+		gfx::Color32 colors[] = { gfx::WHITE,
+			gfx::RED, gfx::GREEN, gfx::BLUE
+		};
+		int length = sizeof(scene) / sizeof(scene[0]);
+		for (auto i = 0; i < length; i++)
+		{
+			auto obj = scene[i];
+			auto tf = obj->world_transform();
+			tf = tf.apply_transform(view);
+			renderer.draw_color(tf.position, size * tf.scale,
+				colors[i],
+				tf.rotation, glm::vec2(0)
+			);
 		}
 
-		for (auto i = 0; i < len; i += 2)
-		{
-			auto col = i % num;
-			auto row = i / num;
-			glm::vec2 pos = { col * size.x, row * size.y };
-
-			pos = pos - camera;
-			renderer.draw_texture(pos, size, texture, 1);
-		}
-
+		auto style = gfx::FontStyle(24);
+		style.border_size = 0;
+		auto pen = renderer.write_format({ 0, ctx->main_window.height },
+			font, style,
+			"angle: %f\n", child_1.transform.rotation
+		);
 		renderer.flush();
 
 		show_debug_info();
