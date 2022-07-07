@@ -24,12 +24,12 @@ namespace game
 			transform.scale += amount;
 		}
 
-		uhero::math::Transform2D view_transform() const
+		uhero::math::Transform2D view_transform(glm::vec2 view_size) const
 		{
 			auto res = transform;
-			res.position = (-res.position * res.scale) + size * .5f;
+			res.position = (-res.position * res.scale * view_size) + view_size * .5f;
 			res.rotation = -res.rotation;
-			res.scale = res.scale;
+			res.scale = res.scale * (view_size / size);
 			return res;
 		}
 	};

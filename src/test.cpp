@@ -20,12 +20,15 @@ namespace test
 
 		font = res::load_font("assets/firacode.atlas");
 
-		camera = game::Camera2D(ctx.main_window.width, ctx.main_window.height);
+		// camera = game::Camera2D(ctx.main_window.width, ctx.main_window.height);
+		// camera.zoom(64);
+		camera = game::Camera2D(160, 90);
+		// camera = game::Camera2D(1, 1);
 
 		root.transform.position = { 0, 0 };
-		child_0.transform.position = { 64, 0 };
-		child_1.transform.position = { -64, 0 };
-		child_1_0.transform.position = { -32, 0 };
+		child_0.transform.position = { 2, 0 };
+		child_1.transform.position = { -1, 0 };
+		child_1_0.transform.position = { -1, 0 };
 
 		child_0.set_parent(root);
 		child_1.set_parent(root);
@@ -49,9 +52,11 @@ namespace test
 			ctx->request_exit();
 		}
 
-		float CAM_SPEED = 500;
+		float CAM_SPEED = 1;
 		if (ip.is_key_pressed(KeyCode::R)) // reset camera
+		{
 			camera.transform = {};
+		}
 
 		glm::vec2 direction(0);
 		if (ip.is_key_down(KeyCode::W)) // up
@@ -74,7 +79,10 @@ namespace test
 		if (ip.is_key_down(KeyCode::X)) // zoom out
 			camera.zoom(-ZOOM_SPEED * delta);
 		
-		camera.move(CAM_SPEED * delta, direction);
+		if (ip.is_key_released(KeyCode::D0))
+			camera.transform.scale = { 0, 0 };
+		
+		camera.move(CAM_SPEED * delta, direction / camera.transform.scale);
 
 		if (ip.is_key_down(KeyCode::NP_PLUS))
 			child_1.transform.rotation += delta;
@@ -86,12 +94,12 @@ namespace test
 
 	void Test::render()
 	{
-		auto view = camera.view_transform();
+		auto view = camera.view_transform({1600, 900});
 
 		auto num = 64;
 		auto len = num * num;
 		math::Transform2D tf;
-		glm::vec2 size(16);
+		glm::vec2 size(.5);
 		math::Random rgen(137);
 		for (auto i = 0; i < len; i++)
 		{
@@ -138,6 +146,12 @@ namespace test
 			camera.transform.scale.x, camera.transform.scale.y,
 			camera.transform.rotation
 		);
+		pen = renderer.write_format(pen, font, _s,
+			"view: [%.2f, %.2f] {%.2f, %.2f} <%.2f>\n",
+			view.position.x, view.position.y,
+			view.scale.x, view.scale.y,
+			view.rotation
+		);
 		renderer.flush();
 
 		show_debug_info();
@@ -164,9 +178,11 @@ namespace test
 
 		auto pen = glm::vec2(8, 64 + 32 + 16);
 		auto _style = gfx::FontStyle(15);
-		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
-		_style.border_size = 0.125;
-		renderer.draw_color(glm::vec2(104, 60), glm::vec2(200, 108), gfx::Color32::from_rgba(0, 1, 0));
+		// _style.border_color = gfx::BLACK;
+		_style.border_size = 0.125 * 0;
+		renderer.draw_color(glm::vec2(104, 60), glm::vec2(200, 108),
+			gfx::BLACK.with_alpha(.7)
+		);
 		pen = renderer.write_format(pen, font, _style, "Time: %d:%d:%d:%d\n",
 			hours, minutes, seconds, ms / 100
 		);

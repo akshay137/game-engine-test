@@ -178,7 +178,7 @@ namespace game
 			);
 		}
 
-		auto vtf = camera.view_transform();
+		auto vtf = camera.view_transform({});
 		auto tf = test_sprite.world_transform().apply_transform(vtf);
 		uber.draw_texture(tf.position, test_sprite.size * tf.scale,
 			test_sprite, test_sprite.clip
