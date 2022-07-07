@@ -4,6 +4,7 @@
 #include "minigame.hpp"
 #include "ball.hpp"
 #include "colorpad.hpp"
+#include "camera.hpp"
 #include "uhero/gfx/color.hpp"
 #include "uhero/math/random.hpp"
 #include "uhero/sfx/audio_buffer.hpp"
@@ -23,6 +24,8 @@ namespace game
 		int ball_color_index;
 		Ball ball;
 		ColorPad pad;
+
+		Camera2D camera;
 
 		glm::vec2 gravity;
 		uhero::math::Random random_generator;

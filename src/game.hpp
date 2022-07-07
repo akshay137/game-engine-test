@@ -97,6 +97,7 @@ namespace game
 		}
 
 		glm::vec2 get_window_size() const;
+		glm::vec2 get_game_size() const;
 		uint32_t time() const;
 		float timef() const;
 

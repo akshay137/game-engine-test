@@ -19,7 +19,7 @@ namespace game
 				segment_length{segment_length}, velocity{0}
 		{
 			rect.size.x = segment_length * segment_count;
-			rect.size.y = 36;
+			rect.size.y = 3;
 		}
 
 		void resegment(int segments);

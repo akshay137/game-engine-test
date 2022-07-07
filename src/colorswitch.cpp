@@ -26,7 +26,7 @@ namespace game
 
 	void ColorSwitch::reset_ball()
 	{
-		ball = { Circle(game_size * .5f, 24), {0, 0}};
+		ball = { Circle({ 0, 0 }, 2.5), {0, 0}};
 	}
 
 	bool ColorSwitch::check_ball_pad_collision()
@@ -58,23 +58,24 @@ namespace game
 	void ColorSwitch::reset(Game& game, int width, int height)
 	{
 		random_generator = math::Random(game.time());
-		game_size = { width, height };
 
 		score = 0;
 
 		reset_ball();
-		pad = ColorPad(glm::vec2(width / 2, height * 0.15), ball.radius() * 7);
+		pad = ColorPad(glm::vec2(0, -40), ball.radius() * 7);
 		pad.resegment(3);
 		pad.first_color = 1;
 
-		colors[0] = gfx::Color32::from_rgba(1, 0, 0);
-		colors[1] = gfx::Color32::from_rgba(0, 1, 0);
-		colors[2] = gfx::Color32::from_rgba(0, 0, 1);
-		colors[3] = gfx::Color32::from_rgba(0, 1, 1);
-		colors[4] = gfx::Color32::from_rgba(1, 0, 1);
-		colors[5] = gfx::Color32::from_rgba(1, 1, 0);
+		colors[0] = gfx::RED;
+		colors[1] = gfx::GREEN;
+		colors[2] = gfx::BLUE;
+		colors[3] = gfx::RED.invert();
+		colors[4] = gfx::GREEN.invert();
+		colors[5] = gfx::BLUE.invert();
 
-		gravity = glm::vec2(0.0f, -9.8f * SIM_TO_VIEW_RATIO);
+		gravity = glm::vec2(0, -12);
+		camera = Camera2D(160, 90);
+		game_size = camera.size;
 		switch_color();
 	}
 
@@ -86,10 +87,10 @@ namespace game
 			ball.circle.origin.y = pad.top() + ball.radius();
 			glm::vec2 tmp = {
 				pad.velocity.x + ball.velocity.x,
-				gravity.y * -1.25f
+				gravity.y * -2.5f
 			};
 			ball.velocity = tmp;
-			float limit = 128;
+			float limit = 25;
 			ball.velocity.x = glm::clamp(ball.velocity.x, -limit, limit);
 
 			if (index == ball_color_index)
@@ -117,7 +118,7 @@ namespace game
 			return;
 		}
 
-		constexpr float ACCELERATION = 9.8f * 3 * SIM_TO_VIEW_RATIO;
+		constexpr float ACCELERATION = 150;
 		int direction = 0;
 		if (ip.is_key_down(KeyCode::A)) // left
 			direction = -1;
@@ -130,18 +131,20 @@ namespace game
 		pad.rect.position += pad.velocity * delta;
 
 		// prevent pad from going out of bounds
+		auto half_size = game_size * .5f;
 		auto size = pad.segment_size();
 		float lim = pad.rect.width() * .5f - size.x;
 		pad.rect.position.x = glm::clamp(pad.rect.position.x,
-			-lim, game_size.x + lim
+			-half_size.x - lim, half_size.x + lim
 		);
 
+		ball.velocity.x = glm::mix(ball.velocity.x, 0.0f, delta);
 		ball.velocity += gravity * delta;
 		ball.circle.origin += ball.velocity * delta;
-		if (ball.left() < 0 || ball.right() > game_size.x)
+		if (ball.left() < -half_size.x || ball.right() > half_size.x)
 			ball.velocity.x *= -1.0f;
 
-		if (ball.bottom() < 0)
+		if (ball.top() < pad.bottom()) // got poisoned
 		{
 			game.game_over(score);
 			return;
@@ -151,25 +154,30 @@ namespace game
 	void ColorSwitch::draw(Game& game)
 	{
 		auto& uber = game.uber;
-		game.clear_game_screen(gfx::Color32(32));
+		game.clear_game_screen(gfx::BLACK);
+		auto view = camera.view_transform(game.get_game_size());
 
-		uber.draw_circle(Utils::snap_to_pixel(ball.position()), ball.radius(),
+		uber.draw_circle(
+			Utils::snap_to_pixel(view.position + ball.position() * view.scale),
+			ball.radius() * view.scale.x,
 			colors[ball_color_index]
 		);
 
 		for (auto i = 0; i < pad.segment_count; i++)
 		{
-			glm::vec2 pos = pad.segment_position(i);
-			glm::vec2 size = pad.segment_size();
+			glm::vec2 pos = view.position + pad.segment_position(i) * view.scale;
+			glm::vec2 size = pad.segment_size() * view.scale;
 			int color_index = pad.segment_color_index(i) % MAX_COLORS;
 			float angle = 0.0f;
 			uber.draw_color(pos, size, colors[color_index], angle);
 		}
 		
-		auto pen = game.screen_to_world(glm::vec2(64), game_size);
-		gfx::FontStyle _style(48);
+		auto pen = game.screen_to_world(glm::vec2(16), game.get_game_size());
+		gfx::FontStyle _style(32);
 		_style.border_color = gfx::Color32(255, 0, 0);
 		_style.border_size = .025;
-		pen = uber.write_format(pen, game.font, _style, "Score: %d\n", score);
+		pen = uber.write_format(pen, game.font, _style,
+			"Score: %d\n", score
+		);
 	}
 }

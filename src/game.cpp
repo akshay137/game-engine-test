@@ -143,6 +143,11 @@ namespace game
 		return glm::vec2(ctx.main_window.width, ctx.main_window.height);
 	}
 
+	glm::vec2 Game::get_game_size() const
+	{
+		return glm::vec2(game_fbo.width, game_fbo.height);
+	}
+
 	uint32_t Game::time() const
 	{
 		return ctx.main_clock.nanoseconds();
@@ -329,9 +334,13 @@ namespace game
 		if (GameState::Game == state)
 		{
 			ctx.gfx.use_framebuffer(game_fbo);
+			uber.set_clip_size(game_fbo.width, game_fbo.height);
 			if (current_game) current_game->draw(*this);
 			uber.flush();
-			uber.set_clip_size(game_fbo.width, game_fbo.height);
+
+			ctx.gfx.use_default_framebuffer(ctx.main_window);
+			ctx.gfx.clear_buffer(gfx::Color32(0), 1, 0);
+			uber.set_clip_size(screen.x, screen.y);	
 			uber.draw_texture(center, screen, game_fbo.color[0],
 				glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
 			);
@@ -386,7 +395,9 @@ namespace game
 		auto _style = gfx::FontStyle(15);
 		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
 		_style.border_size = 0.125;
-		uber.draw_color(glm::vec2(104, 60), glm::vec2(200, 108), gfx::Color32::from_rgba(0, 1, 0));
+		uber.draw_color(glm::vec2(104, 60), glm::vec2(200, 108),
+			gfx::BLACK.with_alpha(.3)
+		);
 		pen = uber.write_format(pen, font, _style, "Time: %d:%d:%d:%d\n",
 			hours, minutes, seconds, ms / 100
 		);

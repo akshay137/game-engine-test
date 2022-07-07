@@ -27,9 +27,11 @@ namespace game
 		uhero::math::Transform2D view_transform(glm::vec2 view_size) const
 		{
 			auto res = transform;
-			res.position = (-res.position * res.scale * view_size) + view_size * .5f;
+			auto ratio = view_size / size;
+			res.position = (-res.position * size) + size * .5f;
+			res.position = res.position * ratio + ratio * .5f;
 			res.rotation = -res.rotation;
-			res.scale = res.scale * (view_size / size);
+			res.scale = res.scale * ratio;
 			return res;
 		}
 	};
