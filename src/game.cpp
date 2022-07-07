@@ -183,18 +183,18 @@ namespace game
 		glm::vec2 btn_size = { 512, 64 + 32 };
 		
 		pos.y = pos.y - btn_size.y * 1.5;
-		btn_games[0] = { Rectangle(pos, btn_size), "Pong [P]" };
+		btn_games[0] = { math::Rectangle(pos, btn_size), "Pong [P]" };
 		pos.y -= btn_size.y * 1.2;
-		btn_games[1] = { Rectangle(pos, btn_size), "Color Switch [C]" };
+		btn_games[1] = { math::Rectangle(pos, btn_size), "Color Switch [C]" };
 		pos.y -= btn_size.y * 1.2;
-		btn_exit = { Rectangle(pos, btn_size), "Exit [E]" };
+		btn_exit = { math::Rectangle(pos, btn_size), "Exit [E]" };
 
 		pos = { screen.x / 2, 128 };
-		btn_menu = { Rectangle(pos, btn_size), "Menu [M]" };
+		btn_menu = { math::Rectangle(pos, btn_size), "Menu [M]" };
 		
 		pos.y += btn_size.y * 1.2;
-		btn_resume = { Rectangle(pos, btn_size), "Resume [R]" };
-		btn_restart = { Rectangle(pos, btn_size), "Restart [R]" };
+		btn_resume = { math::Rectangle(pos, btn_size), "Resume [R]" };
+		btn_restart = { math::Rectangle(pos, btn_size), "Restart [R]" };
 
 		ctx.audio.play_buffer(s_bgm, volume_bgm, true);
 		// ctx.audio.pause();

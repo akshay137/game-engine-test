@@ -128,11 +128,11 @@ namespace uhero::gfx
 			const Texture& texture, glm::vec4 src,
 			float angle,
 			float blend_factor, Color32 color_key,
-			float circle
+			bool is_circle
 		);
 		void draw_color(glm::vec2 pos, glm::vec2 size,
 			Color32 color, float angle=0.0f,
-			float circle=0
+			bool is_circle=false
 		);
 		void draw_circle(glm::vec2 pos, float radius, Color32 color)
 		{
@@ -153,55 +153,55 @@ namespace uhero::gfx
 		void submit_quad(const Quad& quad);
 
 		// draws complete texture with 1:1 scale
-		void draw_texture(glm::vec2 pos, const Texture& texture, float circle=0)
+		void draw_texture(glm::vec2 pos, const Texture& texture, bool is_circle=false)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
 			glm::vec2 size(src.z, src.w);
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color32(255), is_circle);
 		}
 		// draws complete texture with 1:1 scale
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			float circle=0
+			bool is_circle=false
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color32(255), is_circle);
 		}
 		// draws a region of texture with given size
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src,
-			float circle=0
+			bool is_circle=false
 		)
 		{
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color32(255), is_circle);
 		}
 
 		// draws a rotated texture
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			float angle, float circle=0
+			float angle, bool is_circle=false
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			draw_texture(pos, size, texture, src, angle, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, angle, 1, Color32(255), is_circle);
 		}
 
 		// draws region of texture in rotated quad
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src,
-			float angle, float circle=0
+			float angle, bool is_circle=false
 		)
 		{
-			draw_texture(pos, size, texture, src, angle, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, angle, 1, Color32(255), is_circle);
 		}
 
 		// draws a color multiplied texture
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			float blend_factor, Color32 color_key, float circle=0
+			float blend_factor, Color32 color_key, bool is_circle=false
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
 			draw_texture(pos, size, texture, src, 0,
-				blend_factor, color_key, circle
+				blend_factor, color_key, is_circle
 			);
 		}
 
@@ -209,11 +209,11 @@ namespace uhero::gfx
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src,
 			float blend_factor, Color32 color_key,
-			float circle=0
+			bool is_circle=false
 		)
 		{
 			draw_texture(pos, size, texture, src, 0,
-				blend_factor, color_key, circle
+				blend_factor, color_key, is_circle
 			);
 		}
 

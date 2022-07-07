@@ -1,9 +1,9 @@
-#ifndef CIRCLE_H__
-#define CIRCLE_H__ 1
+#ifndef UHERO_MATH_CIRCLE_H__
+#define UHERO_MATH_CIRCLE_H__ 1
 
 #include <glm/vec2.hpp>
 
-namespace game
+namespace uhero::math
 {
 	struct Circle
 	{

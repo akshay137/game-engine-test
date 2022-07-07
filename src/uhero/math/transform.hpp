@@ -3,6 +3,7 @@
 
 #include "../common.hpp"
 #include "aabb.hpp"
+#include "circle.hpp"
 
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
@@ -22,7 +23,7 @@ namespace uhero::math
 		Transform2D apply_transform(const Transform2D& parent) const;
 
 		AABB bounding_box() const;
-		float radius() const;
+		Circle bounding_circle() const;
 	};
 }
 

@@ -26,7 +26,7 @@ namespace game
 
 	void ColorSwitch::reset_ball()
 	{
-		ball = { Circle({ 0, 0 }, 2.5), {0, 0}};
+		ball = { math::Circle({ 0, 0 }, 2.5), {0, 0}};
 	}
 
 	bool ColorSwitch::check_ball_pad_collision()
@@ -90,7 +90,7 @@ namespace game
 				gravity.y * -2.5f
 			};
 			ball.velocity = tmp;
-			float limit = 25;
+			float limit = 16;
 			ball.velocity.x = glm::clamp(ball.velocity.x, -limit, limit);
 
 			if (index == ball_color_index)
@@ -138,7 +138,6 @@ namespace game
 			-half_size.x - lim, half_size.x + lim
 		);
 
-		ball.velocity.x = glm::mix(ball.velocity.x, 0.0f, delta);
 		ball.velocity += gravity * delta;
 		ball.circle.origin += ball.velocity * delta;
 		if (ball.left() < -half_size.x || ball.right() > half_size.x)

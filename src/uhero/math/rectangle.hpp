@@ -1,9 +1,9 @@
-#ifndef RECTANGLE_H__
-#define RECTANGLE_H__ 1
+#ifndef UHERO_MATH_RECTANGLE_H__
+#define UHERO_MATH_RECTANGLE_H__ 1
 
 #include <glm/vec2.hpp>
 
-namespace game
+namespace uhero::math
 {
 	struct Rectangle
 	{

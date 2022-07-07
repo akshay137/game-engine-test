@@ -1,7 +1,7 @@
 #include "circle.hpp"
 #include <glm/glm.hpp>
 
-namespace game
+namespace uhero::math
 {
 	bool Circle::collision(const Circle& rhs) const
 	{

@@ -6,8 +6,8 @@
 #include "uhero/gfx/font.hpp"
 #include "uhero/gfx/framebuffer.hpp"
 #include "uhero/sfx/sfx.hpp"
+#include "uhero/math/rectangle.hpp"
 #include "minigame.hpp"
-#include "rectangle.hpp"
 #include "colorswitch.hpp"
 #include "pong.hpp"
 
@@ -27,7 +27,7 @@ namespace game
 	// standard button
 	struct Button
 	{
-		Rectangle rect;
+		uhero::math::Rectangle rect;
 		std::string_view title;
 
 		bool is_over(glm::vec2 mouse) const

@@ -8,9 +8,8 @@ namespace uhero::math
 {
 	glm::vec2 rotate_vec2(glm::vec2 pos, float angle)
 	{
-		auto s = glm::sin(angle);
-		auto c = glm::cos(angle);
-
+		const auto s = glm::sin(angle);
+		const auto c = glm::cos(angle);
 		glm::vec2 res = {
 			pos.x * c - pos.y * s,
 			pos.x * s + pos.y * c
@@ -41,12 +40,11 @@ namespace uhero::math
 		float s = glm::abs(glm::sin(rotation));
 		float c = glm::abs(glm::cos(rotation));
 		auto extents = glm::vec2(scale.x * s + scale.y * c) * .5f;
-		AABB box(position, extents);
-		return box;
+		return AABB(position, extents);
 	}
 
-	float Transform2D::radius() const
+	Circle Transform2D::bounding_circle() const
 	{
-		return glm::length(scale) * .5f;
+		return Circle(position, glm::length(scale) * .5f);
 	}
 }

@@ -1,18 +1,18 @@
 #ifndef BALL_H__
 #define BALL_H__ 1
 
-#include "circle.hpp"
+#include "uhero/math/circle.hpp"
 
 namespace game
 {
 	struct Ball
 	{
-		Circle circle;
+		uhero::math::Circle circle;
 		glm::vec2 velocity;
 
 		Ball() : circle{0}, velocity{0} {}
-		Ball(const Circle& circle): circle{circle}, velocity{0} {}
-		Ball(const Circle& circle, const glm::vec2 v)
+		Ball(const uhero::math::Circle& circle): circle{circle}, velocity{0} {}
+		Ball(const uhero::math::Circle& circle, const glm::vec2 v)
 			: circle{circle}, velocity{v}
 		{}
 
@@ -21,7 +21,7 @@ namespace game
 			return circle.collision(rhs.circle);
 		}
 
-		bool collides(const Circle& circle) const
+		bool collides(const uhero::math::Circle& circle) const
 		{
 			return this->circle.collision(circle);
 		}
@@ -31,7 +31,7 @@ namespace game
 			return circle.inside(rhs.circle);
 		}
 
-		bool inside(const Circle& circle) const
+		bool inside(const uhero::math::Circle& circle) const
 		{
 			return this->circle.inside(circle);
 		}

@@ -11,11 +11,6 @@
 namespace game
 {
 	using namespace uhero;
-	const gfx::Color32 COLOR_WHITE(255);
-	const gfx::Color32 COLOR_RED(255, 0, 0);
-	const gfx::Color32 COLOR_GREEN(0, 255, 0);
-	const gfx::Color32 COLOR_BLUE(0, 0, 255);
-
 	glm::vec4 clip = { 12 * 16, 0, 16, 16 };
 	gfx::Texture tx_circle;
 
@@ -26,8 +21,7 @@ namespace game
 		tx_circle = res::load_texture("assets/logo.png");
 		tx_circle.set_filter(gfx::TextureFilter::Nearest);
 
-		test_sprite = Sprite(tx_circle);
-		camera = Camera2D(width, height);
+		test_sprite = Sprite(tx_circle, { 16, 16 });
 
 		return true;
 	}
@@ -41,6 +35,7 @@ namespace game
 	{
 		this->game = &game;
 		game_size = { width, height };
+		camera = Camera2D(160, 90);
 		ball_velocity = 5 * SIM_TO_VIEW;
 		pad_acceleration = 50 * SIM_TO_VIEW;
 
@@ -49,26 +44,26 @@ namespace game
 		float y = height / 2;
 		float r = height / 2;
 
-		playground = Circle({x, y}, r);
+		playground = math::Circle({x, y}, r);
 		float sr = size * 1.5;
-		trap_points[0] = Circle({ x, height }, sr);
-		trap_points[1] = Circle({ x, 0 }, sr);
-		trap_points[2] = Circle({ x - r, y }, sr);
-		trap_points[3] = Circle({ x + r, y }, sr);
+		trap_points[0] = math::Circle({ x, height }, sr);
+		trap_points[1] = math::Circle({ x, 0 }, sr);
+		trap_points[2] = math::Circle({ x - r, y }, sr);
+		trap_points[3] = math::Circle({ x + r, y }, sr);
 
 		glm::vec2 tpos = glm::normalize(glm::vec2(1, 1)) * r;
 		x = playground.origin.x;
 		y = playground.origin.y;
-		score_points[0] = Circle({ x + tpos.x, y + tpos.y }, sr); // top right
-		score_points[1] = Circle({ x + tpos.x, y - tpos.y }, sr); // bottom right
-		score_points[2] = Circle({ x - tpos.x, y + tpos.y }, sr); // top left
-		score_points[3] = Circle({ x - tpos.x, y - tpos.y }, sr); // bottom left
+		score_points[0] = math::Circle({ x + tpos.x, y + tpos.y }, sr); // top right
+		score_points[1] = math::Circle({ x + tpos.x, y - tpos.y }, sr); // bottom right
+		score_points[2] = math::Circle({ x - tpos.x, y + tpos.y }, sr); // top left
+		score_points[3] = math::Circle({ x - tpos.x, y - tpos.y }, sr); // bottom left
 
 
 		x = playground.origin.x;
 		y = playground.origin.y + playground.radius - sr * 3;
-		player = { Circle(glm::vec2(width / 2, height / 4), size), glm::vec2(0) };
-		ball = { Circle({ x, y }, size * .5f), glm::vec2(0.0f, -ball_velocity) };
+		player = { math::Circle(glm::vec2(width / 2, height / 4), size), glm::vec2(0) };
+		ball = { math::Circle({ x, y }, size * .5f), glm::vec2(0.0f, -ball_velocity) };
 		score = 0;
 	}
 
@@ -149,7 +144,7 @@ namespace game
 		player.circle.origin = glm::clamp(player.circle.origin,
 			glm::vec2(player.radius()), game_size - player.radius()
 		);
-		camera.transform.position = player.circle.origin;
+		// camera.transform.position = -player.circle.origin;
 	}
 
 	void Pong::draw(Game& game)
@@ -158,30 +153,32 @@ namespace game
 		game.clear_game_screen(gfx::Color32(32, 32, 32, 255));
 
 		uber.draw_circle(Utils::snap_to_pixel(playground.origin),
-			playground.radius, COLOR_WHITE
+			playground.radius, gfx::WHITE
 		);
-		uber.draw_circle(Utils::snap_to_pixel(player.position()), player.radius(), COLOR_RED);
+		uber.draw_circle(Utils::snap_to_pixel(player.position()), player.radius(),
+			gfx::RED
+		);
 
-		auto color = COLOR_BLUE;
+		auto color = gfx::BLUE;
 		uber.draw_circle(Utils::snap_to_pixel(ball.position()), ball.radius(), color);
 
 		for (auto i = 0; i < MAX_SCORE_POINTS; i++)
 		{
 			uber.draw_circle(Utils::snap_to_pixel(score_points[i].origin),
-				score_points[i].radius, COLOR_GREEN.with_alpha(.6)
+				score_points[i].radius, gfx::GREEN.with_alpha(.6)
 			);
 		}
 		for (auto i = 0; i < MAX_TRAPS; i++)
 		{
 			uber.draw_circle(Utils::snap_to_pixel(trap_points[i].origin),
-				trap_points[i].radius, COLOR_RED.with_alpha(.6)
+				trap_points[i].radius, gfx::RED.with_alpha(.6)
 			);
 		}
 
-		auto vtf = camera.view_transform({});
+		auto vtf = camera.view_transform(game.get_game_size());
 		auto tf = test_sprite.world_transform().apply_transform(vtf);
 		uber.draw_texture(tf.position, test_sprite.size * tf.scale,
-			test_sprite, test_sprite.clip
+			test_sprite, test_sprite.clip, tf.rotation
 		);
 
 		auto pen = game.screen_to_world( {0, 0}, game_size);

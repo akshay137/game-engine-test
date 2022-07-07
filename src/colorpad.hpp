@@ -1,13 +1,13 @@
 #ifndef COLOR_PAD_H__
 #define COLOR_PAD_H__ 1
 
-#include "rectangle.hpp"
+#include "uhero/math/rectangle.hpp"
 
 namespace game
 {
 	struct ColorPad
 	{
-		Rectangle rect;
+		uhero::math::Rectangle rect;
 		int first_color;
 		int segment_count;
 		int segment_length;

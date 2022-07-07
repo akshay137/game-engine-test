@@ -126,7 +126,7 @@ namespace uhero::gfx
 		const Texture& texture, glm::vec4 src,
 		float angle,
 		float blend_factor, Color32 color_key,
-		float circle
+		bool is_circle
 	)
 	{
 		Quad quad {};
@@ -143,13 +143,13 @@ namespace uhero::gfx
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
-		quad.sprite.circle = circle;
+		quad.sprite.circle = is_circle ? 1 : 0;
 
 		this->submit_quad(quad);
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle, float circle
+		Color32 color, float angle, bool is_circle
 	)
 	{
 		Quad quad {};
@@ -161,7 +161,7 @@ namespace uhero::gfx
 		quad.sprite.color = color;
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
-		quad.sprite.circle = circle;
+		quad.sprite.circle = is_circle ? 1 : 0;
 
 		this->submit_quad(quad);
 	}
