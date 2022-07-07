@@ -1,5 +1,6 @@
 #include "transform.hpp"
 
+#include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -33,5 +34,19 @@ namespace uhero::math
 		res.rotation = this->rotation + parent.rotation;
 		res.scale = this->scale * parent.scale;
 		return res;
+	}
+
+	AABB Transform2D::bounding_box() const
+	{
+		float s = glm::abs(glm::sin(rotation));
+		float c = glm::abs(glm::cos(rotation));
+		auto extents = glm::vec2(scale.x * s + scale.y * c) * .5f;
+		AABB box(position, extents);
+		return box;
+	}
+
+	float Transform2D::radius() const
+	{
+		return glm::length(scale) * .5f;
 	}
 }

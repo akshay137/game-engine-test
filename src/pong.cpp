@@ -149,7 +149,7 @@ namespace game
 		player.circle.origin = glm::clamp(player.circle.origin,
 			glm::vec2(player.radius()), game_size - player.radius()
 		);
-		camera.transform.position = -player.circle.origin;
+		camera.transform.position = player.circle.origin;
 	}
 
 	void Pong::draw(Game& game)
@@ -180,7 +180,7 @@ namespace game
 
 		auto vtf = camera.view_transform();
 		auto tf = test_sprite.world_transform().apply_transform(vtf);
-		uber.draw_texture(tf.position, test_sprite.size,
+		uber.draw_texture(tf.position, test_sprite.size * tf.scale,
 			test_sprite, test_sprite.clip
 		);
 

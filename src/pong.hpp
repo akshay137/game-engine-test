@@ -19,7 +19,7 @@ namespace game
 		glm::vec4 clip;
 		glm::vec2 size;
 
-		Sprite(): color{255}, texture{nullptr}, clip{0}, size{1} {}
+		Sprite(): color{255}, texture{nullptr}, clip{0}, size{0} {}
 
 		Sprite(const uhero::gfx::Texture& tex)
 			: color{255}, texture{&tex}, clip{0, 0, tex.width, tex.height},

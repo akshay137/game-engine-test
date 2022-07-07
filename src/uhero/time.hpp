@@ -11,6 +11,8 @@ namespace uhero
 	using lib_clock = std::chrono::steady_clock;
 	using time_point = std::chrono::time_point<lib_clock>;
 	using duration_seconds = std::chrono::duration<double>;
+	using duration_milli = std::chrono::duration<i64, std::milli>;
+	using duration_micro = std::chrono::duration<i64, std::micro>;
 	using duration_nano = std::chrono::duration<i64, std::nano>;
 
 	struct Clock

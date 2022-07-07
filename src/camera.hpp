@@ -27,7 +27,7 @@ namespace game
 		uhero::math::Transform2D view_transform() const
 		{
 			auto res = transform;
-			res.position = (-res.position + size * .5f);
+			res.position = (-res.position * res.scale) + size * .5f;
 			res.rotation = -res.rotation;
 			res.scale = res.scale;
 			return res;

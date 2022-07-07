@@ -24,7 +24,7 @@ namespace uhero
 
 		Record(const char* name, time_point tp): name{name}, start{tp}, end{tp} {}
 
-		float get_time() const
+		float get_duration() const
 		{
 			duration_seconds dur = end - start;
 			return dur.count();
@@ -40,8 +40,10 @@ namespace uhero
 		{
 			record.end = lib_clock::now();
 			// TODO: store record someplace safe!
-			UH_INFO("%.*s: %f\r", record.name.size(), record.name.data(), record.get_time());
-
+			UH_INFO("%.*s: %f\r",
+				(int)record.name.size(), record.name.data(),
+				record.get_duration()
+			);
 		}
 	};
 }

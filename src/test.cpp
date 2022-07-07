@@ -63,6 +63,11 @@ namespace test
 		if (ip.is_key_down(KeyCode::D))
 			direction.x = 1;
 		
+		if (ip.is_key_down(KeyCode::Q))
+			camera.transform.rotation -= delta;
+		if (ip.is_key_down(KeyCode::E))
+			camera.transform.rotation += delta;
+		
 		float ZOOM_SPEED = 10;
 		if (ip.is_key_down(KeyCode::Z)) // zoom in
 			camera.zoom(ZOOM_SPEED * delta);
@@ -76,35 +81,62 @@ namespace test
 		if (ip.is_key_down(KeyCode::NP_MINUS))
 			child_1.transform.rotation -= delta;
 		
-		// root.transform.rotation += delta * .5;
+		root.transform.rotation += delta * .5;
 	}
 
 	void Test::render()
 	{
 		auto view = camera.view_transform();
 
-		glm::vec2 size = { 16, 16 };
+		auto num = 64;
+		auto len = num * num;
+		math::Transform2D tf;
+		glm::vec2 size(16);
+		math::Random rgen(137);
+		for (auto i = 0; i < len; i++)
+		{
+			auto row = i / num;
+			auto col = i % num;
+
+			tf.position = { col * size.x * 1.1, row * size.y * 1.1 };
+			auto vtf = tf.apply_transform(view);
+
+			gfx::Color32 color(rgen.range(0, 255));
+			renderer.draw_color(vtf.position, size * vtf.scale, color,
+				vtf.rotation
+			);
+		}
+
 		game::GObject* scene[] = { &root, &child_0, &child_1, &child_1_0 };
 		gfx::Color32 colors[] = { gfx::WHITE,
 			gfx::RED, gfx::GREEN, gfx::BLUE
 		};
+		glm::vec2 pen = { 0, ctx->main_window.height };
+		auto style = gfx::FontStyle(24);
 		int length = sizeof(scene) / sizeof(scene[0]);
 		for (auto i = 0; i < length; i++)
 		{
 			auto obj = scene[i];
-			auto tf = obj->world_transform();
-			tf = tf.apply_transform(view);
-			renderer.draw_color(tf.position, size * tf.scale,
-				colors[i],
-				tf.rotation, glm::vec2(0)
+			auto wtf = obj->world_transform();
+			auto vtf = wtf.apply_transform(view);
+			renderer.draw_color(vtf.position, size * vtf.scale,
+				colors[i], vtf.rotation
 			);
 		}
 
-		auto style = gfx::FontStyle(24);
 		style.border_size = 0;
-		auto pen = renderer.write_format({ 0, ctx->main_window.height },
+		pen = renderer.write_format(pen,
 			font, style,
 			"angle: %f\n", child_1.transform.rotation
+		);
+		auto _s = style;
+		_s.border_size = .1;
+		_s.border_color = gfx::RED;
+		pen = renderer.write_format(pen, font, _s,
+			"cam: [%.2f, %.2f] {%.2f, %.2f} <%.2f>\n",
+			camera.transform.position.x, camera.transform.position.y,
+			camera.transform.scale.x, camera.transform.scale.y,
+			camera.transform.rotation
 		);
 		renderer.flush();
 

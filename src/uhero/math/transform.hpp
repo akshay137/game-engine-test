@@ -2,6 +2,8 @@
 #define UHERO_MATH_TRANSFORM_H__ 1
 
 #include "../common.hpp"
+#include "aabb.hpp"
+
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 
@@ -18,6 +20,9 @@ namespace uhero::math
 
 		glm::mat4 transform_matrix() const;
 		Transform2D apply_transform(const Transform2D& parent) const;
+
+		AABB bounding_box() const;
+		float radius() const;
 	};
 }
 

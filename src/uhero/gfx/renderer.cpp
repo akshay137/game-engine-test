@@ -15,11 +15,6 @@ namespace uhero::gfx
 		const char* vs, const char* fs
 	)
 	{
-		if ((max_quads * 4) > 0xffffu)
-		{
-			max_quads = 0xffffu / 4;
-			UH_WARN("quads more than %u are not supported at this time\n", max_quads);
-		}
 		UH_FRAME_STACK_GROUP();
 
 		if (nullptr == vs) vs = REN_VERTEX_SHADER;
@@ -42,7 +37,7 @@ namespace uhero::gfx
 		quads = UH_ALLOCATE_TYPE(Quad, max_quads);
 		vertices = UH_ALLOCATE_TYPE(Vertex, max_quads * 4);
 
-		u32 index_count = max_quads * 6;
+		u32 index_count = glm::min(max_quads * 6, MAX_IND);
 		u16* indices = UH_FRAME_STACK_ALLOCATE_TYPE(u16, index_count);
 		/*
 			0 1
@@ -81,7 +76,7 @@ namespace uhero::gfx
 		update_vertex_buffer();
 
 		pso.make_current();
-		pso.set_vertex_buffer(vertex_buffer, 0, 0, vertex_buffer.stride());
+		// pso.set_vertex_buffer(vertex_buffer, 0, 0, vertex_buffer.stride());
 		pso.set_index_buffer(element_buffer);
 
 		// draw
@@ -92,10 +87,10 @@ namespace uhero::gfx
 			const Texture* texture = first.texture;
 
 			u32 count = 1;
-			constexpr u32 MAX_IND = (u16)~0;
 			while (first.can_batch_together(quads[drawn + count]))
 			{
 				if (current_quads <= (drawn + count)) break;
+				if (MAX_IND <= count * 6) break;
 				count += 1;
 			}
 
@@ -116,9 +111,10 @@ namespace uhero::gfx
 				Texture::reset_slot(0);
 			}
 
-			usize index_offset = drawn * 6 * sizeof(u16);
+			usize vertex_offset = drawn * 4 * sizeof(Vertex);
 			u32 index_count = count * 6;
-			pso.draw_elements(GL_TRIANGLES, index_count, (void*)index_offset);
+			pso.set_vertex_buffer(vertex_buffer, 0, vertex_offset, vertex_buffer.stride());
+			pso.draw_elements(GL_TRIANGLES, index_count, (void*)0);
 
 			drawn += count;
 		}
@@ -128,7 +124,7 @@ namespace uhero::gfx
 
 	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
 		const Texture& texture, glm::vec4 src,
-		float angle, glm::vec2 center,
+		float angle,
 		float blend_factor, Color32 color_key,
 		float circle
 	)
@@ -144,7 +140,6 @@ namespace uhero::gfx
 			texture.normalized_x(src.z),
 			texture.normalized_y(src.w)
 		);
-		quad.center = center;
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
@@ -154,8 +149,7 @@ namespace uhero::gfx
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle, glm::vec2 center,
-		float circle
+		Color32 color, float angle, float circle
 	)
 	{
 		Quad quad {};
@@ -164,7 +158,6 @@ namespace uhero::gfx
 
 		quad.rect = glm::vec4(pos.x, pos.y, size.x, size.y);
 		quad.clip = glm::vec4(0);
-		quad.center = center;
 		quad.sprite.color = color;
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
@@ -291,29 +284,30 @@ namespace uhero::gfx
 		if (0 == current_quads) return;
 
 		// generate vertices
+		constexpr glm::vec2 sprite_positions[4] = {
+			{ -.5f, .5f }, // top left
+			{ .5f, .5f }, // top right
+			{ -.5f, -.5f }, // bottom left
+			{ .5f, -.5f }, // bottom right
+		};
+		constexpr glm::vec2 glyph_positions[4] = {
+			{ 0, 1 }, // top left
+			{ 1, 1 }, // top right
+			{ 0, 0 }, // bottom left
+			{ 1, 0 }, // bottom right
+		};
+		constexpr glm::vec2 coords[4] = {
+			{ 0, 0 },
+			{ 1, 0 },
+			{ 0, 1 },
+			{ 1, 1 },
+		};
 		for (u32 i = 0; i < current_quads; i++)
 		{
 			const Quad& quad = quads[i];
-			constexpr glm::vec2 sprite_positions[4] = {
-				{ -.5f, .5f }, // top left
-				{ .5f, .5f }, // top right
-				{ -.5f, -.5f }, // bottom left
-				{ .5f, -.5f }, // bottom right
-			};
-			constexpr glm::vec2 glyph_positions[4] = {
-				{ 0, 1 }, // top left
-				{ 1, 1 }, // top right
-				{ 0, 0 }, // bottom left
-				{ 1, 0 }, // bottom right
-			};
-			constexpr glm::vec2 coords[4] = {
-				{ 0, 0 },
-				{ 1, 0 },
-				{ 0, 1 },
-				{ 1, 1 },
-			};
 			const glm::vec2* positions = sprite_positions;
 
+			// TODO: remove use of matrix
 			glm::mat4 uv = glm::mat4(1);
 			uv = glm::translate(uv, glm::vec3(quad.clip.x, quad.clip.y, 0.0f));
 			uv = glm::scale(uv, glm::vec3(quad.clip.z, quad.clip.w, 1.0f));
@@ -356,7 +350,6 @@ namespace uhero::gfx
 
 	Renderer::Vertex Renderer::glyph_vertex(const Quad& quad)
 	{
-		// TODO: calculate this based on size of text
 		// TODO: remove magic numbers from calculation
 		const auto height = quad.rect.w;
 		float width = 0.475f;
