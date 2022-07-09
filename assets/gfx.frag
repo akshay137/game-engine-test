@@ -34,17 +34,12 @@ layout (binding = 1) uniform sampler2D font_texture;
 
 layout (location = 0) out vec4 color;
 
-float distance_squared(vec2 from, vec2 to)
-{
-	vec2 res = to - from;
-	res *= res;
-	return res.x + res.y;
-}
-
 float in_circle(float alpha)
 {
 	float dist = distance(vec2(0.5f), vs.quad_uv);
-	float inside = step(dist, 0.5f);
+	float ring = 0.5f - vs.sprite.circle * 0.5f;
+	float inside = smoothstep(dist, 0.5f, ring);
+	inside = step(inside, 0.1);
 	float should_round = step(vs.sprite.circle, 0.0f);
 	return mix(inside * alpha, alpha, should_round);
 }
@@ -88,8 +83,9 @@ void main()
 			vec4 border_color = vs.glyph.outline_color;// * border_alpha;
 
 			vec4 final_color = mix(border_color, text_color, alpha);
+			float final_alpha = alpha + (1 - alpha) * border_alpha;
 
-			color = vec4(final_color.rgb, border_alpha);
+			color = vec4(final_color.rgb, final_alpha);
 		}
 			break;
 	}

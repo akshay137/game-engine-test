@@ -30,7 +30,8 @@ namespace uhero::gfx
 		[ENUM_INT(VertexAttribute::Vec2)] = VertexAttribData(2, GL_FLOAT, GL_FALSE, sizeof(float) * 2),
 		[ENUM_INT(VertexAttribute::Vec3)] = VertexAttribData(3, GL_FLOAT, GL_FALSE, sizeof(float) * 3),
 		[ENUM_INT(VertexAttribute::Vec4)] = VertexAttribData(4, GL_FLOAT, GL_FALSE, sizeof(float) * 4),
-		[ENUM_INT(VertexAttribute::ByteNVec4)] = VertexAttribData(4, GL_UNSIGNED_BYTE, GL_TRUE, 4)
+		[ENUM_INT(VertexAttribute::ByteNVec4)] = VertexAttribData(4, GL_UNSIGNED_BYTE, GL_TRUE, 4),
+		[ENUM_INT(VertexAttribute::ShortNVec4)] = VertexAttribData(4, GL_UNSIGNED_SHORT, GL_TRUE, 8)
 	};
 
 	bool vertex_data_from_attribute(VertexAttribute attrib, VertexAttribData& out)

@@ -18,24 +18,17 @@ namespace game
 	{
 		game_size = { width, height };
 
-		tx_circle = res::load_texture("assets/logo.png");
-		tx_circle.set_filter(gfx::TextureFilter::Nearest);
-
-		test_sprite = Sprite(tx_circle, { 16, 16 });
-
 		return true;
 	}
 
 	void Pong::cleanup()
 	{
-		tx_circle.clear();
 	}
 
 	void Pong::reset(Game& game, int width, int height)
 	{
 		this->game = &game;
 		game_size = { width, height };
-		camera = Camera2D(160, 90);
 		ball_velocity = 5 * SIM_TO_VIEW;
 		pad_acceleration = 50 * SIM_TO_VIEW;
 
@@ -144,7 +137,6 @@ namespace game
 		player.circle.origin = glm::clamp(player.circle.origin,
 			glm::vec2(player.radius()), game_size - player.radius()
 		);
-		// camera.transform.position = -player.circle.origin;
 	}
 
 	void Pong::draw(Game& game)
@@ -174,12 +166,6 @@ namespace game
 				trap_points[i].radius, gfx::RED.with_alpha(.6)
 			);
 		}
-
-		auto vtf = camera.view_transform(game.get_game_size());
-		auto tf = test_sprite.world_transform().apply_transform(vtf);
-		uber.draw_texture(tf.position, test_sprite.size * tf.scale,
-			test_sprite, test_sprite.clip, tf.rotation
-		);
 
 		auto pen = game.screen_to_world( {0, 0}, game_size);
 		pen = uber.write_format(pen, game.font, game.style,

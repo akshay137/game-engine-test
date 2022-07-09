@@ -37,7 +37,7 @@ namespace uhero::gfx
 		quads = UH_ALLOCATE_TYPE(Quad, max_quads);
 		vertices = UH_ALLOCATE_TYPE(Vertex, max_quads * 4);
 
-		u32 index_count = glm::min(max_quads * 6, MAX_IND);
+		u32 index_count = glm::min(max_quads * 6, MAX_ALLOWED_INDICES);
 		u16* indices = UH_FRAME_STACK_ALLOCATE_TYPE(u16, index_count);
 		/*
 			0 1
@@ -76,10 +76,10 @@ namespace uhero::gfx
 		update_vertex_buffer();
 
 		pso.make_current();
-		// pso.set_vertex_buffer(vertex_buffer, 0, 0, vertex_buffer.stride());
 		pso.set_index_buffer(element_buffer);
 
 		// draw
+		const auto MAX_INDICES = element_buffer.count;
 		u32 drawn = 0;
 		while (drawn < current_quads)
 		{
@@ -90,7 +90,7 @@ namespace uhero::gfx
 			while (first.can_batch_together(quads[drawn + count]))
 			{
 				if (current_quads <= (drawn + count)) break;
-				if (MAX_IND <= count * 6) break;
+				if (MAX_INDICES <= count * 6) break;
 				count += 1;
 			}
 
@@ -126,7 +126,7 @@ namespace uhero::gfx
 		const Texture& texture, glm::vec4 src,
 		float angle,
 		float blend_factor, Color32 color_key,
-		bool is_circle
+		float circle
 	)
 	{
 		Quad quad {};
@@ -143,13 +143,13 @@ namespace uhero::gfx
 		quad.sprite.color = color_key;
 		quad.sprite.blend = blend_factor;
 		quad.sprite.angle = angle;
-		quad.sprite.circle = is_circle ? 1 : 0;
+		quad.sprite.circle = circle;
 
 		this->submit_quad(quad);
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle, bool is_circle
+		Color32 color, float angle, float circle
 	)
 	{
 		Quad quad {};
@@ -161,7 +161,7 @@ namespace uhero::gfx
 		quad.sprite.color = color;
 		quad.sprite.blend = 1.0f;
 		quad.sprite.angle = angle;
-		quad.sprite.circle = is_circle ? 1 : 0;
+		quad.sprite.circle = circle;
 
 		this->submit_quad(quad);
 	}
@@ -352,8 +352,9 @@ namespace uhero::gfx
 	{
 		// TODO: remove magic numbers from calculation
 		const auto height = quad.rect.w;
-		float width = 0.475f;
-		float edge = 1 / (10 * ceil(height / 48));
+		const auto factor = ceil(height / 48);
+		float width = 0.50f - (1 / (50 * factor));
+		float edge = 1 / (10 * factor);
 
 		Vertex v {};
 		v.color = quad.glyph.text_color;

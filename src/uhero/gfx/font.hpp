@@ -35,7 +35,7 @@ namespace uhero::gfx
 			: size{size * PT_TO_PIXEL}
 		{
 			wrap_width = 0;
-			border_size = 0;
+			border_size = 0.05;
 			line_spacing = 1;
 			text_color = Color32(255);
 			border_color = Color32(0, 0, 0, 255);

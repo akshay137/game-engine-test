@@ -17,6 +17,7 @@ namespace uhero::gfx
 		Vec4,
 
 		ByteNVec4,
+		ShortNVec4,
 
 		MaxVertexAttributes,
 	};

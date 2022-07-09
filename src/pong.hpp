@@ -7,10 +7,6 @@
 #include "uhero/gfx/color.hpp"
 #include <glm/vec2.hpp>
 
-#include "gameobject.hpp"
-#include "sprite.hpp"
-#include "camera.hpp"
-
 namespace game
 {
 	constexpr int MAX_SCORE_POINTS = 4;
@@ -23,13 +19,6 @@ namespace game
 		Ball player, ball;
 		uhero::math::Circle score_points[MAX_SCORE_POINTS];
 		uhero::math::Circle trap_points[MAX_TRAPS];
-
-		Camera2D camera;
-		Sprite test_sprite;
-		// Sprite player, ball;
-		// Sprite ground;
-		// Sprite score_pt[MAX_SCORE_POINTS];
-		// Sprite trap_pt[MAX_TRAPS];
 
 		constexpr static float SIM_TO_VIEW = 50;
 		float pad_acceleration;
