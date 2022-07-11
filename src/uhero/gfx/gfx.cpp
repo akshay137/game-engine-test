@@ -78,7 +78,7 @@ namespace uhero::gfx
 		SDL_GL_SetSwapInterval(status ? 1 : 0);
 	}
 
-	void Context::clear_buffer(Color32 color, float depth, i32 stencil)
+	void Context::clear_buffer(Color8 color, float depth, i32 stencil)
 	{
 		float cc[4];
 		color.to_rgba(cc[0], cc[1], cc[2], cc[3]);

@@ -2,19 +2,19 @@
 
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 uv;
-layout (location = 2) in vec2 quad_uv;
-layout (location = 3) in vec4 color;
+layout (location = 1, component=2) in vec2 quad_uv;
+layout (location = 2) in vec4 color;
 
 // sprite
-layout (location = 4) in float blend;
-layout (location = 4, component = 1) in float circle;
+layout (location = 3) in float blend;
+layout (location = 3, component = 1) in float circle;
 
 // glyph
-layout (location = 4) in float width;
-layout (location = 4, component = 1) in float edge;
-layout (location = 4, component = 2) in float border_width;
-layout (location = 4, component = 3) in float border_edge;
-layout (location = 5) in vec4 outline_color;
+layout (location = 3) in float width;
+layout (location = 3, component = 1) in float edge;
+layout (location = 3, component = 2) in float border_width;
+layout (location = 3, component = 3) in float border_edge;
+layout (location = 4) in vec4 outline_color;
 
 layout (std140, binding = 0) uniform rstate
 {

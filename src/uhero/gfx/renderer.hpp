@@ -37,15 +37,15 @@ namespace uhero::gfx
 			glm::vec4 clip;
 			union {
 				struct {
-					Color32 color;
+					Color8 color;
 					float blend;
 					float angle;
 					float circle;
 				} sprite;
 
 				struct {
-					Color32 text_color;
-					Color32 border_color;
+					Color8 text_color;
+					Color8 border_color;
 					float border_size;
 				} glyph;
 			};
@@ -73,26 +73,30 @@ namespace uhero::gfx
 		struct Vertex
 		{
 			glm::vec2 position;
-			glm::vec2 uv;
-			glm::vec2 quad_uv; // 0...1
-			Color32 color;
+			// glm::vec2 uv;
+			// glm::vec2 quad_uv; // 0...1
+			math::unorm16 uv_x;
+			math::unorm16 uv_y;
+			math::unorm16 quad_uv_x;
+			math::unorm16 quad_uv_y;
+			Color16 color;
 			union
 			{
 				struct {
-					math::Normalized<u8> blend;
-					math::Normalized<u8> circle;
+					math::unorm16 blend;
+					math::unorm16 circle;
 				} sprite;
 				struct {
-					math::Normalized<u8> width;
-					math::Normalized<u8> edge;
-					math::Normalized<u8> border_width;
-					math::Normalized<u8> border_edge;
-					Color32 border_color;
+					math::unorm16 width;
+					math::unorm16 edge;
+					math::unorm16 border_width;
+					math::unorm16 border_edge;
+					Color16 border_color;
 				} glyph;
 			};
 		}; // struct vertex
 
-		static_assert(sizeof(Vertex) == 9 * sizeof(f32), "malformed vertex");
+		static_assert(sizeof(Vertex) == 10 * sizeof(f32), "malformed vertex");
 
 		constexpr static i32 UNIFORM_PROGRAM_MODE = 0;
 		constexpr static i32 UPM_COLOR = 0;
@@ -127,14 +131,14 @@ namespace uhero::gfx
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src,
 			float angle,
-			float blend_factor, Color32 color_key,
+			float blend_factor, Color8 color_key,
 			float circle
 		);
 		void draw_color(glm::vec2 pos, glm::vec2 size,
-			Color32 color, float angle=0.0f,
+			Color8 color, float angle=0.0f,
 			float circle=0
 		);
-		void draw_circle(glm::vec2 pos, float radius, Color32 color)
+		void draw_circle(glm::vec2 pos, float radius, Color8 color)
 		{
 			draw_color(pos, glm::vec2(radius * 2), color, 0, 1);
 		}
@@ -157,7 +161,7 @@ namespace uhero::gfx
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
 			glm::vec2 size(src.z, src.w);
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color8(255), circle);
 		}
 		// draws complete texture with 1:1 scale
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
@@ -165,7 +169,7 @@ namespace uhero::gfx
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color8(255), circle);
 		}
 		// draws a region of texture with given size
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
@@ -173,7 +177,7 @@ namespace uhero::gfx
 			float circle=0
 		)
 		{
-			draw_texture(pos, size, texture, src, 0, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, 0, 1, Color8(255), circle);
 		}
 
 		// draws a rotated texture
@@ -182,7 +186,7 @@ namespace uhero::gfx
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
-			draw_texture(pos, size, texture, src, angle, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, angle, 1, Color8(255), circle);
 		}
 
 		// draws region of texture in rotated quad
@@ -191,12 +195,12 @@ namespace uhero::gfx
 			float angle, float circle=0
 		)
 		{
-			draw_texture(pos, size, texture, src, angle, 1, Color32(255), circle);
+			draw_texture(pos, size, texture, src, angle, 1, Color8(255), circle);
 		}
 
 		// draws a color multiplied texture
 		void draw_texture(glm::vec2 pos, glm::vec2 size, const Texture& texture,
-			float blend_factor, Color32 color_key, float circle=0
+			float blend_factor, Color8 color_key, float circle=0
 		)
 		{
 			glm::vec4 src(0, 0, texture.width, texture.height);
@@ -208,7 +212,7 @@ namespace uhero::gfx
 		// draws a region of texture with color multiplied
 		void draw_texture(glm::vec2 pos, glm::vec2 size,
 			const Texture& texture, glm::vec4 src,
-			float blend_factor, Color32 color_key,
+			float blend_factor, Color8 color_key,
 			float circle=0
 		)
 		{

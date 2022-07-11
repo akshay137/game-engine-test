@@ -173,7 +173,7 @@ namespace game
 		
 		auto pen = game.screen_to_world(glm::vec2(16), game.get_game_size());
 		gfx::FontStyle _style(32);
-		_style.border_color = gfx::Color32(255, 0, 0);
+		_style.border_color = gfx::Color8(255, 0, 0);
 		_style.border_size = .025;
 		pen = uber.write_format(pen, game.font, _style,
 			"Score: %d\n", score

@@ -91,7 +91,7 @@ namespace game
 			return glm::vec2(pos.x, screen.y - pos.y);
 		}
 
-		void clear_game_screen(uhero::gfx::Color32 color)
+		void clear_game_screen(uhero::gfx::Color8 color)
 		{
 			game_fbo.clear_buffers(color, 1, 0);
 		}

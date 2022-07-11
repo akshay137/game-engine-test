@@ -142,7 +142,7 @@ namespace game
 	void Pong::draw(Game& game)
 	{
 		auto& uber = game.uber;
-		game.clear_game_screen(gfx::Color32(32, 32, 32, 255));
+		game.clear_game_screen(gfx::Color8(32, 32, 32, 255));
 
 		uber.draw_circle(Utils::snap_to_pixel(playground.origin),
 			playground.radius, gfx::WHITE

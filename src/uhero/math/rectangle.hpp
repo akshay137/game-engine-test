@@ -18,6 +18,15 @@ namespace uhero::math
 			: position{pos}, size{size}
 		{}
 
+		static Rectangle from_coords(glm::vec2 top_left, glm::vec2 size)
+		{
+			glm::vec2 position = {
+				top_left.x + size.x * .5f,
+				top_left.y + size.y * .5f
+			};
+			return Rectangle(position, size);
+		}
+
 		float width() const { return size.x; }
 		float height() const { return size.y; }
 

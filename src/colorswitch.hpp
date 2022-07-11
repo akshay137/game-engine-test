@@ -15,7 +15,7 @@ namespace game
 	{
 		glm::vec2 game_size;
 		constexpr static int MAX_COLORS = 6;
-		uhero::gfx::Color32 colors[MAX_COLORS];
+		uhero::gfx::Color8 colors[MAX_COLORS];
 
 		uhero::sfx::AudioBuffer s_hit;
 		float volume_hit;

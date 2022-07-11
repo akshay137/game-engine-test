@@ -58,7 +58,7 @@ namespace uhero::gfx
 
 		void set_vsync(bool);
 
-		void clear_buffer(Color32 color, float depth=1.0f, i32 stencil=0);
+		void clear_buffer(Color8 color, float depth=1.0f, i32 stencil=0);
 		void update_render_state(float width, float height);
 
 		void use_framebuffer(FrameBuffer& fbo);

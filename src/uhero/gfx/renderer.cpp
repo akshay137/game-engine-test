@@ -22,11 +22,11 @@ namespace uhero::gfx
 
 		VertexLayout layout;
 		layout.add_attribute(VertexAttribute::Vec2); // position
-		layout.add_attribute(VertexAttribute::Vec2); // tex coords
-		layout.add_attribute(VertexAttribute::Vec2); // normalized coords
-		layout.add_attribute(VertexAttribute::ByteNVec4); // color
-		layout.add_attribute(VertexAttribute::ByteNVec4); // blend | text data
-		layout.add_attribute(VertexAttribute::ByteNVec4); // border color
+		layout.add_attribute(VertexAttribute::ShortNVec4); // tex coords
+		// layout.add_attribute(VertexAttribute::Vec2); // normalized coords
+		layout.add_attribute(VertexAttribute::ShortNVec4); // color
+		layout.add_attribute(VertexAttribute::ShortNVec4); // blend | text data
+		layout.add_attribute(VertexAttribute::ShortNVec4); // border color
 
 		auto res = pso.create(layout, vs, fs);
 		if (Result::Success != res)
@@ -125,7 +125,7 @@ namespace uhero::gfx
 	void Renderer::draw_texture(glm::vec2 pos, glm::vec2 size,
 		const Texture& texture, glm::vec4 src,
 		float angle,
-		float blend_factor, Color32 color_key,
+		float blend_factor, Color8 color_key,
 		float circle
 	)
 	{
@@ -149,7 +149,7 @@ namespace uhero::gfx
 	}
 
 	void Renderer::draw_color(glm::vec2 pos, glm::vec2 size,
-		Color32 color, float angle, float circle
+		Color8 color, float angle, float circle
 	)
 	{
 		Quad quad {};
@@ -334,8 +334,13 @@ namespace uhero::gfx
 			for (auto i = 0; i < 4; i++)
 			{
 				v[i].position = transform_vertex(model, positions[i]);
-				v[i].uv = transform_vertex(uv, coords[i]);
-				v[i].quad_uv = coords[i];
+				// TODO: fix this, use vec type
+				auto tuv = transform_vertex(uv, coords[i]);
+				auto quad_uv = coords[i];
+				v[i].uv_x = tuv.x;
+				v[i].uv_y = tuv.y;
+				v[i].quad_uv_x = quad_uv.x;
+				v[i].quad_uv_y = quad_uv.y;
 			}
 
 			u32 vindex = i * 4;

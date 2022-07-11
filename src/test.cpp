@@ -109,14 +109,14 @@ namespace test
 			tf.position = { col * size.x * 1.1, row * size.y * 1.1 };
 			auto vtf = tf.apply_transform(view);
 
-			gfx::Color32 color(rgen.range(0, 255));
+			gfx::Color8 color(rgen.range(0, 255));
 			renderer.draw_color(vtf.position, size * vtf.scale, color,
 				vtf.rotation
 			);
 		}
 
 		game::GObject* scene[] = { &root, &child_0, &child_1, &child_1_0 };
-		gfx::Color32 colors[] = { gfx::WHITE,
+		gfx::Color8 colors[] = { gfx::WHITE,
 			gfx::RED, gfx::GREEN, gfx::BLUE
 		};
 		glm::vec2 pen = { 0, ctx->main_window.height };

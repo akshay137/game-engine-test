@@ -27,8 +27,8 @@ namespace uhero::gfx
 		f32 size;
 		f32 border_size;
 		f32 line_spacing;
-		Color32 text_color;
-		Color32 border_color;
+		Color8 text_color;
+		Color8 border_color;
 		i32 wrap_width;
 
 		FontStyle(f32 size=16)
@@ -37,8 +37,8 @@ namespace uhero::gfx
 			wrap_width = 0;
 			border_size = 0.05;
 			line_spacing = 1;
-			text_color = Color32(255);
-			border_color = Color32(0, 0, 0, 255);
+			text_color = Color8(255);
+			border_color = Color8(0, 0, 0, 255);
 		}
 
 		void set_size(i32 pt)

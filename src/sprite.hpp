@@ -12,7 +12,7 @@ namespace game
 {
 	struct Sprite : public GObject
 	{
-		uhero::gfx::Color32 color;
+		uhero::gfx::Color8 color;
 		const uhero::gfx::Texture* texture;
 		glm::vec4 clip;
 		glm::vec2 size;

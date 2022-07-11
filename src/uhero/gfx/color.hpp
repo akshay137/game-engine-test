@@ -2,105 +2,73 @@
 #define UHERO_GFX_COLOR_H__ 1
 
 #include "../common.hpp"
+#include "../math/norm_type.hpp"
 
 namespace uhero::gfx
 {
-	// RGBA color value (32 bit)
-	struct Color32
+	// RGBA Color type
+	template <typename T>
+	struct Color
 	{
-		u8 red;
-		u8 green;
-		u8 blue;
-		u8 alpha;
+		using ntype = math::Normalized<T>;
 
-		Color32() = default;
+		ntype red;
+		ntype green;
+		ntype blue;
+		ntype alpha;
 
-		Color32(u8 v)
-			: red{v}, green{v}, blue{v}, alpha{255}
+		Color() = default;
+		Color(ntype v): red{v}, green{v}, blue{v}, alpha{1.0f} {}
+		Color(ntype v, ntype alpha): red{v}, green{v}, blue{v}, alpha{alpha} {}
+		Color(ntype r, ntype g, ntype b): red{r}, green{g}, blue{b}, alpha{1.0f} {}
+		constexpr Color(ntype red, ntype green, ntype blue, ntype alpha)
+			: red{red}, green{green}, blue{blue}, alpha{alpha}
 		{}
 
-		Color32(u8 v, u8 a)
-			: red{v}, green{v}, blue{v}, alpha{a}
-		{}
-
-		Color32(u8 r, u8 g, u8 b)
-			: red{r}, green{g}, blue{b}, alpha{255}
-		{}
-
-		constexpr Color32(u8 r, u8 g, u8 b, u8 a)
-			: red{r}, green{g}, blue{b}, alpha{a}
-		{}
-
-		Color32 with_alpha(float a) const
+		template <typename T2>
+		Color<T>& operator=(const Color<T2>& rhs)
 		{
-			return Color32(red, green, blue, alpha * a);
+			red = rhs.red.as_float();
+			green = rhs.green.as_float();
+			blue = rhs.blue.as_float();
+			alpha = rhs.alpha.as_float();
+			return *this;
 		}
 
-		void to_rgb(f32& r, f32& g, f32& b) const
+		Color<T> with_alpha(float new_alpha) const
 		{
-			r = red / 255.0f;
-			g = green / 255.0f;
-			b = blue / 255.0f;
+			Color<T> res(red, green, blue, new_alpha);
+			return res;
+		}
+
+		Color<T> invert() const
+		{
+			Color<T> res(red.invert(), green.invert(), blue.invert(), alpha);
+			return res;
 		}
 
 		void to_rgba(f32& r, f32& g, f32& b, f32& a) const
 		{
-			r = red / 255.0f;
-			g = green / 255.0f;
-			b = blue / 255.0f;
-			a = alpha / 255.0f;
-		}
-
-		Color32 invert() const
-		{
-			Color32 inverse(255 - red, 255 - green, 255 - blue);
-			return inverse;
-		}
-
-		u32 to_rgba_u32() const
-		{
-			u32 temp = red;
-			temp = (temp << 8) | green;
-			temp = (temp << 8) | blue;
-			temp = (temp << 8) | alpha;
-			return temp ;
-		}
-
-		static Color32 from_rgba(f32 r, f32 g, f32 b, f32 a = 1.0f)
-		{
-			Color32 color;
-			color.red = (u32)(r * 255) & 0xff;
-			color.green = (u32)(g * 255) & 0xff;
-			color.blue = (u32)(b * 255) & 0xff;
-			color.alpha = (u32)(a * 255) & 0xff;
-			return color;
-		}
-
-		static Color32 swap_bytes(const Color32 color)
-		{
-			Color32 swapped;
-			swapped.red = color.alpha;
-			swapped.green = color.blue;
-			swapped.blue = color.green;
-			swapped.alpha = color.red;
-			return swapped;
+			r = red.as_float();
+			g = green.as_float();
+			b = blue.as_float();
+			a = alpha.as_float();
 		}
 	};
 
-	static inline Color32 operator*(const Color32& color, float v)
-	{
-		return Color32(color.red * v, color.green * v, color.blue * v, color.alpha * v);
-	}
+	using Color8 = Color<u8>;
+	using Color16 = Color<u16>;
+	using Color32 = Color<u32>;
 
 	// constants
-	constexpr Color32 WHITE = { 255, 255, 255, 255 };
-	constexpr Color32 BLACK = { 0, 0, 0,  255 };
-	constexpr Color32 RED = { 255, 0, 0, 255 };
-	constexpr Color32 GREEN = { 0, 255, 0, 255 };
-	constexpr Color32 BLUE = { 0, 0, 255, 255 };
-	constexpr Color32 CYAN = { 0, 255, 255, 255 };
-	constexpr Color32 PINK = { 255, 0, 255, 255 };
-	constexpr Color32 YELLOW = { 255, 255, 0, 255 };
+	constexpr Color8 WHITE = { 255, 255, 255, 255 };
+	constexpr Color8 BLACK = { 0, 0, 0,  255 };
+	constexpr Color8 RED = { 255, 0, 0, 255 };
+	constexpr Color8 GREEN = { 0, 255, 0, 255 };
+	constexpr Color8 BLUE = { 0, 0, 255, 255 };
+	constexpr Color8 CYAN = { 0, 255, 255, 255 };
+	constexpr Color8 PINK = { 255, 0, 255, 255 };
+	constexpr Color8 YELLOW = { 255, 255, 0, 255 };
 }
 
 #endif

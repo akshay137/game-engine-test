@@ -47,7 +47,7 @@ namespace game
 	void Game::show_menu()
 	{
 		auto size = get_window_size();
-		uber.draw_color(size * .5f, size, gfx::Color32(32));
+		uber.draw_color(size * .5f, size, gfx::Color8(32));
 
 		draw_button(btn_games[0]);
 		draw_button(btn_games[1]);
@@ -55,14 +55,14 @@ namespace game
 
 		auto pen = screen_to_world(glm::vec2(128, 64), size);
 		auto _style = style;
-		_style.text_color = gfx::Color32(255, 74, 92);
-		_style.border_color = gfx::Color32(0, 255, 255);
+		_style.text_color = gfx::Color8(255, 74, 92);
+		_style.border_color = gfx::Color8(0, 255, 255);
 		_style.border_size = .05;
 		_style.set_size(128);
 		pen = uber.write_format(pen, font, _style, "unsignedHERO\n");
 
 		_style.set_size(128 - 32);
-		_style.text_color = gfx::Color32(255);
+		_style.text_color = gfx::Color8(255);
 		_style.border_size = 0;
 		pen = uber.write_format(pen, font, _style, "game engine\n");
 	}
@@ -77,15 +77,15 @@ namespace game
 		pen.x -= 512;
 		auto _style = style;
 		_style.set_size(128);
-		_style.text_color = gfx::Color32::from_rgba(1, .2, .3);
-		_style.border_color = gfx::Color32(255);
+		_style.text_color = gfx::Color8(1.0f, .2f, .3f);
+		_style.border_color = gfx::Color8(255);
 		_style.border_size = .025;
 		pen = uber.write_format(pen, font, _style,
 			"Game Over\n"
 		);
 
 		_style.set_size(64);
-		_style.text_color = gfx::Color32::from_rgba(0, 1, 0);
+		_style.text_color = gfx::Color8(0.0f, 1.0f, 0.0f);
 		_style.border_size = .05;
 		pen.x += 256;
 		pen = uber.write_format(pen, font, _style, "Score: %d\n", score);
@@ -109,15 +109,15 @@ namespace game
 	{
 		auto pos = button.rect.position;
 		auto size = button.rect.size;
-		uber.draw_color(pos, size, gfx::Color32::from_rgba(1, .4, .5));
+		uber.draw_color(pos, size, gfx::Color8(1.0f, .4f, .5f));
 		size -= glm::vec2(8);
-		uber.draw_color(pos, size, gfx::Color32(255));
+		uber.draw_color(pos, size, gfx::Color8(255));
 		size -= glm::vec2(4);
-		uber.draw_color(pos, size, gfx::Color32(0));
+		uber.draw_color(pos, size, gfx::Color8(0));
 
 		auto _style = style;
-		_style.border_color = gfx::Color32(31);
-		_style.text_color = gfx::Color32(255);
+		_style.border_color = gfx::Color8(31);
+		_style.text_color = gfx::Color8(255);
 		_style.border_size = .1;
 		glm::vec2 box;
 		font.get_box_size(button.title.size(), button.title.data(),
@@ -167,7 +167,7 @@ namespace game
 		font = res::load_font("assets/firacode.atlas");
 		style = gfx::FontStyle(32);
 		style.border_size = 0.05;
-		style.border_color = gfx::Color32::from_rgba(0, 0, 0);
+		style.border_color = gfx::Color8(0, 0, 0);
 
 		gfx::FBDescriptor descriptor {};
 		descriptor.add_color_attachment(gfx::PixelFormat::RGBA8);
@@ -339,7 +339,7 @@ namespace game
 			uber.flush();
 
 			ctx.gfx.use_default_framebuffer(ctx.main_window);
-			ctx.gfx.clear_buffer(gfx::Color32(0), 1, 0);
+			ctx.gfx.clear_buffer(gfx::Color8(0), 1, 0);
 			uber.set_clip_size(screen.x, screen.y);	
 			uber.draw_texture(center, screen, game_fbo.color[0],
 				glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
@@ -347,7 +347,7 @@ namespace game
 		}
 
 		ctx.gfx.use_default_framebuffer(ctx.main_window);
-		ctx.gfx.clear_buffer(gfx::Color32(0), 1, 0);
+		ctx.gfx.clear_buffer(gfx::Color8(0), 1, 0);
 		uber.set_clip_size(screen.x, screen.y);
 		if (GameState::Menu == state)
 		{
@@ -358,7 +358,7 @@ namespace game
 			uber.draw_texture(center, screen, game_fbo.color[0],
 				glm::vec4(0, game_fbo.height, game_fbo.width, -game_fbo.height)
 			);
-			uber.draw_color(center, screen, gfx::Color32(31, 255 - 32));
+			uber.draw_color(center, screen, gfx::Color8(31, 255 - 32));
 			
 			if (GameState::Pause == state)
 				show_pausemenu();
@@ -393,7 +393,7 @@ namespace game
 
 		auto pen = glm::vec2(8, 64 + 32 + 16);
 		auto _style = gfx::FontStyle(15);
-		_style.border_color = gfx::Color32::from_rgba(0, 0, 0);
+		_style.border_color = gfx::Color8(0.0f, 0.0f, 0.0f);
 		_style.border_size = 0.125;
 		uber.draw_color(glm::vec2(104, 60), glm::vec2(200, 108),
 			gfx::BLACK.with_alpha(.3)

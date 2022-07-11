@@ -66,7 +66,7 @@ namespace uhero::gfx
 		glBindFramebuffer(GL_FRAMEBUFFER, gl_id);
 	}
 
-	void FrameBuffer::clear_buffers(const Color32 clear_color, float depth, i32 stencil)
+	void FrameBuffer::clear_buffers(const Color8 clear_color, float depth, i32 stencil)
 	{
 		float cc[4] = {};
 		clear_color.to_rgba(cc[0], cc[1], cc[2], cc[3]);
