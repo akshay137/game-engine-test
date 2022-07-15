@@ -53,6 +53,11 @@ namespace uhero::gfx
 		}
 
 		u32 relative_offset = 0;
+		auto align = [](u32 value, u32 align) {
+			auto required = value % align;
+			if (0 == required) return value;
+			return value + (align - required);
+		};
 		for (usize i = 0; i < layout.attrib_count; i++)
 		{
 			VertexAttribData data;
@@ -69,6 +74,7 @@ namespace uhero::gfx
 			glEnableVertexArrayAttrib(vao, i);
 
 			relative_offset += data.byte_size;
+			relative_offset = align(relative_offset, 4); // OpenGL requirement
 		}
 
 		return vao;

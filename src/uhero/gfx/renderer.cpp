@@ -22,8 +22,7 @@ namespace uhero::gfx
 
 		VertexLayout layout;
 		layout.add_attribute(VertexAttribute::Vec2); // position
-		layout.add_attribute(VertexAttribute::ShortNVec4); // tex coords
-		// layout.add_attribute(VertexAttribute::Vec2); // normalized coords
+		layout.add_attribute(VertexAttribute::ShortNVec4); // tex coords + normalized coords
 		layout.add_attribute(VertexAttribute::ShortNVec4); // color
 		layout.add_attribute(VertexAttribute::ShortNVec4); // blend | text data
 		layout.add_attribute(VertexAttribute::ShortNVec4); // border color
