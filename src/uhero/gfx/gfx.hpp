@@ -68,6 +68,7 @@ namespace uhero::gfx
 		static inline GPUStats gpu_stats;
 		static void reset_stats() { gpu_stats.reset(); }
 
+		// TODO: make this a normal way to create gl resources
 		static void created_texture() { gpu_stats.textures.create(); }
 		static void deleted_texture() { gpu_stats.textures.free(); }
 		static void created_buffer() { gpu_stats.buffers.create(); }

@@ -96,6 +96,10 @@ namespace uhero::gfx
 			case BlendState::OneMinusSrcAlpha:
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				return;
+			
+			default:
+				UH_WARN("Invalid BlendState: %u\n", (u32)state);
+				return;
 		}
 	}
 
@@ -122,6 +126,10 @@ namespace uhero::gfx
 			
 			case DepthState::LessEqual:
 				glDepthFunc(GL_LEQUAL);
+				return;
+			
+			default:
+				UH_WARN("Invalid DepthState: %u\n", (u32)state);
 				return;
 		}
 	}
