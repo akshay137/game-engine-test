@@ -41,9 +41,6 @@ namespace uhero::gfx
 			glDebugMessageCallback(uh_gldebug_callback, nullptr);
 		}
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 		UH_VERB("Created OpenGL context: %p\n", gl_context);
 		UH_INFO("OpenGL Info:\n"
 			"\tversion: %s\n"

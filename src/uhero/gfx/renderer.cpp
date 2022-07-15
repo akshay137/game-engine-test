@@ -28,7 +28,7 @@ namespace uhero::gfx
 		layout.add_attribute(VertexAttribute::ShortNVec4); // blend | text data
 		layout.add_attribute(VertexAttribute::ShortNVec4); // border color
 
-		auto res = pso.create(layout, vs, fs);
+		auto res = pso.create(layout, vs, fs, BlendState::OneMinusSrcAlpha);
 		if (Result::Success != res)
 		{
 			return res;

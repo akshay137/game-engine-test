@@ -9,13 +9,19 @@
 namespace uhero::gfx
 {
 	Result PSO::create(const VertexLayout& layout,
-		const char* vertex_shader, const char* fragment_shader
+		const char* vertex_shader, const char* fragment_shader,
+		BlendState blend, DepthState depth
 	)
 	{
 		vao = Utils::create_vao_from_layout(layout);
 		program = Utils::create_program_from_vf(vertex_shader, fragment_shader);
 
 		this->layout = layout;
+		this->blend = blend;
+		this->depth = depth;
+
+		set_blendstate(blend);
+		set_depthstate(depth);
 
 		UH_VERB("Created PSO [V: %u | P: %u]\n", vao, program);
 
@@ -44,6 +50,8 @@ namespace uhero::gfx
 		
 		current_program = program;
 		current_vao = vao;
+		set_blendstate(blend);
+		set_depthstate(depth);
 	}
 
 	void PSO::set_vertex_buffer(const Buffer& vbuffer, u32 index,
@@ -66,6 +74,56 @@ namespace uhero::gfx
 	void PSO::set_int(i32 index, i32 value)
 	{
 		glProgramUniform1i(program, index, value);
+	}
+
+	void PSO::set_blendstate(const BlendState state)
+	{
+		if (state == current_blend_state)
+			return;
+		current_blend_state = state;
+		if (BlendState::NoBlend == state)
+		{
+			glDisable(GL_BLEND);
+			return;
+		}
+		else
+		{
+			glEnable(GL_BLEND);
+		}
+
+		switch (state)
+		{
+			case BlendState::OneMinusSrcAlpha:
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				return;
+		}
+	}
+
+	void PSO::set_depthstate(const DepthState state)
+	{
+		if (state == current_depth_state)
+			return;
+		current_depth_state = state;
+		if (DepthState::NoDepth == state)
+		{
+			glDisable(GL_DEPTH_TEST);
+			return;
+		}
+		else
+		{
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		switch (state)
+		{
+			case DepthState::Less:
+				glDepthFunc(GL_LESS);
+				return;
+			
+			case DepthState::LessEqual:
+				glDepthFunc(GL_LEQUAL);
+				return;
+		}
 	}
 
 	void PSO::draw_elements(u32 primitive, u32 count, const void* offset)

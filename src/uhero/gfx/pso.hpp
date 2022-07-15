@@ -22,6 +22,25 @@ namespace uhero::gfx
 		MaxVertexAttributes,
 	};
 
+	enum BlendState : u32
+	{
+		NoBlend = 0,
+		
+		OneMinusSrcAlpha,
+
+		MaxBlendStates,
+	};
+
+	enum DepthState : u32
+	{
+		NoDepth = 0,
+
+		Less,
+		LessEqual,
+
+		MaxDepthState,
+	};
+
 	struct VertexLayout
 	{
 		u32 attrib_count = 0;
@@ -43,9 +62,13 @@ namespace uhero::gfx
 		u32 program;
 
 		VertexLayout layout;
+		BlendState blend;
+		DepthState depth;
 
 		Result create(const VertexLayout& layout,
-			const char* vertex_shader, const char* fragment_shader
+			const char* vertex_shader, const char* fragment_shader,
+			BlendState blend=BlendState::NoBlend,
+			DepthState depth=DepthState::NoDepth
 		);
 		void clear();
 
@@ -59,6 +82,9 @@ namespace uhero::gfx
 		void set_float(i32 index, f32 value);
 		void set_int(i32 index, i32 value);
 
+		void set_blendstate(const BlendState state);
+		void set_depthstate(const DepthState state);
+
 		// draw commands
 		void draw_elements(u32 primitive, u32 count, const void* offset);
 		void draw_arrays(u32 primitive, u32 first, u32 count);
@@ -66,6 +92,8 @@ namespace uhero::gfx
 		// small optimization
 		static inline u32 current_vao = 0;
 		static inline u32 current_program = 0;
+		static inline BlendState current_blend_state = BlendState::MaxBlendStates;
+		static inline DepthState current_depth_state = DepthState::MaxDepthState;
 	};
 }
 
