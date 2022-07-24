@@ -8,6 +8,8 @@ namespace uhero::gfx
 	struct Buffer;
 
 	constexpr u32 MAX_VERTEX_ATTRIBUTES = 16;
+
+	extern const u32 TRIANGLES;
 	
 	enum VertexAttribute : u16
 	{
@@ -81,6 +83,7 @@ namespace uhero::gfx
 
 		void set_float(i32 index, f32 value);
 		void set_int(i32 index, i32 value);
+		void set_mat4(i32 index, f32* matrix);
 
 		void set_blendstate(const BlendState state);
 		void set_depthstate(const DepthState state);

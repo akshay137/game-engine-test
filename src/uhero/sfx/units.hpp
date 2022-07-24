@@ -20,7 +20,7 @@ namespace uhero::sfx
 
 		static float to_decible(float sample)
 		{
-			float l = log10f32(sample);
+			float l = log10f(sample);
 			float decibles = l * 20;
 			return decibles;
 		}
@@ -28,7 +28,7 @@ namespace uhero::sfx
 		static float decible_to_float(float db)
 		{
 			float d20 = db / 20.0f;
-			float linear = powf32(10.0f, d20);
+			float linear = powf(10.0f, d20);
 			return linear;
 		}
 	};

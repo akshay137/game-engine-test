@@ -8,6 +8,8 @@
 
 namespace uhero::gfx
 {
+	const u32 TRIANGLES = GL_TRIANGLES;
+	
 	Result PSO::create(const VertexLayout& layout,
 		const char* vertex_shader, const char* fragment_shader,
 		BlendState blend, DepthState depth
@@ -74,6 +76,11 @@ namespace uhero::gfx
 	void PSO::set_int(i32 index, i32 value)
 	{
 		glProgramUniform1i(program, index, value);
+	}
+
+	void PSO::set_mat4(i32 index, f32* matrix)
+	{
+		glProgramUniformMatrix4fv(program, index, 1, GL_FALSE, matrix);
 	}
 
 	void PSO::set_blendstate(const BlendState state)
