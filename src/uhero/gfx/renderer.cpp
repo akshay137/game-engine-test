@@ -355,10 +355,11 @@ namespace uhero::gfx
 	Renderer::Vertex Renderer::glyph_vertex(const Quad& quad)
 	{
 		// TODO: remove magic numbers from calculation
+		// TODO: make width & edge part of font style
 		const auto height = quad.rect.w;
 		const auto factor = ceil(height / 48);
-		float width = 0.50f - (1 / (50 * factor));
 		float edge = 1 / (10 * factor);
+		float width = 0.50f - (1 / (50 * factor));
 
 		Vertex v {};
 		v.color = quad.glyph.text_color;

@@ -11,7 +11,7 @@
 
 using namespace uhero;
 
-float factor = 0.5f;
+float factor = 0.01f;
 
 auto rotate(glm::vec3 v, float angle, float x, float y, float z)
 {
@@ -34,7 +34,7 @@ namespace tests
 		font = res::load_font("assets/cascadia.atlas");
 		// font = res::load_font("assets/firacode.atlas");
 		// texture = res::load_texture("../won_miho_pt_01.png", 5);
-		texture = res::load_texture("assets/logo.png", 3);
+		texture = res::load_texture("../won_miho_864.png", 3);
 		texture.set_filter(gfx::TextureFilter::TriLinear);
 
 		camera.position = glm::vec3(0, 0, 1);
@@ -50,46 +50,42 @@ namespace tests
 		rstate.time_data.frame = 0;
 		rsbuffer.create(gfx::BufferType::Dynaminc, 1, &rstate);
 
-		std::vector<Vertex3D> verts = {
-			Vertex3D(glm::vec3(0.5f, 0.5f, 0.0f)),
-			Vertex3D(glm::vec3(0.5f, -0.5f, 0.0f)),
-			Vertex3D(glm::vec3(-0.5f, -0.5f, 0.0f)),
+		// 0 1
+		// 2 3
+		PieVertex tl, tr;
+		PieVertex bl, br;
+		tl.position = { -0.5, 0.5, 0 };
+		tl.uv = { 0, 0 };
+		tr.position = { 0.5, 0.5, 0 };
+		tr.uv = { 1, 0 };
+		bl.position = { -0.5, -0.5, 0 };
+		bl.uv = { 0, 1 };
+		br.position = { 0.5, -0.5, 0 };
+		br.uv = { 1, 1 };
 
-			Vertex3D(glm::vec3(-0.5, 0.5f, 0.0f)),
-			Vertex3D(glm::vec3(0.5f, 0.5f, 0.0f)),
-			Vertex3D(glm::vec3(-0.5f, -0.5f, 0.0f)),
-		};
-		verts[0].color = { 1, 0, 0 };
-		verts[1].color = { 0, 0, 1 };
-		verts[2].color = { 0, 1, 0 };
-		verts[3].color = { 0, 1, 1 };
-		verts[4].color = { 1, 0, 0 };
-		verts[5].color = { 0, 1, 0 };
+		vertices.push_back(tl);
+		vertices.push_back(tr);
+		vertices.push_back(bl);
+		vertices.push_back(br);
+		std::vector<uint16_t> inds = { 0, 1, 2, 2, 1, 3 };
 
-		verts[0].uv = { 1, 0 };
-		verts[1].uv = { 1, 1 };
-		verts[2].uv = { 0, 1 };
-		verts[3].uv = { 0, 0 };
-		verts[4].uv = { 1, 0 };
-		verts[5].uv = { 0, 1 };
-
-		verts[0].normal = { 0.25, -0.25, 0 };
-		verts[1].normal = { 0.25, -0.25, 0 };
-		verts[2].normal = { 0.25, -0.25, 0 };
-		verts[3].normal = { -0.25, 0.25, 0 };
-		verts[4].normal = { -0.25, 0.25, 0 };
-		verts[5].normal = { -0.25, 0.25, 0 };
-		std::vector<uint16_t> inds = { 0, 1, 2, 3, 4, 5 };
-
-		vbuffer.create(gfx::BufferType::Static, verts.size(), verts.data());
+		vbuffer.create(gfx::BufferType::Dynaminc, vertices.size(), vertices.data());
 		ibuffer.create(gfx::BufferType::Static, inds.size(), inds.data());
 
-		const char* vs = "assets/shaders/3d.vert";
-		const char* fs = "assets/shaders/3d.frag";
-		pso3d.create(Vertex3D::get_layout(), vs, fs,
+		gfx::VertexLayout layout;
+		layout.add_attribute(gfx::VertexAttribute::Vec3); // position
+		layout.add_attribute(gfx::VertexAttribute::Vec2); // tex_coords
+		layout.add_attribute(gfx::VertexAttribute::Vec2); // uv
+		layout.add_attribute(gfx::VertexAttribute::Vec2); // angles
+
+		const char* vs = "assets/shaders/pie.vert";
+		const char* fs = "assets/shaders/pie.frag";
+		pso_pie.create(layout, vs, fs,
 			gfx::BlendState::OneMinusSrcAlpha,
 			gfx::DepthState::LessEqual
 		);
+
+		pie_count = 3;
 
 		UH_INFO("T3D loaded\n");
 		return Result::Success;
@@ -100,7 +96,7 @@ namespace tests
 		texture.clear();
 		uirsbuffer.clear();
 		rsbuffer.clear();
-		pso3d.clear();
+		pso_pie.clear();
 		vbuffer.clear();
 		ibuffer.clear();
 		font.clear();
@@ -132,16 +128,22 @@ namespace tests
 		if (ip.is_key_down(KeyCode::ArrowLeft))
 			rot = 1;
 		
-		if (ip.is_key_down(KeyCode::NP_MINUS))
+		if (ip.is_key_released(KeyCode::NP_MINUS))
+			pie_count -= 1;
+		if (ip.is_key_released(KeyCode::NP_PLUS))
+			pie_count += 1;
+		
+		if (ip.is_key_down(KeyCode::Z))
 			factor -= delta;
-		if (ip.is_key_down(KeyCode::NP_PLUS))
+		if (ip.is_key_down(KeyCode::X))
 			factor += delta;
 		
 		if (ip.is_key_released(KeyCode::R))
 		{
 			camera.position = glm::vec3(0, 0, 1);
 			camera.forward = glm::vec3(0, 0, -1);
-			factor = 0.5f;
+			factor = 0.01f;
+			pie_count = 3;
 		}
 
 		camera.forward = rotate(camera.forward, rot * 2.5f * delta, 0, 1, 0);
@@ -165,38 +167,62 @@ namespace tests
 		rsbuffer.update(&rstate);
 		rsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
 
-		pso3d.make_current();
-		pso3d.set_index_buffer(ibuffer);
-		pso3d.set_vertex_buffer(vbuffer, 0, 0, vbuffer.stride());
+		ctx->gfx.clear_buffer(gfx::CYAN);
+		pso_pie.make_current();
+		pso_pie.set_index_buffer(ibuffer);
+		pso_pie.set_vertex_buffer(vbuffer, 0, 0, vbuffer.stride());
 
 		texture.bind_slot(0);
-		
-		for (auto i = 0; i < 16; i++)
+
+		float pie_angle = 6.28f / pie_count;
+		float half_angle = pie_angle * 0.5f;
+		float half_width = glm::sin(half_angle);
+		float ratio = half_width;
+		if (1 == (int)pie_count)
+			ratio = 1;
+		for (auto i = 0; i < (int)pie_count; i++)
 		{
-			float row = i / 4;
-			float col = i % 4;
-			float angle = 6.28f * (i / 16.0f);
-			auto pos = rotate(glm::vec3(0, 0, -5), angle, 0, 1, 0);
-			row = pos.x;
-			col = pos.y;
+			float angle = pie_angle * i;
+			auto pos = rotate(glm::vec3(0, 0.25 + factor, 0), angle, 0, 0, 1);
 
 			glm::mat4 model = glm::mat4(1);
 			model = glm::translate(model, pos);
-			model = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-			glm::vec3 scale(1);
-			scale.y = texture.get_aspect_ratio();
+			model = glm::rotate(model, angle, glm::vec3(0, 0, 1));
+			glm::vec3 scale = { ratio, 0.5, 1 };
 			model = glm::scale(model, scale);
 
-			pso3d.set_mat4(0, glm::value_ptr(model));
-			pso3d.set_float(1, 1);
-			pso3d.draw_elements(gfx::TRIANGLES, ibuffer.count, 0);
+			float xoffset = (1 - ratio) * 0.5;
+			pos = glm::vec3(xoffset, 0, 0);
+			scale = glm::vec3(ratio, 0.5, 1);
+
+			glm::mat4 uv = glm::mat4(1);
+			// rotate around texture center
+			uv = glm::translate(uv, glm::vec3(0.5, 0.5, 0));
+			uv = glm::rotate(uv, -angle, glm::vec3(0, 0, 1));
+			uv = glm::translate(uv, glm::vec3(-0.5, -0.5, 0));
+
+			uv = glm::translate(uv, pos);
+			uv = glm::scale(uv, scale);
+
+			pso_pie.set_mat4(0, glm::value_ptr(model));
+			pso_pie.set_float(1, angle);
+			pso_pie.set_float(2, pie_angle);
+			pso_pie.set_mat4(3, glm::value_ptr(uv));
+			pso_pie.set_float(4, ratio);
+			pso_pie.draw_elements(gfx::TRIANGLES, ibuffer.count, 0);
 		}
 
 		//  debug
 		ui.set_clip_size(screen.x, screen.y);
 		uirsbuffer.bind_base(gfx::BufferBase::Uniform, 0);
-		auto style = gfx::FontStyle(16 * 2);
+		
+		glm::vec2 size = { 256, 256 * texture.get_aspect_ratio() };
+		ui.draw_texture(size * 0.5f, size, texture);
+
+		auto style = gfx::FontStyle(16);
+		style.text_color = gfx::BLACK;
 		style.border_size = 0.001;
+		style.border_color = gfx::BLACK;
 		auto delta = ctx->main_clock.delta();
 		auto pen = glm::vec2(0, screen.y);
 		pen = ui.write_format(pen, font, style, "delta: %.4f\n", delta);
@@ -205,7 +231,13 @@ namespace tests
 			camera.position.x, camera.position.y, camera.position.z,
 			camera.forward.x, camera.forward.y, camera.forward.z
 		);
-		pen = ui.write_format(pen, font, style, "factor: %.3f\n", factor);
+		pen = ui.write_format(pen, font, style,
+			"pie : { count: %.3f, angle: %.3f, ratio: %.3f }\n",
+			pie_count, glm::degrees(pie_angle), ratio
+		);
+		pen = ui.write_format(pen, font, style,
+			"(1 - ratio) * 0.5 = %f\n", (1 - ratio) * 0.5
+		);
 		ui.flush();
 	}
 }

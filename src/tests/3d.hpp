@@ -10,6 +10,7 @@
 #include "../uhero/gfx/texture.hpp"
 
 #include "vertex3d.hpp"
+#include <vector>
 #include <glm/glm.hpp>
 
 namespace tests
@@ -34,6 +35,13 @@ namespace tests
 		glm::vec3 forward;
 	};
 
+	struct PieVertex
+	{
+		glm::vec3 position;
+		glm::vec2 tex_coords;
+		glm::vec2 uv;
+	};
+
 	struct T3D : public uhero::IApplication
 	{
 		uhero::Context* ctx;
@@ -41,11 +49,13 @@ namespace tests
 		uhero::gfx::Font font;
 		uhero::gfx::Texture texture;
 
+		float pie_count;
 		Camera camera;
 		RState rstate;
-		uhero::gfx::PSO pso3d;
+		std::vector<PieVertex> vertices;
+		uhero::gfx::PSO pso_pie;
 		uhero::gfx::TBuffer<uint16_t> ibuffer;
-		uhero::gfx::TBuffer<Vertex3D> vbuffer;
+		uhero::gfx::TBuffer<PieVertex> vbuffer;
 		uhero::gfx::TBuffer<RState> rsbuffer;
 		uhero::gfx::TBuffer<uhero::gfx::RenderState> uirsbuffer;
 
